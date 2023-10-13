@@ -1,0 +1,10 @@
+Hieararchy
+
+root
+    MainPage // all the posts in a grid, infinite loop
+        Features // cover all the categories display max 6 , first indexes to all categories
+        Trending Topics // order the posts by popularity over time        
+        Information // cover the stuff like what is ai tools what do we provide 
+        Reach Us // for marketing products 
+        Login // let the user have bookmarks, notify, 
+        Create Account // 
