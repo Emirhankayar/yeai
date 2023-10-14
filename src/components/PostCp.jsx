@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Typography } from '@material-tailwind/react';
 import { fetchData } from '../utils/utils';
+import { SkeletonPost } from '../common/Skeleton';
 
 export default function PostCp() {
     const [data, setData] = useState([]);
@@ -10,9 +11,10 @@ export default function PostCp() {
     const [hasMore, setHasMore] = useState(true);
     const [isEndOfScroll, setIsEndOfScroll] = useState(false);
     const [reachedEnd] = useState(false);
+    const [loadingSkeletons, setLoadingSkeletons] = useState(5);
 
     const handleScroll = () => {
-        const scrollThreshold = 100;
+        const scrollThreshold = 800;
 
         if (!reachedEnd && !isEndOfScroll) {
             if (
@@ -22,26 +24,28 @@ export default function PostCp() {
                 if (!isFetching && hasMore) {
                     setIsFetching(true);
                     setPage((prevPage) => prevPage + 1);
-                }
+                } 
             }
         }
-    };
+    };    
 
     useEffect(() => {
-      if (!isEndOfScroll) {
-          fetchData(page, (newData) => {
-              if (page === 1) {
-                  setData(newData);
-              } else if (newData.length === 0) {
-                  setHasMore(false);
-                  setIsEndOfScroll(true);
-              } else {
-                  setData((prevData) => [...prevData, ...newData]);
-                  setIsFetching(false);
-              }
-          }, setError, setIsFetching);
-      }
-  }, [page, isEndOfScroll]);
+        if (!isEndOfScroll) {
+            fetchData(page, (newData) => {
+                if (page === 1) {
+                    setData(newData);
+                } else if (newData.length === 0) {
+                    setHasMore(false);
+                    setIsEndOfScroll(true);
+                } else {
+                    setData((prevData) => [...prevData, ...newData]);
+                    setIsFetching(false);
+                    setLoadingSkeletons(5);
+                }
+            }, setError, setIsFetching);
+        }
+    }, [page, isEndOfScroll]);
+
 
     useEffect(() => {
         window.addEventListener('scroll', handleScroll);
@@ -56,7 +60,7 @@ export default function PostCp() {
 
     return (
         <div className="container mx-auto space-y-20 mx-auto px-10">
-            <Typography variant="h2" color="blue" textGradient className="text-start">
+            <Typography variant="h2" color="blue" textGradient={true} className="text-start">
                 Top 50 AI tools of All Time
             </Typography>
 
@@ -66,7 +70,7 @@ export default function PostCp() {
                         <Typography
                             variant="h3"
                             color="lime"
-                            textGradient
+                            textGradient={true}
                             className="cursor-pointer pb-5"
                         >
                             {post.title}
@@ -86,7 +90,11 @@ export default function PostCp() {
                     </div>
                 </div>
             ))}
-            {isFetching && !isEndOfScroll && <div>Loading more...</div>}
+            {isFetching && 
+                !isEndOfScroll && !reachedEnd &&
+                Array.from({ length: loadingSkeletons }).map((_, index) => (
+                    <SkeletonPost key={index} />
+                ))}
         </div>
     );
 }

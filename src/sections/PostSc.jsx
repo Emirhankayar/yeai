@@ -1,4 +1,6 @@
-import PostCp from '../components/PostCp'
+import React from 'react';
+const PostCp = React.lazy(() => import('../components/PostCp'));
+
 function PostSec() {
 
     return (
