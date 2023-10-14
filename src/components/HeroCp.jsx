@@ -2,41 +2,10 @@ import React, { useRef, useEffect } from 'react';
 import { Typography } from '@material-tailwind/react';
 
 export default function HeroCp() {
-    const videoRef = useRef(null);
-
-    useEffect(() => {
-        const video = videoRef.current;
-
-        const options = {
-            root: null,
-            rootMargin: '0px',
-            threshold: 0.5, // Change this threshold value based on your requirements
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                    video.play();
-                } else {
-                    video.pause();
-                }
-            });
-        }, options);
-
-        if (video) {
-            observer.observe(video);
-        }
-
-        return () => {
-            if (video) {
-                observer.unobserve(video);
-            }
-        };
-    }, []);
 
     return (
         <div className="relative h-screen w-screen">
-          <div className="w-full absolute top-1/2 transform -translate-y-1/2 z-20 bg-black bg-opacity-50">
+          <div className="w-full absolute top-1/2 transform -translate-y-1/2 z-20">
             <div className="w-full space-y-5 flex flex-col items-start h-screen justify-center px-10 sm:px-20 md:px-36 lg:px-52">
               <Typography
                 variant="h1"
@@ -77,22 +46,6 @@ export default function HeroCp() {
               </Typography>
             </div>
           </div>
-          <video
-  ref={videoRef}
-  className="h-full w-full object-cover brightness-50 z-0"
-  autoPlay
-  muted
-  loop
->
-
-  <source
-    media="(max-width: 1280px)"
-    src="src/assets/herovid_medium.mp4"
-    type="video/mp4"
-  />
- 
-  Your browser does not support the video tag.
-</video>
 
         </div>
       );
