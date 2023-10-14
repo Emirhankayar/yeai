@@ -11,7 +11,6 @@ import {
   MenuHandler,
   MenuList,
   MenuItem,
-  Chip,
 } from "@material-tailwind/react";
 import {
   ChevronDownIcon,
@@ -19,15 +18,15 @@ import {
   CubeTransparentIcon,
   Bars3Icon,
   XMarkIcon,
-  FlagIcon,
   ChatBubbleOvalLeftIcon,
-  UsersIcon,
-  FolderIcon,
   Square3Stack3DIcon,
   RocketLaunchIcon,
-  FaceSmileIcon,
-  PuzzlePieceIcon,
+  CpuChipIcon,
   GiftIcon,
+  ComputerDesktopIcon,
+  LanguageIcon,
+  PaintBrushIcon,
+  CalculatorIcon,
 } from "@heroicons/react/24/outline";
  
 const colors = {
@@ -43,63 +42,52 @@ const colors = {
  
 const navListMenuItems = [
   {
-    color: "blue",
-    icon: FlagIcon,
-    title: "About us",
-    description: "Learn about our story and our mission statement.",
-  },
-  {
     color: "orange",
-    icon: ChatBubbleOvalLeftIcon,
-    title: "Press",
-    description: "News and writings, press releases, and resources",
+    icon: CpuChipIcon,
+    title: "Machine Learning",
+    description: "Tools for model building and deployment.",
   },
   {
     color: "green",
-    icon: UsersIcon,
-    title: (
-      <div className="flex items-center gap-1">
-        Careers{" "}
-        <Chip
-          size="sm"
-          color="green"
-          variant="ghost"
-          value="We're hiring!"
-          className="capitalize"
-        />
-      </div>
-    ),
-    description: "We are always looking for talented people. Join us!",
+    icon: ComputerDesktopIcon,
+    title: "Computer Vision Tools",
+    description: "Interpretation of the visual world.",
+  },
+  {
+    color: "blue",
+    icon: LanguageIcon,
+    title: "NLP",
+    description: "Natural Language Processing tools.",
   },
   {
     color: "blue-gray",
-    icon: FolderIcon,
-    title: "Legal",
-    description: "All the stuff that we dan from legal made us add.",
+    icon: PaintBrushIcon,
+    title: "AI-Personalization Tools",
+    description: "Tailored user experiences.",
   },
   {
     color: "purple",
     icon: RocketLaunchIcon,
-    title: "Products",
-    description: "Checkout our products that helps a startup running.",
+    title: "AI-Enabled Analytics",
+    description: "Advanced data-driven insights.",
   },
   {
     color: "teal",
-    icon: FaceSmileIcon,
-    title: "Icons",
-    description: "Set of beautiful icons that you can use in your project.",
+    icon: CalculatorIcon,
+    title: "AI-Driven Automation",
+    description: "Task and process automation.",
   },
   {
     color: "cyan",
-    icon: PuzzlePieceIcon,
-    title: "UI Kits",
-    description: "High quality UI Kits helps you to 2x faster.",
+    icon: ChatBubbleOvalLeftIcon,
+    title: "AI-Powered Chatbots",
+    description: "Virtual conversational assistants.",
   },
   {
     color: "pink",
     icon: GiftIcon,
     title: "Open Source",
-    description: "List of all our open-source projects, it's all free.",
+    description: "List of all open-source tools, it's all free.",
   },
 ];
  
@@ -151,7 +139,7 @@ function NavListMenu() {
               onClick={() => setIsMobileMenuOpen((cur) => !cur)}
             >
               <Square3Stack3DIcon className="h-[18px] w-[18px]" />
-              Resources
+                Categories
               <ChevronDownIcon
                 strokeWidth={2.5}
                 className={`hidden h-3 w-3 transition-transform lg:block ${
@@ -221,16 +209,16 @@ export default function NavbarWithMegaMenu() {
   }, []);
  
   return (
-    <Navbar className="mx-auto max-w-full rounded-none px-4 py-2 fixed top-0 left-0 right-0">
+  <Navbar className="mx-auto max-w-full rounded-none px-4 py-2 fixed top-0 left-0 right-0 z-50">
       <div className="flex items-center justify-between text-blue-gray-900">
         <Typography
           as="a"
-          href="#"
-          variant="h6"
-          className="mr-4 cursor-pointer py-1.5 lg:ml-2 flex flex-row gap-1"
+          href="/"
+          variant="h5"
+          className="mr-4 cursor-pointer py-1.5 lg:ml-2 flex flex-row gap-1 font-oxanium font-extrabold"
         >
 
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
             <path strokeLinecap="round" strokeLinejoin="round" d="M7.864 4.243A7.5 7.5 0 0119.5 10.5c0 2.92-.556 5.709-1.568 8.268M5.742 6.364A7.465 7.465 0 004.5 10.5a7.464 7.464 0 01-1.15 3.993m1.989 3.559A11.209 11.209 0 008.25 10.5a3.75 3.75 0 117.5 0c0 .527-.021 1.049-.064 1.565M12 10.5a14.94 14.94 0 01-3.6 9.75m6.633-4.596a18.666 18.666 0 01-2.485 5.33" />
           </svg>
         yeAI

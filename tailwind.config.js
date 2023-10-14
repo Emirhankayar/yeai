@@ -7,9 +7,9 @@ module.exports = withMT({
   ],
   theme: {
     extend: {
-      //fontFamily: {
-        //inter: ['Inter', 'sans'],
-      //},
+      fontFamily: {
+        oxanium: ['Oxanium', 'sans-serif'],
+      },
       animation: {
         'slide-in-left': 'slideInLeft 1s both',
         'slide-in-right': 'slideInRight 1s both',

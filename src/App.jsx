@@ -11,7 +11,7 @@ const router = createBrowserRouter([
     element: <MainPg />,
   },
   {
-    path: "/features",
+    path: "/categories",
     element: <MainPg />,
   },
   {
@@ -32,7 +32,7 @@ function App() {
   return (
     <React.Suspense fallback={<CustomSpinner/>}>
       <Navbar/>
-      <div className="mt-40 min-h-screen mb-96">
+      <div className="min-h-screen">
         <RouterProvider router={router}/>
       </div>
       <Footer/>

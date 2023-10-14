@@ -59,23 +59,27 @@ export default function PostCp() {
     }
 
     return (
-        <div className="container mx-auto space-y-20 mx-auto px-10">
+        <div className="container mx-auto">
+            <div className='space-y-20 max-w-3xl mx-auto px-10'>
+
+
             <Typography variant="h2" color="blue" textGradient={true} className="text-start">
                 Top 50 AI tools of All Time
             </Typography>
 
             {data.map((post, index) => (
                 <div key={index}>
-                    <a href={post.url} target="_blank" rel="noopener noreferrer nofollow">
                         <Typography
                             variant="h3"
                             color="lime"
                             textGradient={true}
                             className="cursor-pointer pb-5"
                         >
-                            {post.title}
+                        <a href={post.url} target="_blank" rel="noopener noreferrer nofollow">
+                                {post.title}
+                        </a>
                         </Typography>
-                    </a>
+
                     <div className="space-y-5">
                         {post.content.map((content, contentIndex) => (
                             <Typography
@@ -95,6 +99,7 @@ export default function PostCp() {
                 Array.from({ length: loadingSkeletons }).map((_, index) => (
                     <SkeletonPost key={index} />
                 ))}
+        </div>
         </div>
     );
 }

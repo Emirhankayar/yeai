@@ -2,7 +2,7 @@ import React from "react";
 
 export function SkeletonPost() {
     return (
-        <div className="container mx-auto space-y-10 mx-auto animate-pulse">
+        <div className="container mx-auto space-y-10 mx-auto animate-pulse z-0">
             <div className="bg-gray-300 rounded-full h-4 w-1/6"></div>
             <div className="space-y-8">
                 <div className="space-y-5">
