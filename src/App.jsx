@@ -1,11 +1,11 @@
-import PostComp from './components/PostComp'
+import PostSc from './sections/PostSc'
 
 function App() {
 
   return (
     <>
     <div>
-      <PostComp/>
+      <PostSc/>
 
     </div>
     </>
