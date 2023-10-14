@@ -1,11 +1,11 @@
-import PostSc from './sections/PostSc'
+import MainPg from './pages/MainPg'
 
 function App() {
 
   return (
     <>
     <div>
-      <PostSc/>
+      <MainPg/>
 
     </div>
     </>

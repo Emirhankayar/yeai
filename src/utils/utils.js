@@ -1,9 +1,9 @@
 // utils.js
-const fetchData = (setData, setLoading, setError) => {
-    fetch('https://yeaiserver.onrender.com/posts') // Replace with the appropriate endpoint
+const fetchData = (page, setData, setLoading, setError) => {
+    fetch(`http://localhost:3000/posts?page=${page}`) 
       .then((response) => response.json())
       .then((data) => {
-        console.log('Fetched data:', data); // Log the fetched data
+        //console.log('Fetched data:', data); 
         setData(data);
         setLoading(false);
       })
@@ -13,5 +13,6 @@ const fetchData = (setData, setLoading, setError) => {
         setLoading(false);
       });
   };
-
-export { fetchData };
+  
+  export { fetchData };
+  

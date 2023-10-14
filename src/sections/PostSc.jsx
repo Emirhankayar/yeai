@@ -3,10 +3,9 @@ function PostSec() {
 
     return (
         <>
-        <div className="container">
+        <section className="container">
             <PostCp/>
-
-        </div>
+        </section>
     
       </>
       );
