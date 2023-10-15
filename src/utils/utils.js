@@ -1,11 +1,11 @@
 // utils.js
 
-const url = import.meta.env.VITE_SV_URL;
+const url = 'http://localhost:3000/posts';
 const fetchData = (page, setData, setLoading, setError) => {
     fetch(`${url}?page=${page}`) 
       .then((response) => response.json())
       .then((data) => {
-        //console.log('Fetched data:', data); 
+        console.log('Fetched data:', data); 
         setData(data);
         setLoading(false);
       })

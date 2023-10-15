@@ -59,47 +59,60 @@ export default function PostCp() {
     }
 
     return (
-        <div className="container mx-auto">
-            <div className='space-y-20 max-w-3xl mx-auto px-10'>
+<div className="container mx-auto">
+  <div className="space-y-20 max-w-3xl mx-auto px-10">
+    {data.map((post, index) => (
+      <div key={index}>
+        <Typography variant="h3" color="lime" textGradient={true} className="cursor-pointer pb-5">
+          <a href={post.url} target="_blank" rel="noopener noreferrer nofollow">
+            {post.title}
+          </a>
+        </Typography>
 
+        <div className="space-y-5">
 
-            <Typography variant="h2" color="blue" textGradient={true} className="text-start">
-                Top 50 AI tools of All Time
-            </Typography>
+          <Typography variant="paragraph" color="inherit" className="text-left">
+            {post.content}
+          </Typography>
 
-            {data.map((post, index) => (
-                <div key={index}>
-                        <Typography
-                            variant="h3"
-                            color="lime"
-                            textGradient={true}
-                            className="cursor-pointer pb-5"
-                        >
-                        <a href={post.url} target="_blank" rel="noopener noreferrer nofollow">
-                                {post.title}
-                        </a>
-                        </Typography>
-
-                    <div className="space-y-5">
-                        {post.content.map((content, contentIndex) => (
-                            <Typography
-                                variant="paragraph"
-                                color="inherit"
-                                className="text-justify"
-                                key={contentIndex}
-                            >
-                                {content}
-                            </Typography>
-                        ))}
-                    </div>
-                </div>
+          <Typography variant="h4" color="lime" textGradient={true} className="cursor-pointer pb-5">
+            {post.best_features_title}
+          </Typography>
+          <div className="space-y-5">
+            {post.best_features_content.map((content, contentIndex) => (
+              <Typography variant="paragraph" color="inherit" className="text-left" key={contentIndex}>
+                {content}
+              </Typography>
             ))}
-            {isFetching && 
-                !isEndOfScroll && !reachedEnd &&
-                Array.from({ length: loadingSkeletons }).map((_, index) => (
-                    <SkeletonPost key={index} />
-                ))}
+          </div>
+
+          <Typography variant="h4" color="lime" textGradient={true} className="cursor-pointer pb-5">
+            {post.limitations_title}
+          </Typography>
+          <div className="space-y-5">
+            {post.limitations_content.map((content, contentIndex) => (
+              <Typography variant="paragraph" color="inherit" className="text-left" key={contentIndex}>
+                {content}
+              </Typography>
+            ))}
+          </div>
+
+          <Typography variant="h4" color="lime" textGradient={true} className="cursor-pointer pb-5">
+            {post.pricing_title}
+          </Typography>
+          <div className="space-y-5">
+            {post.pricing_content.map((content, contentIndex) => (
+              <Typography variant="paragraph" color="inherit" className="text-left" key={contentIndex}>
+                {content}
+              </Typography>
+            ))}
+          </div>
         </div>
-        </div>
+      </div>
+    ))}
+    {isFetching && !isEndOfScroll && !reachedEnd && Array.from({ length: loadingSkeletons }).map((_, index) => <SkeletonPost key={index} />)}
+  </div>
+</div>
+
     );
 }
