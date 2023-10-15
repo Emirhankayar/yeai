@@ -1,6 +1,6 @@
 // utils.js
 
-const url = 'http://localhost:3000/posts';
+const url = import.meta.env.URL;
 const fetchData = (page, setData, setLoading, setError) => {
     fetch(`${url}?page=${page}`) 
       .then((response) => response.json())
