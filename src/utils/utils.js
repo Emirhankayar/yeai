@@ -1,6 +1,6 @@
 // utils.js
 
-const url = import.meta.env.URL;
+const url = import.meta.env.VITE_SV_URL;
 const fetchData = (page, setData, setLoading, setError) => {
     fetch(`${url}?page=${page}`) 
       .then((response) => response.json())
