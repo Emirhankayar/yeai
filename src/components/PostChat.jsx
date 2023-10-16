@@ -1,6 +1,8 @@
+// sub category parent of the posts
 import React, { useEffect, useState } from 'react';
 import { retrieveDataFromSupabase, truncateDescription } from '../utils/utils';
 import { Link, useParams } from 'react-router-dom';
+
 import {
   Card,
   CardBody,
@@ -40,15 +42,10 @@ export default function PostChatCp() {
 
     fetchToolsData();
   }, [categoryName]);
-
-  const handleReadMoreClick = (formattedPostName, postPrice, postLink, postDescription, postTag) => {
-    const path = `/categories/${categoryName}/${formattedPostName}`;
-    return `${path}?postPrice=${postPrice}&postLink=${postLink}&postDescription=${postDescription}&postTag=${postTag}`;
-  };
-
-
-
-  const renderItems = tools.map(({ post_title, post_description, post_category, post_link, post_price }, key) => (
+    
+  const renderItems = 
+  
+  tools.map(({id, post_title, post_description, post_category, post_link, post_price }, key) => (
     <Card className="w-80" key={key}>
       <CardBody>
         <div className="mb-2 flex items-center justify-between">
@@ -77,13 +74,19 @@ export default function PostChatCp() {
         </Typography>
       </CardBody>
       <CardFooter className="pt-0 flex items-center w-full">
-        <Link to={handleReadMoreClick(post_title, post_price, post_link, post_description, post_category)} key={key} className="flex-grow">
-          <Button
-            className="bg-blue-gray-900/10 text-blue-gray-900 shadow-none hover:scale-105 hover:shadow-none focus:scale-105 focus:shadow-none active:scale-100 capitalize w-full"
-          >
-            Read More
-          </Button>
-        </Link>
+      <Link
+          to={`/categories/${encodeURIComponent(categoryName)}/${encodeURIComponent(
+            post_title.toLowerCase().replace(/\s+/g, '-')
+          )}?id=${id}`} // Add the ID parameter to the link
+          key={key}
+          className="flex-grow"
+        >
+  <Button className="bg-blue-gray-900/10 text-blue-gray-900 shadow-none hover:scale-105 hover:shadow-none focus:scale-105 focus:shadow-none active:scale-100 capitalize w-full">
+    Read More
+  </Button>
+</Link>
+
+
         <div className="w-4" />
         <Link to={post_link} target="_blank" rel="noopener noreferrer" className="flex-grow">
           <Button
@@ -98,6 +101,7 @@ export default function PostChatCp() {
   ));
 
   return (
+
     <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 place-items-center">
       {renderItems.slice(0, -1)}
 

@@ -44,12 +44,38 @@ const retrieveDataFromSupabase = async (tags, categoryName) => {
       console.error('Error retrieving data:', error);
     } else {
       console.log('Retrieved data from Supabase:', tools);
-      return tools; // Return the retrieved data
+      return tools;
     }
   } catch (error) {
     console.error('Error retrieving data:', error);
   }
 };
+
+
+const retrieveSinglePostFromSupabase = async (id) => {
+  try {
+    let { data: posts, error } = await supabase
+      .from('tools')
+      .select('*')
+      .eq('id', id)
+      .limit(1);
+
+    if (error) {
+      console.error('Error retrieving data:', error);
+    } else {
+      if (posts.length > 0) {
+        console.log('Retrieved data from Supabase:', posts[0]);
+        return posts[0]; // Returning the entire post object
+      } else {
+        console.log('No data found for the specified post ID');
+        return null;
+      }
+    }
+  } catch (error) {
+    console.error('Error retrieving data:', error);
+  }
+};
+
 
 const retrieveRelatedPosts = async (tags, categoryName) => {
   try {
@@ -101,5 +127,5 @@ const truncateDescription = (description, maxLength) => {
   return description;
 };
 
-  export { fetchData, retrieveDataFromSupabase, truncateDescription, retrieveRelatedPosts };
+  export { fetchData, retrieveDataFromSupabase, truncateDescription, retrieveRelatedPosts, retrieveSinglePostFromSupabase };
   
