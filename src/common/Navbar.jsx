@@ -1,4 +1,5 @@
 import React from "react";
+import { category_items, colors } from '../common/content.js'
 import {
   Navbar,
   Collapse,
@@ -12,92 +13,23 @@ import {
   MenuList,
   MenuItem,
 } from "@material-tailwind/react";
+
 import {
   ChevronDownIcon,
   UserCircleIcon,
-  CubeTransparentIcon,
   Bars3Icon,
   XMarkIcon,
-  ChatBubbleOvalLeftIcon,
   Square3Stack3DIcon,
-  RocketLaunchIcon,
-  CpuChipIcon,
-  GiftIcon,
-  ComputerDesktopIcon,
-  LanguageIcon,
-  PaintBrushIcon,
-  CalculatorIcon,
+  QuestionMarkCircleIcon,
 } from "@heroicons/react/24/outline";
- 
-const colors = {
-  blue: "bg-blue-50 text-blue-500",
-  orange: "bg-orange-50 text-orange-500",
-  green: "bg-green-50 text-green-500",
-  "blue-gray": "bg-blue-gray-50 text-blue-gray-500",
-  purple: "bg-purple-50 text-purple-500",
-  teal: "bg-teal-50 text-teal-500",
-  cyan: "bg-cyan-50 text-cyan-500",
-  pink: "bg-pink-50 text-pink-500",
-};
- 
-const navListMenuItems = [
-  {
-    color: "orange",
-    icon: CpuChipIcon,
-    title: "Machine Learning",
-    description: "Tools for model building and deployment.",
-  },
-  {
-    color: "green",
-    icon: ComputerDesktopIcon,
-    title: "Computer Vision Tools",
-    description: "Interpretation of the visual world.",
-  },
-  {
-    color: "blue",
-    icon: LanguageIcon,
-    title: "NLP",
-    description: "Natural Language Processing tools.",
-  },
-  {
-    color: "blue-gray",
-    icon: PaintBrushIcon,
-    title: "AI-Personalization Tools",
-    description: "Tailored user experiences.",
-  },
-  {
-    color: "purple",
-    icon: RocketLaunchIcon,
-    title: "AI-Enabled Analytics",
-    description: "Advanced data-driven insights.",
-  },
-  {
-    color: "teal",
-    icon: CalculatorIcon,
-    title: "AI-Driven Automation",
-    description: "Task and process automation.",
-  },
-  {
-    color: "cyan",
-    icon: ChatBubbleOvalLeftIcon,
-    title: "AI-Powered Chatbots",
-    description: "Virtual conversational assistants.",
-  },
-  {
-    color: "pink",
-    icon: GiftIcon,
-    title: "Open Source",
-    description: "List of all open-source tools, it's all free.",
-  },
-];
- 
+
 function NavListMenu() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
  
-  const renderItems = navListMenuItems.map(
-    ({ icon, title, description, color }, key) => (
-      <a href="#" key={key}>
+  const renderItems = category_items.map(
+    ({ icon, title, description, color, link }, key) => (
+      <a href={link} key={key}>
         <MenuItem className="flex items-center gap-3 rounded-lg">
           <div className={`rounded-lg p-5 ${colors[color]}`}>
             {React.createElement(icon, {
@@ -177,8 +109,8 @@ function NavList() {
         className="font-normal"
       >
         <ListItem className="flex items-center gap-2 py-2 pr-4">
-          <CubeTransparentIcon className="h-[18px] w-[18px]" />
-          Blocks
+          <QuestionMarkCircleIcon className="h-[18px] w-[18px]" />
+          About Us
         </ListItem>
       </Typography>
       <NavListMenu />
@@ -219,7 +151,7 @@ export default function NavbarWithMegaMenu() {
         >
 
         yeAI
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="blue" className="w-5 h-5">
             <path strokeLinecap="round" strokeLinejoin="round" d="M7.864 4.243A7.5 7.5 0 0119.5 10.5c0 2.92-.556 5.709-1.568 8.268M5.742 6.364A7.465 7.465 0 004.5 10.5a7.464 7.464 0 01-1.15 3.993m1.989 3.559A11.209 11.209 0 008.25 10.5a3.75 3.75 0 117.5 0c0 .527-.021 1.049-.064 1.565M12 10.5a14.94 14.94 0 01-3.6 9.75m6.633-4.596a18.666 18.666 0 01-2.485 5.33" />
           </svg>
         </Typography>

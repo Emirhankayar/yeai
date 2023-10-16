@@ -30,14 +30,14 @@ export default function FooterWithSitemap() {
             <div key={key} className="w-full">
               <Typography
                 variant="small"
-                color="blue-gray"
+                color="white"
                 className="mb-4 font-bold uppercase opacity-50"
               >
                 {title}
               </Typography>
               <ul className="space-y-1">
                 {links.map((link, key) => (
-                  <Typography key={key} as="li" color="blue-gray" className="font-normal">
+                  <Typography key={key} as="li" color="white" className="font-normal">
                     <a
                       href="#"
                       className="inline-block py-1 pr-2 transition-transform hover:scale-105"
@@ -53,12 +53,12 @@ export default function FooterWithSitemap() {
         <div className="flex w-full flex-col items-center justify-center border-t border-blue-gray-50 py-4 md:flex-row md:justify-between">
           <Typography
             variant="small"
-            className="mb-4 text-center font-normal text-blue-gray-900 md:mb-0"
+            className="mb-4 text-center font-normal text-white md:mb-0"
           >
             &copy; {currentYear} <a href="https://material-tailwind.com/">Material Tailwind</a>. All
             Rights Reserved.
           </Typography>
-          <div className="flex gap-4 text-blue-gray-900 sm:justify-center">
+          <div className="flex gap-4 text-white sm:justify-center">
             <Typography as="a" href="#" className="opacity-80 transition-opacity hover:opacity-100">
               <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path
