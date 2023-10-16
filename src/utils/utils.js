@@ -51,19 +51,42 @@ const retrieveDataFromSupabase = async (tags, categoryName) => {
   }
 };
 
-const retrievePost = async (postTitle, categoryName) => {
+const retrieveRelatedPosts = async (tags, categoryName) => {
   try {
-    const { data, error } = await supabase
+    let { data: tools, error } = await supabase
       .from('tools')
-      .select('*')
-      .eq('post_title', postTitle)
-      .eq('post_category', categoryName);
+      .select('*');
+
+    if (tags && tags.length > 0) {
+      if (categoryName === 'open-source') {
+        tools = tools.filter(tool => tags.includes(tool.post_price));
+      } else {
+        tools = tools.filter(tool => tags.some(tag => tool.post_category.includes(tag)));
+      }
+    }
+
+    // Limit the number of retrieved items to 3
+    if (tags.length === 2) {
+      tools = tools.slice(0, 3);
+    } else if (tags.length > 3) {
+      const randomTags = tags.sort(() => 0.5 - Math.random()).slice(0, 3);
+      let filteredData = [];
+      for (const tag of randomTags) {
+        const tagData = tools.filter(tool => tool.post_category.includes(tag));
+        if (tagData.length > 0) {
+          filteredData.push(tagData[0]);
+        }
+      }
+      tools = filteredData;
+    } else if (tags.length === 3) {
+      tools = tools.slice(0, 1);
+    }
 
     if (error) {
       console.error('Error retrieving data:', error);
     } else {
-      console.log('Retrieved data from Supabase:', data);
-      return data;
+      console.log('Retrieved data from Supabase:', tools);
+      return tools; // Return the retrieved data
     }
   } catch (error) {
     console.error('Error retrieving data:', error);
@@ -78,5 +101,5 @@ const truncateDescription = (description, maxLength) => {
   return description;
 };
 
-  export { fetchData, retrieveDataFromSupabase, truncateDescription };
+  export { fetchData, retrieveDataFromSupabase, truncateDescription, retrieveRelatedPosts };
   

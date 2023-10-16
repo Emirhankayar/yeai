@@ -41,9 +41,9 @@ export default function PostChatCp() {
     fetchToolsData();
   }, [categoryName]);
 
-  const handleReadMoreClick = (formattedPostName, postPrice, postLink, postDescription) => {
+  const handleReadMoreClick = (formattedPostName, postPrice, postLink, postDescription, postTag) => {
     const path = `/categories/${categoryName}/${formattedPostName}`;
-    return `${path}?postPrice=${postPrice}&postLink=${postLink}&postDescription=${postDescription}`;
+    return `${path}?postPrice=${postPrice}&postLink=${postLink}&postDescription=${postDescription}&postTag=${postTag}`;
   };
 
 
@@ -73,11 +73,11 @@ export default function PostChatCp() {
           </Tooltip>
         </div>
         <Typography variant="small" color="gray" className="font-normal opacity-75">
-          {truncateDescription(post_description, 160)}
+          {truncateDescription(post_description, 150)}
         </Typography>
       </CardBody>
       <CardFooter className="pt-0 flex items-center w-full">
-        <Link to={handleReadMoreClick(post_title, post_price, post_link, post_description)} key={key} className="flex-grow">
+        <Link to={handleReadMoreClick(post_title, post_price, post_link, post_description, post_category)} key={key} className="flex-grow">
           <Button
             className="bg-blue-gray-900/10 text-blue-gray-900 shadow-none hover:scale-105 hover:shadow-none focus:scale-105 focus:shadow-none active:scale-100 capitalize w-full"
           >
