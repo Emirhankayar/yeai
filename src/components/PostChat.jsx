@@ -12,12 +12,12 @@ import {
 
 export default function PostChatCp() {
   const [tools, setTools] = useState([]);
-  const { categoryName, postName } = useParams();
+  const { categoryName } = useParams();
 
   useEffect(() => {
     const fetchToolsData = async () => {
       let tags = [];
-  
+
       if (categoryName === 'machine-learning') {
         tags = ["AI Detection", "Low-code/No-code", "3D"];
       } else if (categoryName === 'computer-vision') {
@@ -33,14 +33,20 @@ export default function PostChatCp() {
       } else if (categoryName === 'open-source') {
         tags = ["Free", "Freemium"];
       }
-  
+
       const data = await retrieveDataFromSupabase(tags, categoryName);
       setTools(data);
     };
-  
+
     fetchToolsData();
   }, [categoryName]);
-  
+
+  const handleReadMoreClick = (formattedPostName, postPrice, postLink, postDescription) => {
+    const path = `/categories/${categoryName}/${formattedPostName}`;
+    return `${path}?postPrice=${postPrice}&postLink=${postLink}&postDescription=${postDescription}`;
+  };
+
+
 
   const renderItems = tools.map(({ post_title, post_description, post_category, post_link, post_price }, key) => (
     <Card className="w-80" key={key}>
@@ -71,19 +77,19 @@ export default function PostChatCp() {
         </Typography>
       </CardBody>
       <CardFooter className="pt-0 flex items-center w-full">
-        <Link to={`/categories/${categoryName}/${postName}`} key={key} className="flex-grow">
+        <Link to={handleReadMoreClick(post_title, post_price, post_link, post_description)} key={key} className="flex-grow">
           <Button
             className="bg-blue-gray-900/10 text-blue-gray-900 shadow-none hover:scale-105 hover:shadow-none focus:scale-105 focus:shadow-none active:scale-100 capitalize w-full"
           >
-            View
+            Read More
           </Button>
         </Link>
-        <div className="w-4" /> {/* Adjust the gap as needed */}
+        <div className="w-4" />
         <Link to={post_link} target="_blank" rel="noopener noreferrer" className="flex-grow">
           <Button
             className="bg-blue-gray-900/10 text-blue-gray-900 shadow-none hover:scale-105 hover:shadow-none focus:scale-105 focus:shadow-none active:scale-100 capitalize w-full"
           >
-            See
+            Visit
           </Button>
         </Link>
       </CardFooter>
@@ -94,6 +100,7 @@ export default function PostChatCp() {
   return (
     <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 place-items-center">
       {renderItems.slice(0, -1)}
+
     </div>
   );
 }

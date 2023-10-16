@@ -51,6 +51,25 @@ const retrieveDataFromSupabase = async (tags, categoryName) => {
   }
 };
 
+const retrievePost = async (postTitle, categoryName) => {
+  try {
+    const { data, error } = await supabase
+      .from('tools')
+      .select('*')
+      .eq('post_title', postTitle)
+      .eq('post_category', categoryName);
+
+    if (error) {
+      console.error('Error retrieving data:', error);
+    } else {
+      console.log('Retrieved data from Supabase:', data);
+      return data;
+    }
+  } catch (error) {
+    console.error('Error retrieving data:', error);
+  }
+};
+
 
 const truncateDescription = (description, maxLength) => {
   if (description.length > maxLength) {

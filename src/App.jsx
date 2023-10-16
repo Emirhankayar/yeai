@@ -6,6 +6,7 @@ const Navbar = React.lazy(() => import('./common/Navbar'));
 const MainPg = React.lazy(() => import('./pages/MainPg'));
 const CategoryPg = React.lazy(() => import('./pages/CategoryPg'));
 const PostChatPg = React.lazy(() => import('./pages/PostChatPg'));
+const PostSubPg = React.lazy(() => import('./pages/PostSubPg'));
 
 const Footer = React.lazy(() => import('./common/Footer'));
 
@@ -21,6 +22,10 @@ const router = createBrowserRouter([
   {
     path: "/categories/:categoryName",
     element: <PostChatPg />,
+  },
+  {
+    path: "/categories/:categoryName/:formattedPostName",
+    element: <PostSubPg />,
   },
   {
     path: "/trending",
