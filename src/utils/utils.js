@@ -79,7 +79,7 @@ const retrieveSinglePostFromSupabase = async (id) => {
 const retrieveRelatedPosts = async (categoryName, currentPostId) => {
   try {
     let { data: relatedPosts, error } = await supabase
-      .from('posts')
+      .from('tools') // Update the table name to 'tools'
       .select('*')
       .eq('post_category', categoryName);
 
@@ -89,8 +89,14 @@ const retrieveRelatedPosts = async (categoryName, currentPostId) => {
     // Filter out the current post being displayed
     relatedPosts = relatedPosts.filter(post => post.id !== currentPostId);
 
-    // Randomly select 3 posts from the related posts
-    const randomRelatedPosts = relatedPosts
+    // Remove duplicates from the related posts
+    const uniqueRelatedPosts = Array.from(new Set(relatedPosts.map(post => post.id)))
+      .map(id => {
+        return relatedPosts.find(post => post.id === id);
+      });
+
+    // Randomly select 3 unique posts from the related posts
+    const randomRelatedPosts = uniqueRelatedPosts
       .sort(() => 0.5 - Math.random())
       .slice(0, 3);
 
@@ -104,6 +110,8 @@ const retrieveRelatedPosts = async (categoryName, currentPostId) => {
     console.error('Error retrieving data:', error);
   }
 };
+
+
 
 const truncateDescription = (description, maxLength) => {
   if (description.length > maxLength) {

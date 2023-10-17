@@ -1,7 +1,7 @@
 // sub category parent of the posts
 import React, { useEffect, useState } from 'react';
 import { retrieveDataFromSupabase, truncateDescription } from '../utils/utils';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 
 import {
   Card,
@@ -15,6 +15,7 @@ import {
 export default function PostChatCp() {
   const [tools, setTools] = useState([]);
   const { categoryName } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchToolsData = async () => {
@@ -75,12 +76,16 @@ export default function PostChatCp() {
       </CardBody>
       <CardFooter className="pt-0 flex items-center w-full">
       <Link
-          to={`/categories/${encodeURIComponent(categoryName)}/${encodeURIComponent(
-            post_title.toLowerCase().replace(/\s+/g, '-')
-          )}?id=${id}`} // Add the ID parameter to the link
-          key={key}
-          className="flex-grow"
-        >
+  onClick={() =>
+    navigate(
+      `/categories/${encodeURIComponent(categoryName)}/${encodeURIComponent(
+        post_title.toLowerCase().replace(/\s+/g, '-')
+      )}?id=${id}`
+    )
+  }
+  key={key}
+  className="flex-grow"
+>
   <Button className="bg-blue-gray-900/10 text-blue-gray-900 shadow-none hover:scale-105 hover:shadow-none focus:scale-105 focus:shadow-none active:scale-100 capitalize w-full">
     Read More
   </Button>
