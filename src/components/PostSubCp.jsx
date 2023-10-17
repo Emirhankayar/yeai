@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { retrieveSinglePostFromSupabase, retrieveRelatedPosts, truncateDescription } from '../utils/utils';
 import { Link } from 'react-router-dom';
+import { icons } from '../common/content';
 import {
   Card,
   CardBody,
@@ -8,6 +9,7 @@ import {
   Typography,
   Tooltip,
   Button,
+  IconButton,
 } from "@material-tailwind/react";
 
 export default function PostDetails() {
@@ -48,9 +50,17 @@ export default function PostDetails() {
       <Card className="w-80">
         <CardBody>
           <div className="mb-2 flex items-center justify-between">
+          <Tooltip content='Viewed 2138 times.'>
+
             <Typography color="blue-gray" className="font-bold">
               {post.post_title}
             </Typography>
+            </Tooltip>
+            <Tooltip content='Save the post.'>
+            <IconButton variant='gradient' color='gray' className='cursor-pointer'>
+              {icons.BookmarkIcon && <icons.BookmarkIcon className="h-6 w-6" fill='transparent'/>}
+            </IconButton>
+            </Tooltip>
           </div>
           <div className='flex flex-row justify-between gap-4 mb-3'>
             <Tooltip content={post.post_category}>
@@ -95,9 +105,16 @@ export default function PostDetails() {
               <Card key={relatedPost.id} className="w-80">
                 <CardBody>
                   <div className="mb-2 flex items-center justify-between">
+                    <Tooltip content='Viewed 2138 times.'>
                     <Typography color="blue-gray" className="font-bold">
                       {relatedPost.post_title}
                     </Typography>
+                    </Tooltip>
+                    <Tooltip content='Save the post.'>
+                    <IconButton variant='gradient' color='gray' className='cursor-pointer'>
+                      {icons.BookmarkIcon && <icons.BookmarkIcon className="h-6 w-6" fill='transparent'/>}
+                    </IconButton>
+                    </Tooltip>
                   </div>
                   <div className='flex flex-row justify-between gap-4 mb-3'>
                     <Tooltip content={relatedPost.post_category}>
