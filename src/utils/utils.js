@@ -43,7 +43,7 @@ const retrieveDataFromSupabase = async (tags, categoryName) => {
     if (error) {
       console.error('Error retrieving data:', error);
     } else {
-      console.log('Retrieved data from Supabase:', tools);
+      //console.log('Retrieved data from Supabase:', tools);
       return tools;
     }
   } catch (error) {
@@ -64,10 +64,10 @@ const retrieveSinglePostFromSupabase = async (id) => {
       console.error('Error retrieving data:', error);
     } else {
       if (posts.length > 0) {
-        console.log('Retrieved data from Supabase:', posts[0]);
+        //console.log('Retrieved data from Supabase:', posts[0]);
         return posts[0]; 
       } else {
-        console.log('No data found for the specified post ID');
+        //console.log('No data found for the specified post ID');
         return null;
       }
     }
@@ -103,7 +103,7 @@ const retrieveRelatedPosts = async (categoryName, currentPostId) => {
     if (error) {
       console.error('Error retrieving data:', error);
     } else {
-      console.log('Retrieved data from Supabase:', randomRelatedPosts);
+      //console.log('Retrieved data from Supabase:', randomRelatedPosts);
       return randomRelatedPosts; // Return the retrieved data
     }
   } catch (error) {
