@@ -111,6 +111,24 @@ const retrieveRelatedPosts = async (categoryName, currentPostId) => {
   }
 };
 
+const updatePostView = async (postId, post_view) => {
+  try {
+    const updatedView = (post_view || 0) + 1;
+    console.log('postId:', postId);
+    console.log('post_view:', post_view);
+    console.log('updatedView:', updatedView);
+    
+    const { data, error } = await supabase
+      .from('tools')
+      .update({ post_view: updatedView })
+      .eq('id', postId);
+    if (error) {
+      throw error;
+    }
+  } catch (error) {
+    console.error('Error updating post view:', error);
+  }
+};
 
 
 const truncateDescription = (description, maxLength) => {
@@ -120,5 +138,5 @@ const truncateDescription = (description, maxLength) => {
   return description;
 };
 
-  export { fetchData, retrieveDataFromSupabase, truncateDescription, retrieveRelatedPosts, retrieveSinglePostFromSupabase };
+  export { fetchData, retrieveDataFromSupabase, truncateDescription, retrieveRelatedPosts, retrieveSinglePostFromSupabase, updatePostView };
   

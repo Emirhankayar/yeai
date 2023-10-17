@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { retrieveSinglePostFromSupabase, retrieveRelatedPosts, truncateDescription } from '../utils/utils';
+import { retrieveSinglePostFromSupabase, retrieveRelatedPosts, truncateDescription, updatePostView } from '../utils/utils';
 import { Link } from 'react-router-dom';
 import { icons } from '../common/content';
 import {
@@ -25,7 +25,7 @@ export default function PostDetails() {
         const postId = urlParams.get('id');
         const singlePost = await retrieveSinglePostFromSupabase(postId);
         setPost(singlePost);
-
+  
         if (singlePost && singlePost.post_category) {
           const relatedData = await retrieveRelatedPosts(singlePost.post_category, postId);
           if (relatedData) {
@@ -36,21 +36,32 @@ export default function PostDetails() {
         console.error('Error retrieving data:', error);
       }
     };
-
+  
     fetchSinglePostAndRelatedPosts();
   }, []);
+  
 
   if (!post || Object.keys(post).length === 0) {
     return <div>Loading...</div>;
   }
+  const handleReadMore = async (relatedPost) => {
+    const { id, post_view, post_title, post_category } = relatedPost;
 
+      const updatedPostView = post_view;
+      await updatePostView(id, updatedPostView);
+
+      const constructedURL = `/categories/${encodeURIComponent(post_category)}/${encodeURIComponent(post_title.toLowerCase().replace(/\s+/g, '-'))}?id=${id}`;
+      window.location.href = constructedURL;
+    }
+
+  
 
   return (
     <div className="container mx-auto grid grid-cols-1 gap-10 place-items-center">
       <Card className="w-80">
         <CardBody>
           <div className="mb-2 flex items-center justify-between">
-          <Tooltip content='Viewed 2138 times.'>
+          <Tooltip content={post.post_view}>
 
             <Typography color="blue-gray" className="font-bold">
               {post.post_title}
@@ -105,7 +116,7 @@ export default function PostDetails() {
               <Card key={relatedPost.id} className="w-80">
                 <CardBody>
                   <div className="mb-2 flex items-center justify-between">
-                    <Tooltip content='Viewed 2138 times.'>
+                    <Tooltip content={relatedPost.post_view}>
                     <Typography color="blue-gray" className="font-bold">
                       {relatedPost.post_title}
                     </Typography>
@@ -137,20 +148,17 @@ export default function PostDetails() {
                   </Typography>
                 </CardBody>
                 <CardFooter className="pt-0 flex items-center w-full">
-                  <Link
-                    onClick={() => {
-                      const constructedURL = `/categories/${encodeURIComponent(relatedPost.post_category)}/${encodeURIComponent(
-                        relatedPost.post_title.toLowerCase().replace(/\s+/g, '-')
-                      )}?id=${relatedPost.id}`;
-                      window.location.href = constructedURL;
-                    }}
-                    key={relatedPost.id}
-                    className="flex-grow"
-                  >
-                    <Button className="bg-blue-gray-900/10 text-blue-gray-900 shadow-none hover:scale-105 hover:shadow-none focus:scale-105 focus:shadow-none active:scale-100 capitalize w-full">
-                      Read More
-                    </Button>
-                  </Link>
+                  
+                <Link
+    onClick={() => handleReadMore(relatedPost)}
+    key={relatedPost.id}
+    className="flex-grow"
+  >
+                      <Button className="bg-blue-gray-900/10 text-blue-gray-900 shadow-none hover:scale-105 hover:shadow-none focus:scale-105 focus:shadow-none active:scale-100 capitalize w-full">
+                        Read More
+                      </Button>
+                    </Link>
+
                   <div className="w-4" />
                   <Link to={relatedPost.post_link} target="_blank" rel="noopener noreferrer" className="flex-grow">
                     <Button

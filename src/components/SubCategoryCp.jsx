@@ -1,6 +1,6 @@
 // sub category parent of the posts
 import React, { useEffect, useState } from 'react';
-import { retrieveDataFromSupabase, truncateDescription } from '../utils/utils';
+import { retrieveDataFromSupabase, truncateDescription, updatePostView } from '../utils/utils';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { icons } from '../common/content';
 
@@ -46,13 +46,25 @@ export default function PostChatCp() {
     fetchToolsData();
   }, [categoryName]);
 
+  const handleReadMore = async (id, post_view, post_title) => {
+    const updatedPostView = post_view;
+    await updatePostView(id, updatedPostView); // Update the post_view value for the current post
+  
+    navigate(
+      `/categories/${encodeURIComponent(categoryName)}/${encodeURIComponent(
+        post_title.toLowerCase().replace(/\s+/g, '-')
+      )}?id=${id}`
+    );
+  };
+  
+  
   const renderItems =
 
-    tools.map(({ id, post_title, post_description, post_category, post_link, post_price }, key) => (
+    tools.map(({ id, post_title, post_description, post_category, post_link, post_price, post_view }, key) => (
       <Card className="w-80" key={key}>
         <CardBody>
           <div className="mb-4 flex items-center justify-between">
-            <Tooltip content='Viewed 2138 times.'>
+            <Tooltip content={post_view}>
             <Typography color="blue-gray" className="font-bold">
               {post_title}
             </Typography>
@@ -87,15 +99,9 @@ export default function PostChatCp() {
           </Typography>
         </CardBody>
         <CardFooter className="pt-0 flex items-center w-full">
-          <Link
-            onClick={() =>
-              navigate(
-                `/categories/${encodeURIComponent(categoryName)}/${encodeURIComponent(
-                  post_title.toLowerCase().replace(/\s+/g, '-')
-                )}?id=${id}`
-              )
-            }
-            key={key}
+        <Link
+            onClick={() => handleReadMore(id, post_view, post_title)}
+            key={id}
             className="flex-grow"
           >
             <Button className="bg-blue-gray-900/10 text-blue-gray-900 shadow-none hover:scale-105 hover:shadow-none focus:scale-105 focus:shadow-none active:scale-100 capitalize w-full">
@@ -120,7 +126,7 @@ export default function PostChatCp() {
   return (
 
     <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 place-items-center">
-      {renderItems.slice(0, -1)}
+      {renderItems}
 
     </div>
   );
