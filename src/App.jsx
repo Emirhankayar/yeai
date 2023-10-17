@@ -5,7 +5,7 @@ import CustomSpinner from "./common/Spinner";
 const Navbar = React.lazy(() => import('./common/Navbar'));
 const MainPg = React.lazy(() => import('./pages/MainPg'));
 const CategoryPg = React.lazy(() => import('./pages/CategoryPg'));
-const PostChatPg = React.lazy(() => import('./pages/PostChatPg'));
+const SubCategoryPg = React.lazy(() => import('./pages/SubCategoryPg'));
 const PostSubPg = React.lazy(() => import('./pages/PostSubPg'));
 
 const Footer = React.lazy(() => import('./common/Footer'));
@@ -21,7 +21,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/categories/:categoryName",
-    element: <PostChatPg />,
+    element: <SubCategoryPg />,
   },
   {
     path: "/categories/:categoryName/:formattedPostName",

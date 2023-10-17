@@ -1,6 +1,5 @@
-// PostDetails.js
 import React, { useEffect, useState } from 'react';
-import { retrieveSinglePostFromSupabase } from '../utils/utils';
+import { retrieveSinglePostFromSupabase, retrieveRelatedPosts } from '../utils/utils';
 import { Link } from 'react-router-dom';
 import {
   Card,
@@ -13,25 +12,35 @@ import {
 
 export default function PostDetails() {
   const [post, setPost] = useState({});
+  const [relatedPosts, setRelatedPosts] = useState([]);
 
-  useEffect(() => {
-    const fetchSinglePost = async () => {
-      try {
-        const urlParams = new URLSearchParams(window.location.search);
-        const postId = urlParams.get('id');
-        const data = await retrieveSinglePostFromSupabase(postId);
-        setPost(data);
-      } catch (error) {
-        console.error('Error retrieving data:', error);
+// Usage in PostDetails.js
+useEffect(() => {
+  const fetchSinglePostAndRelatedPosts = async () => {
+    try {
+      const urlParams = new URLSearchParams(window.location.search);
+      const postId = urlParams.get('id');
+      const singlePost = await retrieveSinglePostFromSupabase(postId);
+      setPost(singlePost);
+
+      if (singlePost && singlePost.post_category) {
+        const relatedData = await retrieveRelatedPosts(singlePost.post_category, postId);
+        if (relatedData) {
+          setRelatedPosts(relatedData);
+        }
       }
-    };
+    } catch (error) {
+      console.error('Error retrieving data:', error);
+    }
+  };
 
-    fetchSinglePost();
-  }, []);
+  fetchSinglePostAndRelatedPosts();
+}, []);
 
   if (!post || Object.keys(post).length === 0) {
     return <div>Loading...</div>;
   }
+
 
   return (
     <div className="container mx-auto grid grid-cols-1 gap-10 place-items-center">
@@ -43,7 +52,7 @@ export default function PostDetails() {
             </Typography>
           </div>
           <div className='flex flex-row justify-between gap-4 mb-3'>
-            <Tooltip content={post.postTag}>
+            <Tooltip content={post.post_category}>
               <Button color='blue' size='sm' className='text-sm capitalize'>
                 {post.post_category}
               </Button>
@@ -75,6 +84,19 @@ export default function PostDetails() {
           </Link>
         </CardFooter>
       </Card>
+       {/* Render related posts */}
+       {relatedPosts.length > 0 && (
+        <div className="mt-8">
+          <h2 className="text-xl font-bold mb-4">Related Posts</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {relatedPosts.map((relatedPost) => (
+              <Card key={relatedPost.id} className="w-64">
+                {/* Render related post content */}
+              </Card>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
