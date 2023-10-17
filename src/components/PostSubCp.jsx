@@ -15,28 +15,28 @@ export default function PostDetails() {
   const [relatedPosts, setRelatedPosts] = useState([]);
 
 
-// Usage in PostDetails.js
-useEffect(() => {
-  const fetchSinglePostAndRelatedPosts = async () => {
-    try {
-      const urlParams = new URLSearchParams(window.location.search);
-      const postId = urlParams.get('id');
-      const singlePost = await retrieveSinglePostFromSupabase(postId);
-      setPost(singlePost);
+  // Usage in PostDetails.js
+  useEffect(() => {
+    const fetchSinglePostAndRelatedPosts = async () => {
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const postId = urlParams.get('id');
+        const singlePost = await retrieveSinglePostFromSupabase(postId);
+        setPost(singlePost);
 
-      if (singlePost && singlePost.post_category) {
-        const relatedData = await retrieveRelatedPosts(singlePost.post_category, postId);
-        if (relatedData) {
-          setRelatedPosts(relatedData);
+        if (singlePost && singlePost.post_category) {
+          const relatedData = await retrieveRelatedPosts(singlePost.post_category, postId);
+          if (relatedData) {
+            setRelatedPosts(relatedData);
+          }
         }
+      } catch (error) {
+        console.error('Error retrieving data:', error);
       }
-    } catch (error) {
-      console.error('Error retrieving data:', error);
-    }
-  };
+    };
 
-  fetchSinglePostAndRelatedPosts();
-}, []);
+    fetchSinglePostAndRelatedPosts();
+  }, []);
 
   if (!post || Object.keys(post).length === 0) {
     return <div>Loading...</div>;
@@ -73,7 +73,7 @@ useEffect(() => {
           </Typography>
         </CardBody>
         <CardFooter className="pt-0">
-          <div className="w-4" /> 
+          <div className="w-4" />
           <Link to={post.post_link} target="_blank" rel="noopener noreferrer" className="flex-grow">
             <Button
               fullWidth={false}
@@ -85,65 +85,66 @@ useEffect(() => {
           </Link>
         </CardFooter>
       </Card>
-       {/* Render related posts */}
-       {relatedPosts.length > 0 && (
+
+      {/* Render related posts */}
+      {relatedPosts.length > 0 && (
         <div className="mt-8">
-          <h2 className="text-xl font-bold mb-4">Related Posts</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {relatedPosts.map((relatedPost) => (
-  <Card key={relatedPost.id} className="w-80">
-    <CardBody>
-      <div className="mb-2 flex items-center justify-between">
-        <Typography color="blue-gray" className="font-bold">
-          {relatedPost.post_title}
-        </Typography>
-      </div>
-      <div className='flex flex-row justify-between gap-4 mb-3'>
-        <Tooltip content={relatedPost.post_category}>
-          <Button color='blue' size='sm' className='text-sm capitalize'>
-            {relatedPost.post_category}
-          </Button>
-        </Tooltip>
-        <Tooltip content={relatedPost.post_price}>
-          <Button
-            color={relatedPost.post_price === 'Free' ? 'green' : relatedPost.post_price === 'Freemium' ? 'orange' : 'red'}
-            size='sm'
-            className='text-sm capitalize'
-          >
-            {relatedPost.post_price}
-          </Button>
-        </Tooltip>
-      </div>
-      <Typography variant="small" color="gray" className="font-normal opacity-75">
-        {truncateDescription(relatedPost.post_description, 150)}
-      </Typography>
-    </CardBody>
-    <CardFooter className="pt-0 flex items-center w-full">
-    <Link
-                      onClick={() => {
-                        const constructedURL = `/categories/${encodeURIComponent(relatedPost.post_category)}/${encodeURIComponent(
-                          relatedPost.post_title.toLowerCase().replace(/\s+/g, '-')
-                        )}?id=${relatedPost.id}`;
-                        window.location.href = constructedURL;
-                      }}
-                      key={relatedPost.id}
-                      className="flex-grow"
+          <Typography variant='h2' color='blue' textGradient={true} className="text-xl font-bold mb-4">Related Posts</Typography>
+          <div className="grid grid-cols-1 lg:grid-cols-3  gap-4">
+            {relatedPosts.map((relatedPost) => (
+              <Card key={relatedPost.id} className="w-80">
+                <CardBody>
+                  <div className="mb-2 flex items-center justify-between">
+                    <Typography color="blue-gray" className="font-bold">
+                      {relatedPost.post_title}
+                    </Typography>
+                  </div>
+                  <div className='flex flex-row justify-between gap-4 mb-3'>
+                    <Tooltip content={relatedPost.post_category}>
+                      <Button color='blue' size='sm' className='text-sm capitalize'>
+                        {relatedPost.post_category}
+                      </Button>
+                    </Tooltip>
+                    <Tooltip content={relatedPost.post_price}>
+                      <Button
+                        color={relatedPost.post_price === 'Free' ? 'green' : relatedPost.post_price === 'Freemium' ? 'orange' : 'red'}
+                        size='sm'
+                        className='text-sm capitalize'
+                      >
+                        {relatedPost.post_price}
+                      </Button>
+                    </Tooltip>
+                  </div>
+                  <Typography variant="small" color="gray" className="font-normal opacity-75">
+                    {truncateDescription(relatedPost.post_description, 150)}
+                  </Typography>
+                </CardBody>
+                <CardFooter className="pt-0 flex items-center w-full">
+                  <Link
+                    onClick={() => {
+                      const constructedURL = `/categories/${encodeURIComponent(relatedPost.post_category)}/${encodeURIComponent(
+                        relatedPost.post_title.toLowerCase().replace(/\s+/g, '-')
+                      )}?id=${relatedPost.id}`;
+                      window.location.href = constructedURL;
+                    }}
+                    key={relatedPost.id}
+                    className="flex-grow"
+                  >
+                    <Button className="bg-blue-gray-900/10 text-blue-gray-900 shadow-none hover:scale-105 hover:shadow-none focus:scale-105 focus:shadow-none active:scale-100 capitalize w-full">
+                      Read More
+                    </Button>
+                  </Link>
+                  <div className="w-4" />
+                  <Link to={relatedPost.post_link} target="_blank" rel="noopener noreferrer" className="flex-grow">
+                    <Button
+                      className="bg-blue-gray-900/10 text-blue-gray-900 shadow-none hover:scale-105 hover:shadow-none focus:scale-105 focus:shadow-none active:scale-100 capitalize w-full"
                     >
-  <Button className="bg-blue-gray-900/10 text-blue-gray-900 shadow-none hover:scale-105 hover:shadow-none focus:scale-105 focus:shadow-none active:scale-100 capitalize w-full">
-    Read More
-  </Button>
-</Link>
-      <div className="w-4" />
-      <Link to={relatedPost.post_link} target="_blank" rel="noopener noreferrer" className="flex-grow">
-        <Button
-          className="bg-blue-gray-900/10 text-blue-gray-900 shadow-none hover:scale-105 hover:shadow-none focus:scale-105 focus:shadow-none active:scale-100 capitalize w-full"
-        >
-          Visit
-        </Button>
-      </Link>
-    </CardFooter>
-  </Card>
-))}
+                      Visit
+                    </Button>
+                  </Link>
+                </CardFooter>
+              </Card>
+            ))}
 
           </div>
         </div>

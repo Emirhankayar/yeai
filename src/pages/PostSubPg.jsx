@@ -5,7 +5,7 @@ export default function PostChatPg() {
 
   return (
     <>
-    <div className='flex flex-col items-center space-y-20 mt-96'>
+    <div className='flex flex-col items-center justify-center min-h-screen mt-32'>
       <PostSubSc/>
     </div>
     </>
