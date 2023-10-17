@@ -7,6 +7,10 @@ import {
   ComputerDesktopIcon,
   LanguageIcon,
   PaintBrushIcon,
+  BookmarkIcon,
+  BookmarkSlashIcon,
+  EyeIcon,
+  InformationCircleIcon,
 } from "@heroicons/react/24/outline";
 
 const content = [
@@ -104,5 +108,11 @@ const colors = {
   cyan: "bg-cyan-50 text-cyan-500",
   pink: "bg-pink-50 text-pink-500",
 };
+const icons = {
+  BookmarkIcon,
+  BookmarkSlashIcon,
+  EyeIcon,
+  InformationCircleIcon,
+}
 
-export { content, content_head, category_items, colors }
+export { content, content_head, category_items, colors, icons }

@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { retrieveDataFromSupabase, truncateDescription } from '../utils/utils';
 import { Link, useParams, useNavigate } from 'react-router-dom';
+import { icons } from '../common/content';
 
 import {
   Card,
@@ -10,6 +11,7 @@ import {
   Typography,
   Button,
   Tooltip,
+  IconButton,
 } from "@material-tailwind/react";
 
 export default function PostChatCp() {
@@ -43,67 +45,77 @@ export default function PostChatCp() {
 
     fetchToolsData();
   }, [categoryName]);
-    
-  const renderItems = 
-  
-  tools.map(({id, post_title, post_description, post_category, post_link, post_price }, key) => (
-    <Card className="w-80" key={key}>
-      <CardBody>
-        <div className="mb-2 flex items-center justify-between">
-          <Typography color="blue-gray" className="font-bold">
-            {post_title}
+
+  const renderItems =
+
+    tools.map(({ id, post_title, post_description, post_category, post_link, post_price }, key) => (
+      <Card className="w-80" key={key}>
+        <CardBody>
+          <div className="mb-4 flex items-center justify-between">
+            <Tooltip content='Viewed 2138 times.'>
+            <Typography color="blue-gray" className="font-bold">
+              {post_title}
+            </Typography>
+            </Tooltip>
+
+            <Tooltip content='Save the post.'>
+            <IconButton variant='gradient' color='gray' className='cursor-pointer'>
+              {icons.BookmarkIcon && <icons.BookmarkIcon className="h-6 w-6" fill='transparent'/>}
+            </IconButton>
+            </Tooltip>
+
+
+          </div>
+          <div className='flex flex-row justify-between gap-4 mb-3'>
+            <Tooltip content={post_category}>
+              <Button color='blue' size='sm' className='text-sm capitalize'>
+                {post_category}
+              </Button>
+            </Tooltip>
+            <Tooltip content={post_price}>
+              <Button
+                color={post_price === 'Free' ? 'green' : post_price === 'Freemium' ? 'orange' : 'red'}
+                size='sm'
+                className='text-sm capitalize'
+              >
+                {post_price}
+              </Button>
+            </Tooltip>
+          </div>
+          <Typography variant="small" color="gray" className="font-normal opacity-75">
+            {truncateDescription(post_description, 150)}
           </Typography>
-        </div>
-        <div className='flex flex-row justify-between gap-4 mb-3'>
-          <Tooltip content={post_category}>
-            <Button color='blue' size='sm' className='text-sm capitalize'>
-              {post_category}
-            </Button>
-          </Tooltip>
-          <Tooltip content={post_price}>
-            <Button
-              color={post_price === 'Free' ? 'green' : post_price === 'Freemium' ? 'orange' : 'red'}
-              size='sm'
-              className='text-sm capitalize'
-            >
-              {post_price}
-            </Button>
-          </Tooltip>
-        </div>
-        <Typography variant="small" color="gray" className="font-normal opacity-75">
-          {truncateDescription(post_description, 150)}
-        </Typography>
-      </CardBody>
-      <CardFooter className="pt-0 flex items-center w-full">
-      <Link
-  onClick={() =>
-    navigate(
-      `/categories/${encodeURIComponent(categoryName)}/${encodeURIComponent(
-        post_title.toLowerCase().replace(/\s+/g, '-')
-      )}?id=${id}`
-    )
-  }
-  key={key}
-  className="flex-grow"
->
-  <Button className="bg-blue-gray-900/10 text-blue-gray-900 shadow-none hover:scale-105 hover:shadow-none focus:scale-105 focus:shadow-none active:scale-100 capitalize w-full">
-    Read More
-  </Button>
-</Link>
-
-
-        <div className="w-4" />
-        <Link to={post_link} target="_blank" rel="noopener noreferrer" className="flex-grow">
-          <Button
-            className="bg-blue-gray-900/10 text-blue-gray-900 shadow-none hover:scale-105 hover:shadow-none focus:scale-105 focus:shadow-none active:scale-100 capitalize w-full"
+        </CardBody>
+        <CardFooter className="pt-0 flex items-center w-full">
+          <Link
+            onClick={() =>
+              navigate(
+                `/categories/${encodeURIComponent(categoryName)}/${encodeURIComponent(
+                  post_title.toLowerCase().replace(/\s+/g, '-')
+                )}?id=${id}`
+              )
+            }
+            key={key}
+            className="flex-grow"
           >
-            Visit
-          </Button>
-        </Link>
-      </CardFooter>
+            <Button className="bg-blue-gray-900/10 text-blue-gray-900 shadow-none hover:scale-105 hover:shadow-none focus:scale-105 focus:shadow-none active:scale-100 capitalize w-full">
+              Read
+            </Button>
+          </Link>
 
-    </Card>
-  ));
+
+          <div className="w-4" />
+          <Link to={post_link} target="_blank" rel="noopener noreferrer" className="flex-grow">
+            <Button
+              className="bg-blue-gray-900/10 text-blue-gray-900 shadow-none hover:scale-105 hover:shadow-none focus:scale-105 focus:shadow-none active:scale-100 capitalize w-full"
+            >
+              Visit
+            </Button>
+          </Link>
+        </CardFooter>
+
+      </Card>
+    ));
 
   return (
 
