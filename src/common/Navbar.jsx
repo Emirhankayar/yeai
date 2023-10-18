@@ -1,5 +1,6 @@
-import React from "react";
-import { category_items, colors } from '../common/content.js'
+import React, { useEffect, useState } from "react";
+import '../index.css'
+import { retrieveCategoriesFromSupabase } from "../utils/utils";
 import {
   Navbar,
   Collapse,
@@ -26,33 +27,43 @@ import {
 function NavListMenu() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
- 
-  const renderItems = category_items.map(
-    ({ icon, title, description, color, link }, key) => (
-      <a href={link} key={key}>
-        <MenuItem className="flex items-center gap-3 rounded-lg">
-          <div className={`rounded-lg p-5 ${colors[color]}`}>
-            {React.createElement(icon, {
-              strokeWidth: 2,
-              className: "h-6 w-6",
-            })}
-          </div>
-          <div>
-            <Typography
-              variant="h6"
-              color="blue-gray"
-              className="flex items-center text-sm"
-            >
-              {title}
-            </Typography>
-            <Typography variant="small" color="gray" className="font-normal">
-              {description}
-            </Typography>
-          </div>
-        </MenuItem>
-      </a>
-    )
-  );
+  const [categories, setCategories] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const categories = await retrieveCategoriesFromSupabase();
+        setCategories(categories);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  const handleCategoryClick = async (category) => {
+    onCategoryClick(`/categories/${category}`);
+  };
+
+  const renderItems = categories.map((category, index) => (
+    <a href={`/categories/${category}`} key={index}>
+      <MenuItem
+        className="flex items-center gap-3 rounded-lg"
+        onClick={() => handleCategoryClick(category)}
+      >
+        <div className="overflow-y-scroll">
+          <Typography variant="h6" color="blue-gray" className="flex items-center text-sm capitalize">
+            {category}
+          </Typography>
+        </div>
+      </MenuItem>
+    </a>
+  ));
+  
+
  
   return (
     <>
@@ -70,7 +81,7 @@ function NavListMenu() {
               selected={isMenuOpen || isMobileMenuOpen}
               onClick={() => setIsMobileMenuOpen((cur) => !cur)}
             >
-              <Square3Stack3DIcon className="h-[18px] w-[18px]" />
+              <Square3Stack3DIcon className="h-[18px] w-[18px]"/>
                 Categories
               <ChevronDownIcon
                 strokeWidth={2.5}
@@ -87,11 +98,11 @@ function NavListMenu() {
             </ListItem>
           </Typography>
         </MenuHandler>
-        <MenuList className="hidden max-w-screen-xl rounded-xl lg:block">
+        <MenuList className="hidden max-w-screen-xl rounded-xl lg:block custom-menu-list">
           <ul className="grid grid-cols-4 gap-y-2">{renderItems}</ul>
         </MenuList>
       </Menu>
-      <div className="block lg:hidden">
+      <div className="block lg:hidden custom-menu-list">
         <Collapse open={isMobileMenuOpen}>{renderItems}</Collapse>
       </div>
     </>
@@ -99,6 +110,11 @@ function NavListMenu() {
 }
  
 function NavList() {
+  const handleCategoryClick = (path) => {
+    // Implement your custom navigation logic here
+    console.log("Navigating to: ", path);
+    // You can use the 'router.navigate' function here if needed
+  };
   return (
     <List className="mt-4 mb-6 p-0 lg:mt-0 lg:mb-0 lg:flex-row lg:p-1">
       <Typography
@@ -113,7 +129,7 @@ function NavList() {
           About Us
         </ListItem>
       </Typography>
-      <NavListMenu />
+      <NavListMenu onCategoryClick={handleCategoryClick} />
       <Typography
         as="a"
         href="#"
@@ -132,7 +148,8 @@ function NavList() {
  
 export default function NavbarWithMegaMenu() {
   const [openNav, setOpenNav] = React.useState(false);
- 
+
+
   React.useEffect(() => {
     window.addEventListener(
       "resize",

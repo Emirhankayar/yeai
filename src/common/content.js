@@ -11,6 +11,8 @@ import {
   BookmarkSlashIcon,
   EyeIcon,
   InformationCircleIcon,
+  MagnifyingGlassIcon,
+  TagIcon,
 } from "@heroicons/react/24/outline";
 
 const content = [
@@ -113,6 +115,8 @@ const icons = {
   BookmarkSlashIcon,
   EyeIcon,
   InformationCircleIcon,
+  MagnifyingGlassIcon,
+  TagIcon,
 }
 
 export { content, content_head, category_items, colors, icons }

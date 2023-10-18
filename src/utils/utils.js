@@ -1,49 +1,22 @@
 // utils.js
 
-const url = import.meta.env.VITE_SV_URL;
-
-const fetchData = (page, setData, setLoading, setError) => {
-  fetch(`${url}?page=${page}`) 
-  .then((response) => response.json())
-  .then((data) => {
-    //console.log('Fetched data:', data); 
-    setData(data);
-    setLoading(false);
-  })
-  .catch((error) => {
-    console.error('Error:', error);
-    setError('Error fetching data. Please try again later.');
-    setLoading(false);
-  });
-};
-
-
-// Initialize Supabase client
 const supabaseUrl = import.meta.env.VITE_DB_URL;
 const supabaseKey = import.meta.env.VITE_DB_KEY;
 import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-// Retrieve data from Supabase with specific category names
-const retrieveDataFromSupabase = async (tags, categoryName) => {
+const retrieveDataFromSupabase = async (categoryName) => {
   try {
     let { data: tools, error } = await supabase
       .from('tools')
-      .select('*');
-
-    if (tags && tags.length > 0) {
-      if (categoryName === 'open-source') {
-        tools = tools.filter(tool => tags.includes(tool.post_price));
-      } else {
-        tools = tools.filter(tool => tags.includes(tool.post_category));
-      }
-    }
+      .select('*')
+      .eq('post_category', categoryName);
 
     if (error) {
       console.error('Error retrieving data:', error);
     } else {
-      //console.log('Retrieved data from Supabase:', tools);
+      console.log('Retrieved data from Supabase:', tools);
       return tools;
     }
   } catch (error) {
@@ -51,66 +24,89 @@ const retrieveDataFromSupabase = async (tags, categoryName) => {
   }
 };
 
-
-const retrieveSinglePostFromSupabase = async (id) => {
+const retrieveCategoriesFromSupabase = async () => {
   try {
-    let { data: posts, error } = await supabase
+    const { data: tools, error } = await supabase.from('tools').select('post_category');
+
+    if (error) {
+      console.error('Error retrieving data:', error);
+      return [];
+    } else {
+      const categories = tools.map((tool) => tool.post_category);
+      const uniqueCategories = [...new Set(categories)]; // Get unique categories
+      const sortedCategories = uniqueCategories.sort(); // Sort the categories alphabetically
+      return sortedCategories;
+    }
+  } catch (error) {
+    console.error('Error retrieving data:', error);
+    return [];
+  }
+};
+
+
+const fetchPostsByCategory = async (categoryName) => {
+  try {
+    const { data: posts, error } = await supabase
       .from('tools')
       .select('*')
-      .eq('id', id)
-      .limit(1);
+      .eq('post_category', categoryName)
+      .order('post_view', { ascending: false }); // Sort posts by post_view in descending order
 
     if (error) {
-      console.error('Error retrieving data:', error);
+      console.error('Error fetching posts:', error);
+      return [];
     } else {
-      if (posts.length > 0) {
-        //console.log('Retrieved data from Supabase:', posts[0]);
-        return posts[0]; 
-      } else {
-        //console.log('No data found for the specified post ID');
-        return null;
-      }
+      return posts;
     }
   } catch (error) {
-    console.error('Error retrieving data:', error);
+    console.error('Error fetching posts:', error);
+    return [];
   }
 };
 
-const retrieveRelatedPosts = async (categoryName, currentPostId) => {
+const fetchPostById = async (postId) => {
   try {
-    let { data: relatedPosts, error } = await supabase
-      .from('tools') // Update the table name to 'tools'
+    const { data: post, error } = await supabase
+      .from('tools')
       .select('*')
-      .eq('post_category', categoryName);
-
-    // Initialize relatedPosts as an empty array if it's null
-    relatedPosts = relatedPosts || [];
-
-    // Filter out the current post being displayed
-    relatedPosts = relatedPosts.filter(post => post.id !== currentPostId);
-
-    // Remove duplicates from the related posts
-    const uniqueRelatedPosts = Array.from(new Set(relatedPosts.map(post => post.id)))
-      .map(id => {
-        return relatedPosts.find(post => post.id === id);
-      });
-
-    // Randomly select 3 unique posts from the related posts
-    const randomRelatedPosts = uniqueRelatedPosts
-      .sort(() => 0.5 - Math.random())
-      .slice(0, 3);
+      .eq('id', postId)
+      .single();
 
     if (error) {
-      console.error('Error retrieving data:', error);
-    } else {
-      //console.log('Retrieved data from Supabase:', randomRelatedPosts);
-      return randomRelatedPosts; // Return the retrieved data
+      throw new Error(error);
     }
+
+    return post;
   } catch (error) {
-    console.error('Error retrieving data:', error);
+    console.error('Error fetching post:', error);
+    return null;
   }
 };
 
+// utils.js
+const fetchPopularPosts = async (categoryName, limit = 4) => {
+  try {
+    const { data: popularPosts, error } = await supabase
+      .from('tools')
+      .select('*')
+      .eq('post_category', categoryName)
+      .order('post_view', { ascending: false })
+      .limit(limit);
+
+    if (error) {
+      console.error('Error retrieving popular posts:', error);
+      return [];
+    } else {
+      return popularPosts;
+    }
+  } catch (error) {
+    console.error('Error retrieving popular posts:', error);
+    return [];
+  }
+};
+
+
+// TODO 
 const updatePostView = async (postId, post_view) => {
   try {
     const updatedView = (post_view || 0) + 1;
@@ -138,5 +134,5 @@ const truncateDescription = (description, maxLength) => {
   return description;
 };
 
-  export { fetchData, retrieveDataFromSupabase, truncateDescription, retrieveRelatedPosts, retrieveSinglePostFromSupabase, updatePostView };
+  export { truncateDescription, updatePostView, retrieveCategoriesFromSupabase, fetchPostsByCategory, fetchPostById, fetchPopularPosts };
   

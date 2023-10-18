@@ -1,54 +1,105 @@
-import React from 'react';
-import { category_items, colors } from '../common/content';
+// Imports and other code remain the same
+import React, { useState, useEffect } from 'react';
+import { retrieveCategoriesFromSupabase } from '../utils/utils';
+import { useNavigate, Link } from 'react-router-dom';
+import { SkeletonCategory } from '../common/Skeleton';
+import { SearchBarCategories } from '../common/SearchCp';
 import {
-    Card,
-    CardHeader,
-    CardBody,
-    CardFooter,
-    Typography,
-    Button,
-  } from "@material-tailwind/react";
-import { Link } from 'react-router-dom';
+  Card,
+  CardBody,
+  CardFooter,
+  Typography,
+  Button,
+} from "@material-tailwind/react";
+const CategoryList = () => {
+  const [categories, setCategories] = useState([]);
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
 
-export default function CategoryCp() {
-    const renderItems = category_items.map(({ icon, title, description, color, link }, key) => {
-        // Convert title to a format suitable for the URL
-        const formattedTitle = title.toLowerCase().replace(/\s+/g, '-');
-        const updatedLink = `/categories/${formattedTitle}`;
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const categories = await retrieveCategoriesFromSupabase();
+        setCategories(categories);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchCategories();
+  }, []);
 
-        return (
-            <Card className="w-80" key={key}>
-              <CardHeader shadow={true} floated={false} className={`h-52 flex items-center justify-center ${colors[color]}`}>
-                {React.createElement(icon, { strokeWidth: 2, className: "h-1/2 w-1/2 object-cover object-center" })}
-              </CardHeader>
-              <CardBody>
-                <div className="mb-2 flex items-center justify-between">
-                  <Typography color="blue-gray" className="font-medium">
-                    {title}
-                  </Typography>
-                </div>
-                <Typography variant="small" color="gray" className="font-normal opacity-75">
-                  {description}
-                </Typography>
-              </CardBody>
-              <CardFooter className="pt-0">
-                <Link to={updatedLink}>
-                  <Button
-                    ripple={false}
-                    fullWidth={true}
-                    className="bg-blue-gray-900/10 text-blue-gray-900 shadow-none hover:scale-105 hover:shadow-none focus:scale-105 focus:shadow-none active:scale-100 capitalize"
-                  >
-                    View
-                  </Button>
-                </Link>
-              </CardFooter>
-            </Card>
-        );
-    });
-    
+  const handleCategoryClick = async (category) => {
+    navigate(`/categories/${category}`);
+  };
+
+  if (isLoading || !categories || categories.length === 0) {
     return (
-      <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 place-items-center">
-        {renderItems.slice(0, -1)}
+      <div className="container mx-auto px-10">
+        <div className='mb-10'>
+          <SearchBarCategories />
+
+        </div>
+        <div className='flex flex-row items-center justify-between mb-10'>
+
+          <Typography variant='lead' textGradient color='blue' className='font-bold capitalize'>Category List</Typography>
+          <Link to="/">
+            <Button
+              className="bg-blue-900/10 text-blue-900 shadow-none hover:scale-105 hover:shadow-none focus:scale-105 focus:shadow-none active:scale-100 capitalize">
+              Go Back To Home Page
+            </Button>
+          </Link>
+        </div>
+
+        <ul className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: categories ? categories.length : 4 }).map(
+            (_, index) => <SkeletonCategory key={index} />
+          )}
+        </ul>
       </div>
     );
-}
+  }
+
+  return (
+    <div className="container mx-auto px-10">
+      <div className='mb-10'>
+        <SearchBarCategories />
+
+      </div>
+      <div className='flex flex-row items-center justify-between mb-10'>
+
+        <Typography variant='lead' textGradient color='blue' className='font-bold capitalize'>Category List</Typography>
+        <Link to="/">
+          <Button
+            className="bg-blue-900/10 text-blue-900 shadow-none hover:scale-105 hover:shadow-none focus:scale-105 focus:shadow-none active:scale-100 capitalize">
+            Go Back To Home Page
+          </Button>
+        </Link>
+      </div>
+      <ul className='flex flex-col gap-10 grid md:grid-cols-2 lg:grid-cols-3'>
+        {categories.map((category, index) => (
+          <Card className="w-full bg-gray-900" key={index}>
+            <CardBody>
+              <div className="mb-2">
+                <Typography variant='lead' color="white" className="font-bold capitalize text-center">
+                  {category}
+                </Typography>
+              </div>
+            </CardBody>
+            <CardFooter className="pt-0 text-center">
+              <Button
+                onClick={() => handleCategoryClick(category)}
+                className="bg-blue-900/10 text-blue-900 shadow-none hover:scale-105 hover:shadow-none focus:scale-105 focus:shadow-none active:scale-100 capitalize"
+              >
+                View Posts
+              </Button>
+            </CardFooter>
+          </Card>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+export default CategoryList;

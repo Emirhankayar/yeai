@@ -16,6 +16,10 @@ const router = createBrowserRouter([
     element: <MainPg />,
   },
   {
+    path: "/about",
+    element: <MainPg />,
+  },
+  {
     path: "/categories",
     element: <CategoryPg/>,
   },
@@ -24,7 +28,7 @@ const router = createBrowserRouter([
     element: <SubCategoryPg />,
   },
   {
-    path: "/categories/:categoryName/:formattedPostName",
+    path: "/categories/:categoryName/:postId",
     element: <PostSubPg />,
   },
   {
@@ -44,6 +48,7 @@ const router = createBrowserRouter([
 function App() {
   return (
     <React.Suspense fallback={<CustomSpinner/>}>
+
       <Navbar/>
       <div className="min-h-screen">
         <RouterProvider router={router}/>

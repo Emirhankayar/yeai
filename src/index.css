@@ -32,3 +32,10 @@ html, body {
 body{
   position: relative;
 }
+
+
+.custom-menu-list {
+  max-height: 400px; /* Define your desired max height */
+  overflow-y: scroll;
+  width: 100%;
+}
