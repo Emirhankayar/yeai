@@ -5,7 +5,7 @@ export default function HeroCp() {
 
     return (
         <div className="relative h-screen w-screen">
-          <div className="w-full absolute top-1/2 transform -translate-y-1/2 z-20">
+          <div className="w-full ">
             <div className="w-full space-y-5 flex flex-col items-start h-screen justify-center px-10 sm:px-20 md:px-36 lg:px-52">
               <Typography
                 variant="h1"

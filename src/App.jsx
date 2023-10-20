@@ -1,13 +1,13 @@
 import * as React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import CustomSpinner from "./common/Spinner";
-
 const Navbar = React.lazy(() => import('./common/Navbar'));
 const MainPg = React.lazy(() => import('./pages/MainPg'));
 const CategoryPg = React.lazy(() => import('./pages/CategoryPg'));
 const SubCategoryPg = React.lazy(() => import('./pages/SubCategoryPg'));
 const PostSubPg = React.lazy(() => import('./pages/PostSubPg'));
-
+const SignInPg = React.lazy(() => import('./pages/SignInPg'));
+const AccountPg = React.lazy(() => import('./pages/AccountPg'));
 const Footer = React.lazy(() => import('./common/Footer'));
 
 const router = createBrowserRouter([
@@ -32,8 +32,12 @@ const router = createBrowserRouter([
     element: <PostSubPg />,
   },
   {
-    path: "/trending",
-    element: <MainPg />,
+    path: "/sign-in",
+    element: <SignInPg />,
+  },
+  {
+    path: "/account",
+    element: <AccountPg />,
   },
   {
     path: "/faq",

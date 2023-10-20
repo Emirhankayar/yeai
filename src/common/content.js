@@ -1,4 +1,10 @@
 import {
+  ChevronDownIcon,
+  UserCircleIcon,
+  Bars3Icon,
+  XMarkIcon,
+  Square3Stack3DIcon,
+  QuestionMarkCircleIcon,
   ChatBubbleOvalLeftIcon,
   RocketLaunchIcon,
   CpuChipIcon,
@@ -13,6 +19,8 @@ import {
   InformationCircleIcon,
   MagnifyingGlassIcon,
   TagIcon,
+  CheckCircleIcon,
+  SparklesIcon,
 } from "@heroicons/react/24/outline";
 
 const content = [
@@ -111,12 +119,22 @@ const colors = {
   pink: "bg-pink-50 text-pink-500",
 };
 const icons = {
+  ChevronDownIcon,
+  UserCircleIcon,
+  Bars3Icon,
+  XMarkIcon,
+  Square3Stack3DIcon,
+  QuestionMarkCircleIcon,
+  SparklesIcon,
+  // up navbar
   BookmarkIcon,
   BookmarkSlashIcon,
   EyeIcon,
   InformationCircleIcon,
   MagnifyingGlassIcon,
   TagIcon,
+  CheckCircleIcon,
+
 }
 
 export { content, content_head, category_items, colors, icons }

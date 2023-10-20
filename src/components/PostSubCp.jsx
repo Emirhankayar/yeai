@@ -23,31 +23,53 @@ const PostDetailsPage = () => {
   useEffect(() => {
     const fetchPostData = async () => {
       try {
-        const fetchedPost = await fetchPostById(postId);
-        setPost(fetchedPost);
+        let cachedPost = localStorage.getItem(`post_${postId}`);
+        if (cachedPost) {
+          setPost(JSON.parse(cachedPost));
+        } else {
+          const fetchedPost = await fetchPostById(postId);
+          setPost(fetchedPost);
+          localStorage.setItem(`post_${postId}`, JSON.stringify(fetchedPost));
+        }
       } catch (error) {
         console.error('Error fetching post:', error);
       } finally {
         setIsLoading(false);
       }
     };
-    fetchPostData();
-
+  
     const fetchPopularData = async () => {
       try {
-        const popularPosts = await fetchPopularPosts(categoryName, 4);
-        const filteredPopularPosts = popularPosts.filter((popularPost) => popularPost.id !== postId);
-        setPopularPosts(filteredPopularPosts);
+        let cachedPopularPosts = localStorage.getItem(`popular_posts_${categoryName}`);
+        if (cachedPopularPosts) {
+          const popularPosts = JSON.parse(cachedPopularPosts);
+          const filteredPopularPosts = popularPosts.filter((popularPost) => popularPost.id !== postId);
+          setPopularPosts(filteredPopularPosts);
+        } else {
+          const popularPosts = await fetchPopularPosts(categoryName, 4);
+          const filteredPopularPosts = popularPosts.filter((popularPost) => popularPost.id !== postId);
+          setPopularPosts(filteredPopularPosts);
+          localStorage.setItem(`popular_posts_${categoryName}`, JSON.stringify(popularPosts));
+        }
       } catch (error) {
         console.error('Error fetching popular posts:', error);
       }
     };
+  
+    const cleanup = () => {
+      // Add cleanup logic here if necessary
+    };
+  
+    fetchPostData();
     fetchPopularData();
+  
+    return cleanup;
   }, [categoryName, postId]);
+  
   
 
   const handlePopularPostClick = (postId) => {
-    navigate(`/categories/${categoryName}/${postId}`);
+    navigate(`/categories/freebies/${postId}`);
     window.scrollTo(0, 0); 
   };
   if (isLoading || !post) {

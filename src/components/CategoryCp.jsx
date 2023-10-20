@@ -3,43 +3,69 @@ import React, { useState, useEffect } from 'react';
 import { retrieveCategoriesFromSupabase } from '../utils/utils';
 import { useNavigate, Link } from 'react-router-dom';
 import { SkeletonCategory } from '../common/Skeleton';
-import { SearchBarCategories } from '../common/SearchCp';
+import { icons } from '../common/content';
 import {
   Card,
   CardBody,
   CardFooter,
   Typography,
+  Input,
   Button,
 } from "@material-tailwind/react";
 const CategoryList = () => {
   const [categories, setCategories] = useState([]);
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const categories = await retrieveCategoriesFromSupabase();
-        setCategories(categories);
+        let cachedCategories = localStorage.getItem('categories');
+        if (cachedCategories) {
+          setCategories(JSON.parse(cachedCategories));
+        } else {
+          const categories = await retrieveCategoriesFromSupabase();
+          setCategories(categories);
+          localStorage.setItem('categories', JSON.stringify(categories));
+        }
       } catch (error) {
         console.error('Error fetching categories:', error);
       } finally {
         setIsLoading(false);
       }
     };
+  
+    
     fetchCategories();
+    // Add cleanup logic function
+    const cleanup = () => {
+      // Perform cleanup operations here if necessary
+    };
+  
+    return cleanup;
   }, []);
+  
+  const filteredCategories = search
+    ? categories.filter((category) =>
+        category.toLowerCase().includes(search.toLowerCase())
+      )
+    : categories;
 
   const handleCategoryClick = async (category) => {
     navigate(`/categories/${category}`);
+    window.scrollTo(0, 0); 
   };
 
   if (isLoading || !categories || categories.length === 0) {
     return (
       <div className="container mx-auto px-10">
         <div className='mb-10'>
-          <SearchBarCategories />
-
+        <Input
+          variant='static'
+          label="Search Posts"
+          color="white"
+        />
         </div>
         <div className='flex flex-row items-center justify-between mb-10'>
 
@@ -64,7 +90,14 @@ const CategoryList = () => {
   return (
     <div className="container mx-auto px-10">
       <div className='mb-10'>
-        <SearchBarCategories />
+      <Input
+          value={search}
+          variant='static'
+          onChange={(e) => setSearch(e.target.value)}
+          label="Search category"
+          color="white"
+          icon={<icons.MagnifyingGlassIcon className="h-4 w-4" stroke="white" />}
+        />
 
       </div>
       <div className='flex flex-row items-center justify-between mb-10'>
@@ -78,7 +111,7 @@ const CategoryList = () => {
         </Link>
       </div>
       <ul className='flex flex-col gap-10 grid md:grid-cols-2 lg:grid-cols-3'>
-        {categories.map((category, index) => (
+        {filteredCategories.map((category, index) => (
           <Card className="w-full bg-gray-900" key={index}>
             <CardBody>
               <div className="mb-2">
