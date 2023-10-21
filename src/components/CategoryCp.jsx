@@ -12,80 +12,101 @@ import {
   Input,
   Button,
 } from "@material-tailwind/react";
+import InfiniteScroll from 'react-infinite-scroll-component';
+
 const CategoryList = () => {
+  const pageSize = 6;
   const [categories, setCategories] = useState([]);
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState('');
-
+  const [hasMore, setHasMore] = useState(true);
+  const [page, setPage] = useState(1);
+  
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        let cachedCategories = localStorage.getItem('categories');
-        if (cachedCategories) {
-          setCategories(JSON.parse(cachedCategories));
+        const retrievedCategories = await retrieveCategoriesFromSupabase(page, pageSize);
+        if (retrievedCategories.length > 0) {
+          if (page === 1) {
+            setCategories(retrievedCategories);
+          } else {
+            setCategories((prevCategories) => [...prevCategories, ...retrievedCategories]);
+          }
         } else {
-          const categories = await retrieveCategoriesFromSupabase();
-          setCategories(categories);
-          localStorage.setItem('categories', JSON.stringify(categories));
+          setHasMore(false);
         }
+        setIsLoading(false);
       } catch (error) {
         console.error('Error fetching categories:', error);
-      } finally {
-        setIsLoading(false);
       }
     };
-  
-    
+
     fetchCategories();
-    // Add cleanup logic function
-    const cleanup = () => {
-      // Perform cleanup operations here if necessary
-    };
-  
-    return cleanup;
-  }, []);
+  }, [page]);
+
+  const fetchMoreCategories = async () => {
+    try {
+      const nextPage = page + 1;
+      console.log("Fetching more categories for page:", nextPage);
+      const moreCategories = await retrieveCategoriesFromSupabase(nextPage, pageSize);
+      if (moreCategories.length === 0) {
+        console.log("No more categories to fetch");
+        setHasMore(false);
+      } else {
+        setCategories((prevCategories) => {
+          const allCategories = [...new Set([...prevCategories, ...moreCategories])]; // Use Set to remove duplicates
+          return allCategories;
+        });
+        setPage(nextPage);
+      }
+    } catch (error) {
+      console.error('Error fetching more categories:', error);
+    }
+  };
   
   const filteredCategories = search
-    ? categories.filter((category) =>
-        category.toLowerCase().includes(search.toLowerCase())
-      )
-    : categories;
+  ? [...Array.from({ length: page * pageSize })] // Fill with empty items to match the expected length
+      .map((_, index) => categories[index]) // Use the fetched categories if available
+      .filter(category => category && category.toLowerCase().includes(search.toLowerCase()))
+  : categories;
 
   const handleCategoryClick = async (category) => {
     navigate(`/categories/${category}`);
     window.scrollTo(0, 0); 
   };
 
+  const renderLoadingCategories = Array.from({ length: pageSize }).map((_, index) => (
+    <SkeletonCategory key={index} />
+  ));
+
   if (isLoading || !categories || categories.length === 0) {
     return (
-      <div className="container mx-auto px-10">
-        <div className='mb-10'>
-        <Input
-          variant='static'
-          label="Search Posts"
-          color="white"
-        />
-        </div>
-        <div className='flex flex-row items-center justify-between mb-10'>
-
-          <Typography variant='lead' textGradient color='blue' className='font-bold capitalize'>Category List</Typography>
-          <Link to="/">
-            <Button
-              className="bg-blue-900/10 text-blue-900 shadow-none hover:scale-105 hover:shadow-none focus:scale-105 focus:shadow-none active:scale-100 capitalize">
-              Go Back To Home Page
-            </Button>
-          </Link>
-        </div>
-
-        <ul className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3">
-          {Array.from({ length: categories ? categories.length : 4 }).map(
-            (_, index) => <SkeletonCategory key={index} />
-          )}
-        </ul>
+      <div className="container px-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mt-40">
+          {renderLoadingCategories}          
       </div>
     );
   }
+
+  const renderCategories = filteredCategories.slice(0, page * pageSize).map((category, index) => (
+  <Card className="w-full bg-gray-900" key={index}>
+      <CardBody>
+        <div className="mb-2">
+          <Typography variant='lead' color="white" className="font-bold capitalize text-center">
+            {category}
+          </Typography>
+        </div>
+      </CardBody>
+      <CardFooter className="pt-0 text-center">
+        <Button
+          onClick={() => handleCategoryClick(category)}
+          className="bg-blue-900/10 text-blue-900 shadow-none hover:scale-105 hover:shadow-none focus:scale-105 focus:shadow-none active:scale-100 capitalize"
+          >
+          View Posts
+        </Button>
+      </CardFooter>
+    </Card>
+  ));
 
   return (
     <div className="container mx-auto px-10">
@@ -98,10 +119,8 @@ const CategoryList = () => {
           color="white"
           icon={<icons.MagnifyingGlassIcon className="h-4 w-4" stroke="white" />}
         />
-
       </div>
       <div className='flex flex-row items-center justify-between mb-10'>
-
         <Typography variant='lead' textGradient color='blue' className='font-bold capitalize'>Category List</Typography>
         <Link to="/">
           <Button
@@ -110,27 +129,17 @@ const CategoryList = () => {
           </Button>
         </Link>
       </div>
+      <InfiniteScroll
+        dataLength={categories.length}
+        next={fetchMoreCategories}
+        hasMore={hasMore}
+        scrollThreshold={0.6} 
+        loader={<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mt-10'>{renderLoadingCategories}</div>} 
+      >
       <ul className='flex flex-col gap-10 grid md:grid-cols-2 lg:grid-cols-3'>
-        {filteredCategories.map((category, index) => (
-          <Card className="w-full bg-gray-900" key={index}>
-            <CardBody>
-              <div className="mb-2">
-                <Typography variant='lead' color="white" className="font-bold capitalize text-center">
-                  {category}
-                </Typography>
-              </div>
-            </CardBody>
-            <CardFooter className="pt-0 text-center">
-              <Button
-                onClick={() => handleCategoryClick(category)}
-                className="bg-blue-900/10 text-blue-900 shadow-none hover:scale-105 hover:shadow-none focus:scale-105 focus:shadow-none active:scale-100 capitalize"
-              >
-                View Posts
-              </Button>
-            </CardFooter>
-          </Card>
-        ))}
+          {renderCategories}
       </ul>
+      </InfiniteScroll>
     </div>
   );
 };

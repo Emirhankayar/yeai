@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../services/AuthContext"; 
 import '../index.css'
-import { retrieveCategoriesFromSupabase } from "../utils/utils";
-import SignInForm from "./Sign-in";
+import { retrieveAllCategoriesFromSupabase } from "../utils/utils";
+
 import {
   Navbar,
   Collapse,
@@ -32,7 +32,7 @@ function NavListMenu() {
         if (cachedCategories) {
           setCategories(JSON.parse(cachedCategories));
         } else {
-          const categories = await retrieveCategoriesFromSupabase();
+          const categories = await retrieveAllCategoriesFromSupabase();
           setCategories(categories);
           localStorage.setItem('categories', JSON.stringify(categories));
         }
@@ -43,11 +43,11 @@ function NavListMenu() {
       }
     };
   
+    fetchCategories();
+
     const cleanup = () => {
     };
-  
-    fetchCategories();
-  
+
     return cleanup;
   }, []);
   
@@ -103,7 +103,7 @@ function NavListMenu() {
         handler={setIsMenuOpen}
         offset={{ mainAxis: 20 }}
         placement="bottom"
-        allowHover={true}
+        allowHover={false}
       >
         <MenuHandler>
           <Typography as="div" variant="small" color="blue-gray" className="font-normal">

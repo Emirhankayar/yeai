@@ -6,32 +6,57 @@ import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-const retrieveCategoriesFromSupabase = async () => {
+
+const retrieveAllCategoriesFromSupabase = async () => {
   try {
-    const { data: tools, error } = await supabase.from('tools').select('post_category');
+    const { data, error } = await supabase
+      .from('distinct_categories')
+      .select('*')
+      .order('post_category', { ascending: true });
 
     if (error) {
-      console.error('Error retrieving data:', error);
+      console.error('Error fetching categories:', error);
       return [];
-    } else {
-      const categories = tools.map((tool) => tool.post_category);
-      const uniqueCategories = new Set(categories); 
-      uniqueCategories.delete('Freebies'); 
-      const sortedCategories = Array.from(uniqueCategories).sort(); 
-      sortedCategories.unshift('Freebies'); 
-      return sortedCategories;
     }
+
+    const categories = data.map((item) => item.post_category);
+    return categories;
   } catch (error) {
-    console.error('Error retrieving data:', error);
+    console.error('Error fetching distinct categories:', error.message);
     return [];
   }
 };
 
+const retrieveCategoriesFromSupabase = async (page, pageSize, searchInput) => {
+  const offset = (page - 1) * pageSize;
+  let { data, error } = await supabase
+    .from('distinct_categories')
+    .select('post_category')
+    .order('post_category', { ascending: true })
+    .range(offset, offset + pageSize - 1);
 
+  if (searchInput) {
+    const searchTerm = `%${searchInput}%`;
+    ({ data, error } = await supabase
+      .from('distinct_categories')
+      .select('post_category')
+      .order('post_category', { ascending: true })
+      .range(offset, offset + pageSize - 1)
+      .ilike('post_category', searchTerm, { caseSensitive: false }));
+  }
 
-const fetchPostsByCategory = async (categoryName) => {
+  if (error) {
+    console.error('Error fetching categories:', error);
+    return [];
+  }
+
+  return data.map((item) => item.post_category).filter(category => category !== null);
+};
+
+const fetchPostsByCategory = async (categoryName, page, pageSize) => {
   try {
-    let query = supabase.from('tools').select('*');
+    const offset = (page - 1) * pageSize;
+    let query = supabase.from('tools').select('*').range(offset, offset + pageSize - 1);
 
     if (categoryName === 'Freebies') {
       const { data: posts, error } = await query.order('post_view', { ascending: false });
@@ -61,6 +86,7 @@ const fetchPostsByCategory = async (categoryName) => {
     return [];
   }
 };
+
 
 
 const fetchPostById = async (postId) => {
@@ -159,5 +185,6 @@ const truncateDescription = (description, maxLength) => {
     fetchPostById, 
     fetchPopularPosts,
     supabase,
+    retrieveAllCategoriesFromSupabase,
   };
   
