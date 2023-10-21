@@ -1,4 +1,6 @@
 import * as React from "react";
+import { ThemeProvider } from "@material-tailwind/react";
+import { theme } from "./utils/customTheme";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import CustomSpinner from "./common/Spinner";
 const Navbar = React.lazy(() => import('./common/Navbar'));
@@ -51,6 +53,7 @@ const router = createBrowserRouter([
 
 function App() {
   return (
+    <ThemeProvider value={theme}>
     <React.Suspense fallback={<CustomSpinner/>}>
 
       <Navbar/>
@@ -60,6 +63,7 @@ function App() {
       <Footer/>
 
     </React.Suspense>
+    </ThemeProvider>
   );
 }
 

@@ -1,5 +1,4 @@
 const withMT = require("@material-tailwind/react/utils/withMT");
- 
 module.exports = withMT({
   content: [
     "./index.html",
@@ -57,9 +56,24 @@ module.exports = withMT({
           },
         },
       },
-        
+      colors: {
+        emerald: {
+          50: "#3ECF8E0D",
+          100: "#3ECF8E1A",
+          200: "#3ECF8E33",
+          300: "#3ECF8E4D",
+          400: "#3ECF8E66",
+          500: "#3ECF8E80",
+          600: "#3ECF8E99",
+          700: "#3ECF8EB2",
+          800: "#3ECF8ECC",
+          900: "#3ECF8EE5",
+        },
+        cream: {
+          100: "#FBFBFB",
+        }
+      },
     },
   },
-  
   plugins: [],
 });

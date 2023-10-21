@@ -93,9 +93,6 @@ function NavListMenu() {
     )),
   ];
   
-  
-
- 
   return (
     <>
       <Menu
@@ -132,7 +129,7 @@ function NavListMenu() {
             </ListItem>
           </Typography>
         </MenuHandler>
-        <MenuList className="hidden max-w-screen-xl rounded-md lg:block custom-menu-list bg-gray-500 bg-opacity-90">
+        <MenuList className="hidden max-w-screen-2xl rounded-md lg:block custom-menu-list bg-gray-500 bg-opacity-90">
           <ul className="grid grid-cols-4 gap-y-2">{renderItems}</ul>
         </MenuList>
       </Menu>

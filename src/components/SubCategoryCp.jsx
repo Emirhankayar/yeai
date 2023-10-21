@@ -1,4 +1,4 @@
-// SubCategoryPage.js
+// SubCategoryCp.jsx
 import React, { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { fetchPostsByCategory, truncateDescription } from '../utils/utils';
@@ -89,11 +89,11 @@ const SubCategoryPage = () => {
   }
 
   const renderPosts = filteredPosts.slice(0, page * pageSize).map((post, index) => (
-    <Card className="w-full bg-gray-900" key={index}>
-            <CardBody>
+    <Card variant='gradient' color='gray' className="w-full border-2 border-gray-800 text-gray-500" key={index}>
+    <CardBody>
               <div className="mb-2 flex flex-col items-start space-y-4">
                 <div className='flex flex-row items-center justify-between w-full'>
-                  <Typography variant='lead' color="blue" textGradient className="font-bold capitalize">
+                  <Typography variant='lead' color="white" className="font-bold capitalize">
                     {post.post_title}
                   </Typography>
                   
@@ -102,7 +102,7 @@ const SubCategoryPage = () => {
                   </Tooltip>
 
                 </div>
-                <Typography variant='paragraph' color="inherit">
+                <Typography variant='paragraph'>
                   {truncateDescription(post.post_description, 120)}
                 </Typography>
               </div>
@@ -112,15 +112,12 @@ const SubCategoryPage = () => {
             <CardFooter className="pt-0 flex items-start gap-4">
               <Button
                 onClick={() => handlePostClick(post.id)}
-                className="bg-blue-900/10 text-blue-900 shadow-none hover:scale-105 hover:shadow-none focus:scale-105 focus:shadow-none active:scale-100 capitalize"
-              >
+                >
                 Read More
               </Button>
               <Link to={post.post_link}
                 target="_blank" rel="noopener noreferrer">
-                <Button
-                  className="bg-blue-900/10 text-blue-900 shadow-none hover:scale-105 hover:shadow-none focus:scale-105 focus:shadow-none active:scale-100 capitalize"
-                >
+                <Button>
                   Visit Website
                 </Button>
               </Link>
@@ -141,10 +138,9 @@ const SubCategoryPage = () => {
         />
       </div>
       <div className='flex flex-row  items-center justify-between'>
-      <Typography variant='lead' color='blue' textGradient className='capitalize font-bold '>Posts in {categoryName}</Typography>
+      <Typography variant='h3' color='white' className='capitalize font-bold '>Posts in {categoryName}</Typography>
       <Link to="/categories">
-      <Button 
-        className="bg-blue-900/10 text-blue-900 shadow-none hover:scale-105 hover:shadow-none focus:scale-105 focus:shadow-none active:scale-100 capitalize">
+      <Button>
               Go Back To Categories
       </Button>
       </Link>
