@@ -4,6 +4,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { fetchPostsByCategory, truncateDescription } from '../utils/utils';
 import { SkeletonPost } from '../common/Skeleton';
 import { icons } from '../common/content';
+import { updatePostView } from '../utils/utils';
 import {
   Card,
   CardBody,
@@ -25,6 +26,17 @@ const SubCategoryPage = () => {
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
 
+  const handleBookmarkClick = (postId) => {
+    setCategoryPosts((prevCategoryPosts) => {
+      return prevCategoryPosts.map((post) => {
+        if (post.id === postId) {
+          return { ...post, isBookmarked: !post.isBookmarked };
+        }
+        return post;
+      });
+    });
+  };
+
   useEffect(() => {
     const fetchPosts = async () => {
       try {
@@ -33,7 +45,11 @@ const SubCategoryPage = () => {
           if (page === 1) {
             setCategoryPosts(retrievedCategoryPosts);
           } else {
-            setCategoryPosts((prevCategoryPosts) => [...prevCategoryPosts, ...retrievedCategoryPosts]);
+            setCategoryPosts((prevCategoryPosts) => {
+              const prevPostIds = new Set(prevCategoryPosts.map((post) => post.id));
+              const uniquePosts = retrievedCategoryPosts.filter((post) => !prevPostIds.has(post.id));
+              return [...prevCategoryPosts, ...uniquePosts];
+            });
           }
         } else {
           setHasMore(false);
@@ -43,7 +59,7 @@ const SubCategoryPage = () => {
         console.error('Error fetching posts:', error);
       }
     };
-
+  
     fetchPosts();
   }, [page]);
 
@@ -55,8 +71,9 @@ const SubCategoryPage = () => {
         setHasMore(false);
       } else {
         setCategoryPosts((prevCategoryPosts) => {
-          const allCategoryPosts = [...new Set([...prevCategoryPosts, ...moreCategoryPosts])]; // Use Set to remove duplicates
-          return allCategoryPosts;
+          const prevPostIds = new Set(prevCategoryPosts.map((post) => post.id)); // Create a set of existing post ids
+          const uniquePosts = moreCategoryPosts.filter((post) => !prevPostIds.has(post.id)); // Filter out already existing posts
+          return [...prevCategoryPosts, ...uniquePosts]; // Append only unique posts
         });
         setPage(nextPage);
       }
@@ -64,6 +81,7 @@ const SubCategoryPage = () => {
       console.error('Error fetching more posts:', error);
     }
   };
+  
 
   const filteredPosts = search
   ? categoryPosts.filter((post) =>
@@ -71,12 +89,25 @@ const SubCategoryPage = () => {
     )
   : categoryPosts;
 
-  const handlePostClick = (postId) => {
-    navigate(`/categories/${categoryName}/${postId}`);
-    window.scrollTo(0, 0); 
+  const handlePostClick = async (postId) => {
+    const post = categoryPosts.find((post) => post.id === postId);
+    if (post) {
+      try {
+        await updatePostView(postId, post.post_view);
+        navigate(`/categories/${categoryName}/${postId}`);
+        window.scrollTo(0, 0);
+      } catch (error) {
+        console.error('Error updating post view:', error);
+      }
+    }
   };
 
-  const renderLoadingPosts = Array.from({ length: pageSize }).map((_, index) => (
+  let lastPagePostCount = categoryPosts.length % pageSize;
+  if (lastPagePostCount === 0) {
+    lastPagePostCount = pageSize;
+  }
+  
+  const renderLoadingPosts = Array.from({ length: lastPagePostCount }).map((_, index) => (
     <SkeletonPost key={index} />
   ));
 
@@ -96,10 +127,19 @@ const SubCategoryPage = () => {
                   <Typography variant='lead' color="white" className="font-bold capitalize">
                     {post.post_title}
                   </Typography>
-                  
-                  <Tooltip content={post.post_category} className='bg-orange-400' >
-                    <icons.TagIcon className='h-5 w-5' stroke='orange' />
+                  <div className='flex flex-row items-center justify-between gap-6'>
+
+                  <Tooltip content={post.post_category} className='bg-orange-400 capitalize' >
+                    <icons.TagIcon className='h-5 w-5' stroke='gray' />
                   </Tooltip>
+                  <Tooltip content="Save the Post" className='bg-gray-400 capitalize'>
+              <icons.BookmarkIcon
+                className='h-5 w-5 cursor-pointer'
+                fill={post.isBookmarked ? 'gray' : 'none'}
+                onClick={() => handleBookmarkClick(post.id)}
+              />
+            </Tooltip>
+                  </div>
 
                 </div>
                 <Typography variant='paragraph'>

@@ -4,6 +4,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { fetchPostById, fetchPopularPosts, truncateDescription } from '../utils/utils';
 import { SkeletonPost } from '../common/Skeleton'
 import { icons } from '../common/content'
+import { updatePostView } from '../utils/utils';
 import {
   Card,
   CardBody,
@@ -17,8 +18,21 @@ const PostDetailsPage = () => {
   const [post, setPost] = useState(null);
   const [popularPosts, setPopularPosts] = useState([]);
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(true); 
+  const [isLoading, setIsLoading] = useState(true);
 
+  const handleBookmarkClick = (id, isPopular) => {
+    if (isPopular) {
+      setPopularPosts((prevPopularPosts) =>
+        prevPopularPosts.map((popularPost) =>
+          popularPost.id === id
+            ? { ...popularPost, isBookmarked: !popularPost.isBookmarked }
+            : popularPost
+        )
+      );
+    } else if (post && post.id === id) {
+      setPost((prevPost) => ({ ...prevPost, isBookmarked: !prevPost.isBookmarked }));
+    }
+  };
 
   useEffect(() => {
     const fetchPostData = async () => {
@@ -49,10 +63,16 @@ const PostDetailsPage = () => {
   
   
 
-  const handlePopularPostClick = (postId) => {
-    navigate(`/categories/${categoryName}/${postId}`);
-    window.scrollTo(0, 0); 
+  const handlePopularPostClick = async (postId, postView) => {
+    try {
+      await updatePostView(postId, postView);
+      navigate(`/categories/${categoryName}/${postId}`);
+      window.scrollTo(0, 0);
+    } catch (error) {
+      console.error('Error updating post view:', error);
+    }
   };
+  
 
   const renderLoadingPosts = Array.from({ length: 4 }).map((_, index) => (
     <SkeletonPost key={index} />
@@ -76,9 +96,23 @@ const PostDetailsPage = () => {
               {popularPost.post_title}
             </Typography>
             
-            <Tooltip content={popularPost.post_category} className='bg-orange-400' >
-              <icons.TagIcon className='h-5 w-5' stroke='orange' />
-            </Tooltip>
+            <div className='flex flex-row items-center justify-between gap-6'>
+
+<Tooltip content={popularPost.post_category} className='bg-orange-400 capitalize' >
+  <icons.TagIcon className='h-5 w-5' stroke='gray' />
+</Tooltip>
+<Tooltip
+    content="Save the Post"
+    className="bg-gray-400 capitalize"
+    key={popularPost.id} // Ensure to add a unique key for each element
+  >
+    <icons.BookmarkIcon
+      className="h-5 w-5 cursor-pointer"
+      fill={popularPost.isBookmarked ? 'gray' : 'none'}
+      onClick={() => handleBookmarkClick(popularPost.id, true)} // Pass 'true' for isPopular
+    />
+  </Tooltip>
+</div>
 
           </div>
           <Typography variant='paragraph'>
@@ -121,9 +155,28 @@ const PostDetailsPage = () => {
         <Card variant='gradient' color='gray' className="w-full border-2 border-gray-800 text-gray-500">
           <CardBody>
             <div className="mb-2 flex flex-col items-start space-y-4">
+              <div className='flex flex-row items-center justify-between w-full'>
+
               <Typography variant='h4' color='white' className="font-bold capitalize">
                 {post.post_title}
               </Typography>
+              <div className='flex flex-row items-center justify-between gap-6'>
+
+<Tooltip content={post.post_category} className='bg-orange-400 capitalize' >
+  <icons.TagIcon className='h-5 w-5' stroke='gray' />
+</Tooltip>
+<Tooltip
+  content="Save the Post"
+  className="bg-gray-400 capitalize"
+>
+  <icons.BookmarkIcon
+    className="h-5 w-5 cursor-pointer"
+    fill={post.isBookmarked ? 'gray' : 'none'}
+    onClick={() => handleBookmarkClick(post.id, false)} // Pass 'false' for isPopular
+  />
+</Tooltip>
+</div>
+</div>
               <Typography variant='paragraph' className='text-justify'>
                 {post.post_description}
               </Typography>

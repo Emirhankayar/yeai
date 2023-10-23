@@ -21,6 +21,10 @@ import {
   TagIcon,
   CheckCircleIcon,
   SparklesIcon,
+  FolderPlusIcon,
+  FolderMinusIcon,
+  InboxArrowDownIcon,
+  ArrowUpOnSquareIcon,
 } from "@heroicons/react/24/outline";
 
 const content = [
@@ -134,7 +138,10 @@ const icons = {
   MagnifyingGlassIcon,
   TagIcon,
   CheckCircleIcon,
-
+  FolderPlusIcon,
+  FolderMinusIcon,
+  InboxArrowDownIcon,
+  ArrowUpOnSquareIcon,
 }
 
 export { content, content_head, category_items, colors, icons }

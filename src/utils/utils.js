@@ -6,7 +6,6 @@ import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-
 const retrieveAllCategoriesFromSupabase = async () => {
   try {
     const { data, error } = await supabase
@@ -59,16 +58,20 @@ const fetchPostsByCategory = async (categoryName, page, pageSize) => {
     let query = supabase.from('tools').select('*').range(offset, offset + pageSize - 1);
 
     if (categoryName === 'Freebies') {
-      const { data: posts, error } = await query.order('post_view', { ascending: false });
+      const { data: allPosts, error } = await query.order('post_view', { ascending: false });
 
       if (error) {
         console.error('Error fetching posts:', error);
         return [];
       } else {
-        const freeItems = posts.filter(
+        const freeItems = allPosts.filter(
           (post) => post.post_price === 'Free' || post.post_price === 'Freemium'
         );
-        return [...posts, ...freeItems.map((item) => ({ ...item, post_category: 'Freebies' }))];
+        const otherItems = allPosts.filter(
+          (post) => post.post_price !== 'Free' && post.post_price !== 'Freemium'
+        );
+        const modifiedFreeItems = freeItems.map((item) => ({ ...item, post_category: 'Freebies' }));
+        return [...otherItems, ...modifiedFreeItems];
       }
     } else {
       query = query.eq('post_category', categoryName);
@@ -86,6 +89,7 @@ const fetchPostsByCategory = async (categoryName, page, pageSize) => {
     return [];
   }
 };
+
 
 
 
@@ -143,16 +147,9 @@ const fetchPopularPosts = async (categoryName, limit = 4) => {
   }
 };
 
-
-
-
-// TODO 
 const updatePostView = async (postId, post_view) => {
   try {
     const updatedView = (post_view || 0) + 1;
-    console.log('postId:', postId);
-    console.log('post_view:', post_view);
-    console.log('updatedView:', updatedView);
     
     const { data, error } = await supabase
       .from('tools')
@@ -165,7 +162,6 @@ const updatePostView = async (postId, post_view) => {
     console.error('Error updating post view:', error);
   }
 };
-
 
 const truncateDescription = (description, maxLength) => {
   if (!description) {

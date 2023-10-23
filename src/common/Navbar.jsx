@@ -62,7 +62,7 @@ function NavListMenu() {
         className="flex items-center gap-3 rounded-lg"
         onClick={() => handleCategoryClick("all")}
       >
-        <div className="">
+        <div>
           <Typography
             variant="small"
             color="blue-gray"
@@ -79,7 +79,7 @@ function NavListMenu() {
           className="flex items-center gap-3 rounded-lg"
           onClick={() => handleCategoryClick(category)}
         >
-          <div className="">
+          <div>
             <Typography
               variant="small"
               color="blue-gray"

@@ -1,149 +1,89 @@
 import React, { useState } from "react";
-import {
-  Card,
-  Input,
-  Checkbox,
-  Button,
-  Typography,
-} from "@material-tailwind/react";
-import { supabase } from '../utils/utils';
+import { Typography, Card, CardBody, IconButton, Tooltip, Checkbox, Button } from "@material-tailwind/react";
 import { icons } from "../common/content";
 
 export default function Account() {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [isRegistered, setIsRegistered] = useState(false);
-  const [error, setError] = useState(null);
-
-  const handleSignUp = async (event) => {
-    event.preventDefault();
-    const { data: users, error: fetchError } = await supabase
-      .from('users')
-      .select('*')
-      .eq('email', email);
-
-    if (fetchError) {
-      setError(fetchError.message);
-    }
-
-    if (users && users.length > 0) {
-      setError('A user with this email already exists. Please use a different email.');
-    } else {
-      const { user, error: signUpError } = await supabase.auth.signUp({
-        name: name,
-        email: email,
-        password: password
-      });
-
-      if (signUpError) {
-        setError(signUpError.message);
-      } else {
-        setIsRegistered(true);
-      }
-    }
-  }
+  const [select, setSelect] = useState(0)
+  const [selectAll, setSelectAll] = useState(0)
 
   return (
-    <Card color="transparent" shadow={false}>
-      {isRegistered ? (
-        <div className="text-center">
-          <icons.CheckCircleIcon color="lightgreen" size="regular" className="w-32 h-32 mb-2" />
-          <Typography className="mb-2">
-            Registration successful.
-          </Typography>
-          <Typography className="mb-2">
-            Please check your email for confirmation to start using your account.
-          </Typography>
-          <Typography className="mb-2">
-            For assistance, contact our support team.
-          </Typography>
-          <a href="/">
-            <Button size="sm" variant="gradient" className="mt-5">Take me back to the home page</Button>
-          </a>
-        </div>
-      ) : (
-        <>
-          {error && (
-            <Typography color="red" className="mb-2" label="Input Error">
-              {error}
-            </Typography>
-          )}
-          <Typography variant="h4" color="blue" textGradient>
-            Sign Up
-          </Typography>
-          <Typography color="gray" className="mt-1 font-normal">
-            Nice to meet you! Enter your details to register.
-          </Typography>
-        <form className="mt-8 mb-2 w-80 max-w-screen-lg sm:w-96" onSubmit={handleSignUp}>
-          <div className="mb-1 flex flex-col gap-6">
-            <Typography variant="small" color="blue" textGradient className="-mb-4">
-              Your Name
-            </Typography>
-            <Input
-              size="lg"
-              id="name"
-              type="name"
-              color="white"
-              variant="static"
-              placeholder="John Doe"
-              onChange={(e) => setName(e.target.value)}
+    <div className="container px-10 mt-20">
+      <Typography variant="h1" color="white">Account</Typography>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mt-10">
 
-            />
-            <Typography variant="small" color="blue" textGradient className="-mb-4">
-              Your Email
-            </Typography>
-            <Input
-              id="email"
-              type="email"
-              color="white"
-              variant="static"
-              placeholder="johndoe@mail.com"
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <Typography variant="small" color="blue" textGradient className="-mb-4">
-              Password
-            </Typography>
-            <Input
-              id="password"
-              type="password"
-              color="white"
-              variant="static"
-              placeholder="********"
-              onChange={(e) => setPassword(e.target.value)}
-            />
+        <div className="gap-10 ">
+
+          <div className="grid grid-cols-1 gap-10">
+            <Typography variant="h3" textGradient color="green">Bookmarks</Typography>
+
+
+            <Card color="gray" className="h-36">
+              <CardBody></CardBody>
+            </Card>
+            <Card color="gray" className="h-36">
+              <CardBody></CardBody>
+            </Card>
           </div>
-          <Checkbox
-            label={
-              <Typography
-                variant="small"
-                color="gray"
-                className="flex items-center font-normal"
-              >
-                I agree the
-                <a
-                  href="#"
-                  className="font-medium transition-colors hover:text-gray-900"
-                >
-                  &nbsp;Terms and Conditions
-                </a>
-              </Typography>
-            }
-            containerProps={{ className: "-ml-2.5" }}
-          />
-          <Button type="submit" className="mt-6" fullWidth>
-            sign up
-          </Button>
-          <Typography color="gray" className="mt-4 text-center font-normal">
-            Already have an account?{" "}
-            <a href="#" className="font-medium text-blue-600">
-              Sign In
-            </a>
-          </Typography>
-        </form>
-        </>
-            )}
-      </Card>
-    );
-  }
-  
+
+        </div>
+
+        <div>
+
+          <div className="grid grid-cols-1 gap-10 ">
+
+            <div className="flex flex-row justify-between">
+              <Typography variant="h3" textGradient color="green">Uploads</Typography>
+              <div className="flex flex-row gap-8">
+
+                <Typography variant="small" className="flex flex-row items-center">
+                  <Checkbox color="green" className="h-4 w-4 rounded-full" />
+                  Select All
+                </Typography>
+                <Tooltip content="Upload">
+                  <IconButton color="gray" variant="gradient" className="rounded-full"><icons.FolderPlusIcon className="h-5 w-5" strokeWidth={1} /></IconButton>
+                </Tooltip>
+                <Tooltip content="Remove">
+                  <IconButton color="red" variant="gradient" className="rounded-full"><icons.FolderMinusIcon className="h-5 w-5" strokeWidth={1} /></IconButton>
+                </Tooltip>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-10">
+
+              <Card color="transparent" className="h-36 border-2 border-dashed border-gray-800 grid-cols-1 place-content-center justify-content-center">
+                <div className="flex flex-col items-center space-y-5">
+
+                  <icons.InboxArrowDownIcon color="gray" className="h-9 w-9 mt-12" />
+                  <div className="flex flex-row place-items-center">
+                    <div>
+
+                      <Typography variant="small" className="text-left">Drag the file or<Button className="rounded-full !bg-none !border-none !shadow-none px-2">Browse Files</Button></Typography>
+                    </div>
+                  </div>
+                </div>
+              </Card>
+
+
+              <Card color="gray" className="h-36">
+                <CardBody>
+                  <Checkbox color="green" className="rounded-full"/>
+                </CardBody>
+              </Card>
+              <Card color="gray" className="h-36">
+                <CardBody>
+                  <Checkbox color="green" className="rounded-full"/>
+                </CardBody>
+              </Card>
+            </div>
+
+
+
+          </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  );
+}
