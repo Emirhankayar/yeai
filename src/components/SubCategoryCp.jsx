@@ -1,9 +1,10 @@
 // SubCategoryCp.jsx
 import React, { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { fetchPostsByCategory, truncateDescription } from '../utils/utils';
+import { truncateDescription } from '../utils/utils';
 import { SkeletonPost } from '../common/Skeleton';
 import { icons } from '../common/content';
+import axios from 'axios';
 import { updatePostView } from '../utils/utils';
 import {
   Card,
@@ -40,7 +41,16 @@ const SubCategoryPage = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const retrievedCategoryPosts = await fetchPostsByCategory(categoryName, page, pageSize);
+        const response = await axios.get('http://localhost:5000/postsByCategory', {
+          params: {
+            categoryName: categoryName,
+            page: page,
+            pageSize: pageSize,
+          },
+        });
+  
+        const retrievedCategoryPosts = response.data;
+  
         if (retrievedCategoryPosts.length > 0) {
           if (page === 1) {
             setCategoryPosts(retrievedCategoryPosts);
@@ -61,12 +71,21 @@ const SubCategoryPage = () => {
     };
   
     fetchPosts();
-  }, [page]);
-
+  }, [page, categoryName]);
+  
   const fetchMorePosts = async () => {
     try {
       const nextPage = page + 1;
-      const moreCategoryPosts = await fetchPostsByCategory(categoryName, nextPage, pageSize);
+      const response = await axios.get('http://localhost:5000/postsByCategory', {
+        params: {
+          categoryName: categoryName,
+          page: nextPage,
+          pageSize: pageSize,
+        },
+      });
+  
+      const moreCategoryPosts = response.data;
+  
       if (moreCategoryPosts.length === 0) {
         setHasMore(false);
       } else {
@@ -81,6 +100,7 @@ const SubCategoryPage = () => {
       console.error('Error fetching more posts:', error);
     }
   };
+  
   
 
   const filteredPosts = search

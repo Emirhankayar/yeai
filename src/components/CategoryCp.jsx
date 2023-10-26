@@ -1,6 +1,6 @@
 // CategoryCp.jsx
 import React, { useState, useEffect } from 'react';
-import { retrieveCategoriesFromSupabase } from '../utils/utils';
+import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import { SkeletonCategory } from '../common/Skeleton';
 import { icons } from '../common/content';
@@ -23,47 +23,63 @@ const CategoryList = () => {
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
   
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const retrievedCategories = await retrieveCategoriesFromSupabase(page, pageSize);
-        if (retrievedCategories.length > 0) {
-          if (page === 1) {
-            setCategories(retrievedCategories);
-          } else {
-            setCategories((prevCategories) => [...prevCategories, ...retrievedCategories]);
-          }
-        } else {
-          setHasMore(false);
-        }
-        setIsLoading(false);
-      } catch (error) {
-        console.error('Error fetching categories:', error);
-      }
-    };
-
-    fetchCategories();
-  }, [page]);
-
-  const fetchMoreCategories = async () => {
+useEffect(() => {
+  const fetchCategories = async () => {
     try {
-      const nextPage = page + 1;
-      console.log("Fetching more categories for page:", nextPage);
-      const moreCategories = await retrieveCategoriesFromSupabase(nextPage, pageSize);
-      if (moreCategories.length === 0) {
-        console.log("No more categories to fetch");
-        setHasMore(false);
+      const response = await axios.get('http://localhost:5000/categories', {
+        params: {
+          page: page,
+          pageSize: pageSize,
+        },
+      });
+
+      const retrievedCategories = response.data;
+
+      if (retrievedCategories.length > 0) {
+        if (page === 1) {
+          setCategories(retrievedCategories);
+        } else {
+          setCategories((prevCategories) => [...prevCategories, ...retrievedCategories]);
+        }
       } else {
-        setCategories((prevCategories) => {
-          const allCategories = [...new Set([...prevCategories, ...moreCategories])]; // Use Set to remove duplicates
-          return allCategories;
-        });
-        setPage(nextPage);
+        setHasMore(false);
       }
+      setIsLoading(false);
     } catch (error) {
-      console.error('Error fetching more categories:', error);
+      console.error('Error fetching categories:', error);
     }
   };
+
+  fetchCategories();
+}, [page]);
+
+const fetchMoreCategories = async () => {
+  try {
+    const nextPage = page + 1;
+    console.log('Fetching more categories for page:', nextPage);
+    const response = await axios.get('http://localhost:5000/categories', {
+      params: {
+        page: nextPage,
+        pageSize: pageSize,
+      },
+    });
+
+    const moreCategories = response.data;
+
+    if (moreCategories.length === 0) {
+      console.log('No more categories to fetch');
+      setHasMore(false);
+    } else {
+      setCategories((prevCategories) => {
+        const allCategories = [...new Set([...prevCategories, ...moreCategories])]; // Use Set to remove duplicates
+        return allCategories;
+      });
+      setPage(nextPage);
+    }
+  } catch (error) {
+    console.error('Error fetching more categories:', error);
+  }
+};
   
   const filteredCategories = search
   ? [...Array.from({ length: page * pageSize })] // Fill with empty items to match the expected length

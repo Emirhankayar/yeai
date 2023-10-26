@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { useAuth } from "../services/AuthContext"; 
 import '../index.css'
-import { retrieveAllCategoriesFromSupabase } from "../utils/utils";
+
 
 import {
   Navbar,
@@ -23,33 +24,35 @@ function NavListMenu() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
   const [categories, setCategories] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  //const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        let cachedCategories = localStorage.getItem('categories');
-        if (cachedCategories) {
-          setCategories(JSON.parse(cachedCategories));
+        const storedCategories = localStorage.getItem('categories');
+        if (storedCategories) {
+          setCategories(JSON.parse(storedCategories));
         } else {
-          const categories = await retrieveAllCategoriesFromSupabase();
-          setCategories(categories);
-          localStorage.setItem('categories', JSON.stringify(categories));
+          const response = await axios.get('http://localhost:5000/allCategories', {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+          setCategories(response.data);
+          localStorage.setItem('categories', JSON.stringify(response.data));
         }
       } catch (error) {
         console.error('Error fetching categories:', error);
-      } finally {
-        setIsLoading(false);
       }
     };
-  
-    fetchCategories();
 
-    const cleanup = () => {
-    };
+    if (categories.length === 0) {
+      fetchCategories();
+    }
+  }, [categories]);
 
-    return cleanup;
-  }, []);
+  console.log(categories);
+
   
 
   const handleCategoryClick = async (category) => {
