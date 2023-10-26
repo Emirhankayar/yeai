@@ -1,10 +1,11 @@
 // PostSubCp.jsx
 import React, { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { fetchPostById, fetchPopularPosts, truncateDescription } from '../utils/utils';
+import {  truncateDescription } from '../utils/utils';
 import { SkeletonPost } from '../common/Skeleton'
 import { icons } from '../common/content'
 import { updatePostView } from '../utils/utils';
+import axios from 'axios';
 import {
   Card,
   CardBody,
@@ -13,6 +14,10 @@ import {
   Button,
   Tooltip,
 } from "@material-tailwind/react";
+
+const SV_URL = import.meta.env.VITE_SV_URL
+
+
 const PostDetailsPage = () => {
   const { categoryName, postId } = useParams();
   const [post, setPost] = useState(null);
@@ -37,8 +42,8 @@ const PostDetailsPage = () => {
   useEffect(() => {
     const fetchPostData = async () => {
       try {
-        const fetchedPost = await fetchPostById(postId);
-        setPost(fetchedPost);
+        const response = await axios.get(`${SV_URL}/postById/${postId}`);
+        setPost(response.data);
       } catch (error) {
         console.error('Error fetching post:', error);
       } finally {
@@ -48,7 +53,8 @@ const PostDetailsPage = () => {
   
     const fetchPopularData = async () => {
       try {
-        const popularPosts = await fetchPopularPosts(categoryName, 4);
+        const response = await axios.get(`${SV_URL}/popularPosts/${categoryName}`);
+        const popularPosts = response.data;
         const filteredPopularPosts = popularPosts.filter((popularPost) => popularPost.id !== postId);
         setPopularPosts(filteredPopularPosts);
       } catch (error) {

@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../services/AuthContext"; 
 import '../index.css'
-
-
 import {
   Navbar,
   Collapse,
@@ -17,8 +15,9 @@ import {
   MenuList,
   MenuItem,
 } from "@material-tailwind/react";
-
 import { icons } from "./content";
+
+const SV_URL = import.meta.env.VITE_SV_URL
 
 function NavListMenu() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
@@ -33,7 +32,7 @@ function NavListMenu() {
         if (storedCategories) {
           setCategories(JSON.parse(storedCategories));
         } else {
-          const response = await axios.get('http://localhost:5000/allCategories', {
+          const response = await axios.get(`${SV_URL}/allCategories`, {
             headers: {
               'Content-Type': 'application/json',
             },
@@ -45,15 +44,12 @@ function NavListMenu() {
         console.error('Error fetching categories:', error);
       }
     };
-
+    
     if (categories.length === 0) {
       fetchCategories();
     }
-  }, [categories]);
-
-  console.log(categories);
-
-  
+    console.log(categories)
+  }, []); 
 
   const handleCategoryClick = async (category) => {
     onCategoryClick(`/categories/${category}`);

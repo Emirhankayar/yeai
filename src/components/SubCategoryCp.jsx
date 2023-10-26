@@ -17,6 +17,8 @@ import {
 } from "@material-tailwind/react";
 import InfiniteScroll from 'react-infinite-scroll-component';
 
+const SV_URL = import.meta.env.VITE_SV_URL
+
 const SubCategoryPage = () => {
   const pageSize = 6;
   const { categoryName } = useParams();
@@ -41,7 +43,7 @@ const SubCategoryPage = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/postsByCategory', {
+        const response = await axios.get(`${SV_URL}/postsByCategory`, {
           params: {
             categoryName: categoryName,
             page: page,
@@ -76,7 +78,7 @@ const SubCategoryPage = () => {
   const fetchMorePosts = async () => {
     try {
       const nextPage = page + 1;
-      const response = await axios.get('http://localhost:5000/postsByCategory', {
+      const response = await axios.get(`${SV_URL}/postsByCategory`, {
         params: {
           categoryName: categoryName,
           page: nextPage,
