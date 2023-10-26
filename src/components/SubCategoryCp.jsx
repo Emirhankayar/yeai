@@ -1,7 +1,7 @@
 // SubCategoryCp.jsx
 import React, { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { truncateDescription } from '../utils/utils';
+import { truncateDescription, handleRedirect } from '../utils/utils';
 import { SkeletonPost } from '../common/Skeleton';
 import { icons } from '../common/content';
 import axios from 'axios';
@@ -177,8 +177,7 @@ const SubCategoryPage = () => {
                 >
                 Read More
               </Button>
-              <Link to={post.post_link}
-                target="_blank" rel="noopener noreferrer">
+              <Link onClick={() => handleRedirect(post.post_link)} target="_blank" rel="noopener noreferrer">
                 <Button>
                   Visit Website
                 </Button>

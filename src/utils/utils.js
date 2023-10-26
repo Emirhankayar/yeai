@@ -1,4 +1,6 @@
 // utils.js
+import axios from 'axios';
+const SV_URL = import.meta.env.VITE_SV_URL
 
 const supabaseUrl = import.meta.env.VITE_DB_URL;
 const supabaseKey = import.meta.env.VITE_DB_KEY;
@@ -32,9 +34,20 @@ const truncateDescription = (description, maxLength) => {
   return description;
 };
 
+const handleRedirect = (link) => {
+  try {
+    console.log(link)
+    const newWindow = window.open(link, '_blank');
+    newWindow.focus();
+  } catch (error) {
+    console.error('Error redirecting:', error);
+  }
+};
+
   export 
   { truncateDescription, 
     updatePostView, 
     supabase,
+    handleRedirect,
   };
   
