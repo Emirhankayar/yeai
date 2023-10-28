@@ -1,11 +1,10 @@
 // SubCategoryCp.jsx
 import React, { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { truncateDescription, handleRedirect } from '../utils/utils';
+import { truncateDescription, handleRedirect, updatePostView } from '../utils/utils';
 import { SkeletonPost } from '../common/Skeleton';
 import { icons } from '../common/content';
 import axios from 'axios';
-import { updatePostView } from '../utils/utils';
 import {
   Card,
   CardBody,

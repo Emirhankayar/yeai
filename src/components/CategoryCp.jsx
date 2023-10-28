@@ -73,7 +73,7 @@ const fetchMoreCategories = async () => {
       setHasMore(false);
     } else {
       setCategories((prevCategories) => {
-        const allCategories = [...new Set([...prevCategories, ...moreCategories])]; // Use Set to remove duplicates
+        const allCategories = [...new Set([...prevCategories, ...moreCategories])]; 
         return allCategories;
       });
       setPage(nextPage);
@@ -84,8 +84,8 @@ const fetchMoreCategories = async () => {
 };
   
   const filteredCategories = search
-  ? [...Array.from({ length: page * pageSize })] // Fill with empty items to match the expected length
-      .map((_, index) => categories[index]) // Use the fetched categories if available
+  ? [...Array.from({ length: page * pageSize })] 
+      .map((_, index) => categories[index]) 
       .filter(category => category && category.toLowerCase().includes(search.toLowerCase()))
   : categories;
 

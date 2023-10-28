@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../services/AuthContext"; 
+import Chatbot from '../components/ChatBot';
 import '../index.css'
 import {
   Navbar,
@@ -139,13 +140,13 @@ function NavListMenu() {
   );
 }
  
-function NavList({ user }) {
+function NavList({ user, closeNav }) {
   const handleCategoryClick = (path) => {
     console.log("Navigating to:", path);
   };
 
   return (
-    <List className="mt-4 mb-6 p-0 lg:mt-0 lg:mb-0 lg:flex-row lg:p-1">
+    <List className="mt-4 mb-6 p-0 lg:mt-0 lg:mb-0 lg:flex-row lg:items-center lg:justify-center">
       <Typography
         as="a"
         href="#"
@@ -155,7 +156,7 @@ function NavList({ user }) {
       >
         <ListItem className="flex items-center gap-2 py-2 pr-4">
           <icons.QuestionMarkCircleIcon className="h-[18px] w-[18px]" />
-          About Us
+          About
         </ListItem>
       </Typography>
       <NavListMenu onCategoryClick={handleCategoryClick} />
@@ -188,6 +189,13 @@ function NavList({ user }) {
           </ListItem>
         </Typography>
       )}
+        
+          <ListItem className="flex items-center gap-2 py-2" onClick={() => closeNav()}>
+            <icons.ChatBubbleOvalLeftIcon color="purple" className="h-[18px] w-[18px]" />
+
+            <Chatbot />
+            
+          </ListItem>
     </List>
   );
 }
@@ -195,6 +203,11 @@ function NavList({ user }) {
 export default function NavbarWithMegaMenu() {
   const [openNav, setOpenNav] = React.useState(false);
   const { user, signOut } = useAuth();
+  const closeNav = () => {
+    if (openNav) {
+      setOpenNav(false);
+    }
+  };
 
   React.useEffect(() => {
     window.addEventListener(
@@ -252,7 +265,8 @@ export default function NavbarWithMegaMenu() {
         </IconButton>
       </div>
       <Collapse open={openNav}>
-        <NavList user={user} />
+        <NavList user={user}
+        closeNav={closeNav} />
 
 
         {user ? (

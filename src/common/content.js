@@ -142,6 +142,7 @@ const icons = {
   FolderMinusIcon,
   InboxArrowDownIcon,
   ArrowUpOnSquareIcon,
+  ChatBubbleOvalLeftIcon,
 }
 
 export { content, content_head, category_items, colors, icons }
