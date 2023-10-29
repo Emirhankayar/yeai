@@ -144,11 +144,8 @@ const icons = {
   InboxArrowDownIcon,
   ArrowUpOnSquareIcon,
   ChatBubbleOvalLeftIcon,
-<<<<<<< HEAD
   ViewfinderCircleIcon,
   Squares2X2Icon
-=======
->>>>>>> 1940cac8dea1eb546f4bc9cbf990dbfc4faf0be8
 }
 
 export { content, content_head, category_items, colors, icons }

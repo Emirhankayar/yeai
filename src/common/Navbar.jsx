@@ -245,7 +245,6 @@ export default function NavbarWithMegaMenu() {
               Sign Out
             </Button>
           ) : (
-
               <a href="/sign-in">
               <Button variant="gradient" fullWidth size="sm">
               Sign in
