@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { useAuth } from "../services/AuthContext"; 
+import Chatbot from '../components/ChatBot';
 import '../index.css'
-import { retrieveAllCategoriesFromSupabase } from "../utils/utils";
-
 import {
   Navbar,
   Collapse,
@@ -16,41 +16,41 @@ import {
   MenuList,
   MenuItem,
 } from "@material-tailwind/react";
-
 import { icons } from "./content";
+
+const SV_URL = import.meta.env.VITE_SV_URL
 
 function NavListMenu() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
   const [categories, setCategories] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  //const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        let cachedCategories = localStorage.getItem('categories');
-        if (cachedCategories) {
-          setCategories(JSON.parse(cachedCategories));
+        const storedCategories = localStorage.getItem('categories');
+        if (storedCategories) {
+          setCategories(JSON.parse(storedCategories));
         } else {
-          const categories = await retrieveAllCategoriesFromSupabase();
-          setCategories(categories);
-          localStorage.setItem('categories', JSON.stringify(categories));
+          const response = await axios.get(`${SV_URL}/allCategories`, {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+          setCategories(response.data);
+          localStorage.setItem('categories', JSON.stringify(response.data));
         }
       } catch (error) {
         console.error('Error fetching categories:', error);
-      } finally {
-        setIsLoading(false);
       }
     };
-  
-    fetchCategories();
-
-    const cleanup = () => {
-    };
-
-    return cleanup;
-  }, []);
-  
+    
+    if (categories.length === 0) {
+      fetchCategories();
+    }
+    console.log(categories)
+  }, []); 
 
   const handleCategoryClick = async (category) => {
     onCategoryClick(`/categories/${category}`);
@@ -68,6 +68,7 @@ function NavListMenu() {
             color="blue-gray"
             className="flex items-center text-sm capitalize font-bold"
           >
+            <icons.ViewfinderCircleIcon className="w-5 h-5 mr-2" />
             list all categories
           </Typography>
         </div>
@@ -85,6 +86,8 @@ function NavListMenu() {
               color="blue-gray"
               className="flex items-center text-sm capitalize font-bold"
             >
+                          <icons.Squares2X2Icon className="w-5 h-5 mr-2" />
+
               {category}
             </Typography>
           </div>
@@ -140,13 +143,13 @@ function NavListMenu() {
   );
 }
  
-function NavList({ user }) {
+function NavList({ user, closeNav }) {
   const handleCategoryClick = (path) => {
     console.log("Navigating to:", path);
   };
 
   return (
-    <List className="mt-4 mb-6 p-0 lg:mt-0 lg:mb-0 lg:flex-row lg:p-1">
+    <List className="mt-4 mb-6 p-0 lg:mt-0 lg:mb-0 lg:flex-row lg:items-center lg:justify-center">
       <Typography
         as="a"
         href="#"
@@ -156,7 +159,7 @@ function NavList({ user }) {
       >
         <ListItem className="flex items-center gap-2 py-2 pr-4">
           <icons.QuestionMarkCircleIcon className="h-[18px] w-[18px]" />
-          About Us
+          About
         </ListItem>
       </Typography>
       <NavListMenu onCategoryClick={handleCategoryClick} />
@@ -189,6 +192,13 @@ function NavList({ user }) {
           </ListItem>
         </Typography>
       )}
+        
+          <ListItem className="flex items-center gap-2 py-2" onClick={() => closeNav()}>
+            <icons.ChatBubbleOvalLeftIcon color="purple" className="h-[18px] w-[18px]" />
+
+            <Chatbot />
+            
+          </ListItem>
     </List>
   );
 }
@@ -196,6 +206,11 @@ function NavList({ user }) {
 export default function NavbarWithMegaMenu() {
   const [openNav, setOpenNav] = React.useState(false);
   const { user, signOut } = useAuth();
+  const closeNav = () => {
+    if (openNav) {
+      setOpenNav(false);
+    }
+  };
 
   React.useEffect(() => {
     window.addEventListener(
@@ -214,10 +229,11 @@ export default function NavbarWithMegaMenu() {
           className="mr-4 cursor-pointer py-1.5 lg:ml-2 flex flex-row items-center gap-1 font-oxanium font-extrabold"
         >
 
-          yeAI
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="black" className="w-5 h-5">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M7.864 4.243A7.5 7.5 0 0119.5 10.5c0 2.92-.556 5.709-1.568 8.268M5.742 6.364A7.465 7.465 0 004.5 10.5a7.464 7.464 0 01-1.15 3.993m1.989 3.559A11.209 11.209 0 008.25 10.5a3.75 3.75 0 117.5 0c0 .527-.021 1.049-.064 1.565M12 10.5a14.94 14.94 0 01-3.6 9.75m6.633-4.596a18.666 18.666 0 01-2.485 5.33" />
-          </svg>
+          yeai
+          <span className="bg-gradient-to-r from-emerald-600 via-emerald-700 to-emerald-900 inline-block text-transparent bg-clip-text hover:animate-shift">
+            .tech
+            </span>
+
         </Typography>
         <div className="hidden lg:block">
           <NavList user={user}/>
@@ -253,7 +269,8 @@ export default function NavbarWithMegaMenu() {
         </IconButton>
       </div>
       <Collapse open={openNav}>
-        <NavList user={user} />
+        <NavList user={user}
+        closeNav={closeNav} />
 
 
         {user ? (

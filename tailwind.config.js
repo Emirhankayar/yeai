@@ -10,13 +10,26 @@ module.exports = withMT({
         oxanium: ['Oxanium', 'sans-serif'],
       },
       animation: {
-        'slide-in-left': 'slideInLeft 1s both',
+        'go-in': 'goIn 2s both',
+        'slide-in-left': 'slideInLeft 2s both',
         'slide-in-right': 'slideInRight 1s both',
-        'slide-in-down': 'slideInDown 2s infinite', 
+        'slide-in-down': 'slideInDown 2s both', 
+        'slide-in-up': 'slideInUp 2s both', 
+        'slide-in-up-late': 'slideInUpLate 2s both', 
         'shimmer': 'shimmer 1s infinite',
+        'shift': 'shift 3s infinite',
+        'shiftlarge': 'shift 4s infinite',
       },
 
       keyframes: {
+        goIn: {
+          '0%': {
+            opacity: 0,
+          },
+          '100%': {
+            opacity: 1,
+          },
+        },
         slideInLeft: {
           '0%': {
             transform: 'translateX(-100%)',
@@ -47,6 +60,26 @@ module.exports = withMT({
             opacity: 1,
           },
         },
+        slideInUp: { 
+          '0%': {
+            transform: 'translateY(100%)',
+            opacity: 0,
+          },
+          '100%': {
+            transform: 'translateY(0)',
+            opacity: 1,
+          },
+        },
+        slideInUpLate: { 
+          '0%': {
+            transform: 'translateY(50%)',
+            opacity: 0,
+          },
+          '100%': {
+            transform: 'translateY(0)',
+            opacity: 1,
+          },
+        },
         shimmer: {
           '0%': {
             backgroundPosition: '-1000px 0',
@@ -55,7 +88,16 @@ module.exports = withMT({
             backgroundPosition: '1000px 0',
           },
         },
+        shift: {
+          '0%': {
+            backgroundPosition: '0px 0',
+          },
+          '100%': {
+            backgroundPosition: '120px 0',
+          },
+        },
       },
+      
       colors: {
         emerald: {
           50: "#3ECF8E0D",

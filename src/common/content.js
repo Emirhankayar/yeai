@@ -25,6 +25,7 @@ import {
   FolderMinusIcon,
   InboxArrowDownIcon,
   ArrowUpOnSquareIcon,
+  Squares2X2Icon
 } from "@heroicons/react/24/outline";
 
 const content = [
@@ -142,6 +143,9 @@ const icons = {
   FolderMinusIcon,
   InboxArrowDownIcon,
   ArrowUpOnSquareIcon,
+  ChatBubbleOvalLeftIcon,
+  ViewfinderCircleIcon,
+  Squares2X2Icon
 }
 
 export { content, content_head, category_items, colors, icons }
