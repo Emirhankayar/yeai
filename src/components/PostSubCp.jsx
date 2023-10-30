@@ -1,5 +1,5 @@
 // PostSubCp.jsx
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { truncateDescription, handleRedirect } from '../utils/utils';
 import { SkeletonPost } from '../common/Skeleton'
@@ -15,7 +15,7 @@ import {
   Tooltip,
 } from "@material-tailwind/react";
 
-const SV_URL = import.meta.env.VITE_SV_URL
+const SV_URL = import.meta.env.VITE_SV_URL;
 
 
 const PostDetailsPage = () => {
@@ -50,13 +50,14 @@ const PostDetailsPage = () => {
         setIsLoading(false);
       }
     };
-
+    
     const fetchPopularData = async () => {
       try {
         const response = await axios.get(`${SV_URL}/popularPosts/${categoryName}`);
-        const popularPosts = response.data;
-        const filteredPopularPosts = popularPosts.filter((popularPost) => popularPost.id !== postId);
-        setPopularPosts(filteredPopularPosts);
+        const allPopulars = response.data;
+        const filteredPopulars = allPopulars.filter((popularPost) => popularPost.id !== postId);
+        const displayedPopulars = filteredPopulars.length > 0 ? filteredPopulars.slice(0, Math.min(filteredPopulars.length, 4)) : [];
+        setPopularPosts(displayedPopulars);
       } catch (error) {
         console.error('Error fetching popular posts:', error);
       }

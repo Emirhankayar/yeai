@@ -1,5 +1,4 @@
-// CategoryCp.jsx
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import { SkeletonCategory } from '../common/Skeleton';
@@ -14,87 +13,64 @@ import {
 } from "@material-tailwind/react";
 import InfiniteScroll from 'react-infinite-scroll-component';
 
-const SV_URL = import.meta.env.VITE_SV_URL
+const SV_URL = import.meta.env.VITE_SV_URL;
 
 const CategoryList = () => {
-  const pageSize = 6;
   const [categories, setCategories] = useState([]);
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [isLoading, setIsLoading] = useState(true); 
   const [hasMore, setHasMore] = useState(true);
+  const [nextPage, setNextPage] = useState(1); 
   const [page, setPage] = useState(1);
+
   
-useEffect(() => {
-  const fetchCategories = async () => {
+  const fetchCategories = async (page) => {
     try {
       const response = await axios.get(`${SV_URL}/categories`, {
         params: {
           page: page,
-          pageSize: pageSize,
         },
       });
-
+  
       const retrievedCategories = response.data;
-
+  
       if (retrievedCategories.length > 0) {
         if (page === 1) {
-          setCategories(retrievedCategories);
+          setCategories(retrievedCategories); 
         } else {
-          setCategories((prevCategories) => [...prevCategories, ...retrievedCategories]);
+          setCategories((prevCategories) => [
+            ...prevCategories,
+            ...retrievedCategories,
+          ]);
         }
       } else {
-        setHasMore(false);
+        setHasMore(false);        
       }
       setIsLoading(false);
     } catch (error) {
       console.error('Error fetching categories:', error);
     }
   };
-
-  fetchCategories();
-}, [page]);
-
-const fetchMoreCategories = async () => {
-  try {
-    const nextPage = page + 1;
-    console.log('Fetching more categories for page:', nextPage);
-    const response = await axios.get(`${SV_URL}/categories`, {
-      params: {
-        page: nextPage,
-        pageSize: pageSize,
-      },
-    });
-
-    const moreCategories = response.data;
-
-    if (moreCategories.length === 0) {
-      console.log('No more categories to fetch');
-      setHasMore(false);
-    } else {
-      setCategories((prevCategories) => {
-        const allCategories = [...new Set([...prevCategories, ...moreCategories])]; 
-        return allCategories;
-      });
-      setPage(nextPage);
-    }
-  } catch (error) {
-    console.error('Error fetching more categories:', error);
-  }
-};
   
-  const filteredCategories = search
-  ? [...Array.from({ length: page * pageSize })] 
-      .map((_, index) => categories[index]) 
-      .filter(category => category && category.toLowerCase().includes(search.toLowerCase()))
-  : categories;
+  const fetchMoreCategories = () => {
+    const nextPage = page + 1;
+    setNextPage(nextPage)
+    fetchCategories(nextPage);
+    setPage(nextPage);
+  };
+  
+  useEffect(() => {
+    fetchCategories(1); // fetch the first page of data
+  }, []);
+  
 
   const handleCategoryClick = async (category) => {
     navigate(`/categories/${category}`);
     window.scrollTo(0, 0); 
   };
 
-  const renderLoadingCategories = Array.from({ length: pageSize }).map((_, index) => (
+  const renderLoadingCategories = Array.from({ length: nextPage }).map((_, index) => (
     <SkeletonCategory key={index} />
   ));
 
@@ -106,11 +82,11 @@ const fetchMoreCategories = async () => {
     );
   }
 
-  const renderCategories = filteredCategories.slice(0, page * pageSize).map((category, index) => (
+  const renderCategories = categories.map((category, index) => (
   <Card variant='gradient' color='gray' className="w-full border-2 border-gray-800 text-gray-500" key={index}>
       <CardBody>
         <div className="mb-2">
-          <Typography variant='lead' color="white"  className="font-bold capitalize text-center">
+          <Typography variant='lead' color="white"  className="font-medium  font-oxanium uppercase text-center">
             {category}
           </Typography>
         </div>

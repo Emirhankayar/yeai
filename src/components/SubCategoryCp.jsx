@@ -1,5 +1,5 @@
 // SubCategoryCp.jsx
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { truncateDescription, handleRedirect, updatePostView } from '../utils/utils';
 import { SkeletonPost } from '../common/Skeleton';
@@ -16,16 +16,16 @@ import {
 } from "@material-tailwind/react";
 import InfiniteScroll from 'react-infinite-scroll-component';
 
-const SV_URL = import.meta.env.VITE_SV_URL
+const SV_URL = import.meta.env.VITE_SV_URL;
 
 const SubCategoryPage = () => {
-  const pageSize = 6;
   const { categoryName } = useParams();
   const [categoryPosts, setCategoryPosts] = useState([]);
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(true); 
   const [search, setSearch] = useState('');
+  const [isLoading, setIsLoading] = useState(true); 
   const [hasMore, setHasMore] = useState(true);
+  const [nextPage, setNextPage] = useState(1); 
   const [page, setPage] = useState(1);
 
   const handleBookmarkClick = (postId) => {
@@ -39,76 +39,47 @@ const SubCategoryPage = () => {
     });
   };
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const response = await axios.get(`${SV_URL}/postsByCategory`, {
-          params: {
-            categoryName: categoryName,
-            page: page,
-            pageSize: pageSize,
-          },
-        });
-  
-        const retrievedCategoryPosts = response.data;
-  
-        if (retrievedCategoryPosts.length > 0) {
-          if (page === 1) {
-            setCategoryPosts(retrievedCategoryPosts);
-          } else {
-            setCategoryPosts((prevCategoryPosts) => {
-              const prevPostIds = new Set(prevCategoryPosts.map((post) => post.id));
-              const uniquePosts = retrievedCategoryPosts.filter((post) => !prevPostIds.has(post.id));
-              return [...prevCategoryPosts, ...uniquePosts];
-            });
-          }
-        } else {
-          setHasMore(false);
-        }
-        setIsLoading(false);
-      } catch (error) {
-        console.error('Error fetching posts:', error);
-      }
-    };
-  
-    fetchPosts();
-  }, [page, categoryName]);
-  
-  const fetchMorePosts = async () => {
+
+  const fetchPosts = async (page, categoryName) => {
     try {
-      const nextPage = page + 1;
       const response = await axios.get(`${SV_URL}/postsByCategory`, {
         params: {
           categoryName: categoryName,
-          page: nextPage,
-          pageSize: pageSize,
+          page: page,
         },
       });
   
-      const moreCategoryPosts = response.data;
+      const retrievedCategoryPosts = response.data;
   
-      if (moreCategoryPosts.length === 0) {
-        setHasMore(false);
+      if (retrievedCategoryPosts.length > 0) {
+        if (page === 1) {
+          setCategoryPosts(retrievedCategoryPosts); // clear the state for the first page
+        } else {
+          setCategoryPosts((prevCategoryPosts) => [
+            ...prevCategoryPosts,
+            ...retrievedCategoryPosts,
+          ]);
+        }
       } else {
-        setCategoryPosts((prevCategoryPosts) => {
-          const prevPostIds = new Set(prevCategoryPosts.map((post) => post.id)); // Create a set of existing post ids
-          const uniquePosts = moreCategoryPosts.filter((post) => !prevPostIds.has(post.id)); // Filter out already existing posts
-          return [...prevCategoryPosts, ...uniquePosts]; // Append only unique posts
-        });
-        setPage(nextPage);
+        setHasMore(false);
       }
+      setIsLoading(false);
     } catch (error) {
-      console.error('Error fetching more posts:', error);
+      console.error('Error fetching posts:', error);
     }
   };
   
+  useEffect(() => {
+    fetchPosts(1, categoryName); // fetch the first page of data
+  }, [categoryName]); // only call the effect when the categoryName changes
   
-
-  const filteredPosts = search
-  ? categoryPosts.filter((post) =>
-      post.post_title.toLowerCase().includes(search.toLowerCase())
-    )
-  : categoryPosts;
+  const fetchMorePosts = async () => {
+    const nextPage = page + 1; // increment the page parameter
+    setNextPage(nextPage)
+    await fetchPosts(nextPage, categoryName);
+    setPage(nextPage);
+  };
+  
 
   const handlePostClick = async (postId) => {
     const post = categoryPosts.find((post) => post.id === postId);
@@ -122,16 +93,11 @@ const SubCategoryPage = () => {
       }
     }
   };
-
-  let lastPagePostCount = categoryPosts.length % pageSize;
-  if (lastPagePostCount === 0) {
-    lastPagePostCount = pageSize;
-  }
   
-  const renderLoadingPosts = Array.from({ length: lastPagePostCount }).map((_, index) => (
+
+  const renderLoadingPosts = Array.from({ length: nextPage }).map((_, index) => (
     <SkeletonPost key={index} />
   ));
-
   if (isLoading || !categoryPosts || categoryPosts.length === 0) {
     return (
       <div className="container px-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-10 mt-40">
@@ -140,7 +106,7 @@ const SubCategoryPage = () => {
     );
   }
 
-  const renderPosts = filteredPosts.slice(0, page * pageSize).map((post, index) => (
+  const renderPosts = categoryPosts.map((post, index) => (
     <Card variant='gradient' color='gray' className="w-full border-2 border-gray-800 text-gray-500" key={index}>
     <CardBody>
               <div className="mb-2 flex flex-col items-start space-y-4">

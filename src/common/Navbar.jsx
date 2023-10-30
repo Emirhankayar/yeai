@@ -165,7 +165,7 @@ function NavList({ user, closeNav }) {
       <NavListMenu onCategoryClick={handleCategoryClick} />
       <Typography
         as="a"
-        href="/categories/Freebies"
+        href="/categories/freebies"
         variant="small"
         color="blue-gray"
         className="font-normal"
