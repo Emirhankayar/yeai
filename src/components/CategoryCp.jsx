@@ -1,17 +1,10 @@
-import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { SkeletonCategory } from '../common/Skeleton';
+import { SkeletonCategory, PgTitle, PgButton, InfScroll } from '../common/Skeleton';
 import { icons } from '../common/content';
-import {
-  Card,
-  CardBody,
-  CardFooter,
-  Typography,
-  Input,
-  Button,
-} from "@material-tailwind/react";
-import InfiniteScroll from 'react-infinite-scroll-component';
+import { CategoryCard } from '../common/Card';
+import { Input } from '@material-tailwind/react';
 
 const SV_URL = import.meta.env.VITE_SV_URL;
 
@@ -85,25 +78,6 @@ const CategoryList = () => {
     );
   }
 
-  const renderCategories = categories.map((category, index) => (
-  <Card variant='gradient' color='gray' className="w-full border-2 border-gray-800 text-gray-500" key={index}>
-      <CardBody>
-        <div className="mb-2">
-          <Typography variant='h6' color="white"  className="font-semibold uppercase text-center">
-            {category}
-          </Typography>
-        </div>
-      </CardBody>
-      <CardFooter className="pt-0 text-center">
-        <Button
-          onClick={() => handleCategoryClick(category)}
-          >
-          View Posts
-        </Button>
-      </CardFooter>
-    </Card>
-  ));
-
   return (
     <div className="container mx-auto px-10">
       <div className='mb-10'>
@@ -117,15 +91,12 @@ const CategoryList = () => {
         />
       </div>
       <div className='flex flex-row items-center justify-between mb-10'>
-        <Typography variant='h4' color='white' className='font-bold capitalize'>Category List</Typography>
+        <PgTitle text='Category List'/>
         <Link to="/">
-        <Button className='flex flex-row gap-2 items-center uppercase h-7'>
-              <icons.ArrowUturnLeftIcon className='h-3 w-3' stroke='white'/>
-              Home
-      </Button>
+        <PgButton text='Home'></PgButton>
         </Link>
       </div>
-      <InfiniteScroll
+      <InfScroll
         dataLength={categories.length}
         next={fetchMoreCategories}
         hasMore={hasMore}
@@ -133,9 +104,16 @@ const CategoryList = () => {
         loader={<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mt-10'>{renderLoadingCategories}</div>} 
       >
       <ul className='flex flex-col gap-10 grid md:grid-cols-2 lg:grid-cols-3'>
-          {renderCategories}
+      {categories.map((category, index) => (
+        <CategoryCard
+                  key={index}
+                  category={category}
+                  handleCategoryClick={handleCategoryClick}
+        />
+
+      ))}
       </ul>
-      </InfiniteScroll>
+      </InfScroll>
     </div>
   );
 };

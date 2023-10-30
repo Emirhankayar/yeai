@@ -9,7 +9,7 @@ const updatePostView = async (postId, post_view) => {
   try {
     const updatedView = (post_view || 0) + 1;
     
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from('tools')
       .update({ post_view: updatedView })
       .eq('id', postId);

@@ -1,17 +1,10 @@
 // PostSubCp.jsx
+import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { handleRedirect } from '../utils/utils';
-import { SkeletonPost } from '../common/Skeleton'
-import { icons } from '../common/content'
-import { updatePostView } from '../utils/utils';
-import axios from 'axios';
-import PostCard from '../common/Card';
-import {
-  Typography,
-  Button,
-  Tooltip,
-} from "@material-tailwind/react";
+import { SkeletonPost, PgTitle, PgButton } from '../common/Skeleton'
+import { updatePostView, handleRedirect } from '../utils/utils';
+import { PostCard, SinglePostCard } from '../common/Card';
 
 const SV_URL = import.meta.env.VITE_SV_URL;
 
@@ -65,9 +58,6 @@ const PostDetailsPage = () => {
     fetchPopularData();
   }, [categoryName, postId]);
 
-
-
-
   const handlePopularPostClick = async (postId, postView) => {
     try {
       await updatePostView(postId, postView);
@@ -95,33 +85,26 @@ const PostDetailsPage = () => {
   return (
     <div className="container mx-auto px-10 space-y-20">
       <div>
-        <div className='flex flex-row  items-center justify-between mb-10'>
-          <Typography variant='lead' color='green' textGradient className='capitalize font-bold flex flex-row items-center'>
-            {post.post_title}
-          </Typography>
+        <div className='flex flex-row items-center justify-between mb-10'>
+
           <Link to={`/categories/${categoryName}`}>
-            <Button className='flex flex-row gap-2 items-center uppercase h-7'>
-              <icons.ArrowUturnLeftIcon className='h-3 w-3' stroke='white'/>
-              {categoryName}
-            </Button>
+            <PgButton
+              text={`(${categoryName})`}
+            />
           </Link>
         </div>
 
-        <PostCard
+
+        <SinglePostCard
         post={post}
         handleBookmarkClick={handleBookmarkClick}
         handlePostClick={handlePopularPostClick}
         handleRedirect={handleRedirect}
-        truncateDescription={false}
-        showReadMoreButton={false}
       />
       </div>
 
-      <Typography variant='h4' color="green" textGradient className="font-bold">
-        Popular Posts in&nbsp; <span className='uppercase'>
-          {categoryName}
-          </span>
-      </Typography>
+      <PgTitle text={`Popular Posts in ${categoryName.toUpperCase()}`} />
+
       <ul className='grid grid-cols-1 gap-10 lg:grid-cols-2'>
       {popularPosts.map((popularPost, index) => (
           <PostCard

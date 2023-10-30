@@ -1,17 +1,14 @@
-// SubCategoryCp.jsx
+import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import {  handleRedirect, updatePostView } from '../utils/utils';
-import { SkeletonPost } from '../common/Skeleton';
+import { handleRedirect, updatePostView } from '../utils/utils';
+import { SkeletonPost, InfScroll, PgTitle, PgButton } from '../common/Skeleton';
 import { icons } from '../common/content';
-import axios from 'axios';
-import PostCard from '../common/Card';
+import { PostCard } from '../common/Card';
+
 import {
-  Typography,
-  Button,
   Input,
 } from "@material-tailwind/react";
-import InfiniteScroll from 'react-infinite-scroll-component';
 
 const SV_URL = import.meta.env.VITE_SV_URL;
 
@@ -95,7 +92,7 @@ const SubCategoryPage = () => {
   const renderLoadingPosts = Array.from({ length: nextPage }).map((_, index) => (
     <SkeletonPost key={index} />
   ));
-  if (isLoading == true || !categoryPosts || categoryPosts.length === 0) {
+  if (isLoading || !categoryPosts || categoryPosts.length === 0) {
     return (
       <div className="container px-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-10 mt-40">
           {renderLoadingPosts}          
@@ -118,19 +115,12 @@ const SubCategoryPage = () => {
         />
       </div>
       <div className='flex flex-row  items-center justify-between'>
-      <Typography variant='h4' color='white' className='font-bold '>Posts in&nbsp; 
-      <span className='uppercase'>
-        {categoryName}
-        </span>
-        </Typography>
+      <PgTitle text={`Posts in ${categoryName.toUpperCase()}`} />     
       <Link to="/categories">
-      <Button className='flex flex-row gap-2 items-center uppercase h-7'>
-              <icons.ArrowUturnLeftIcon className='h-3 w-3' stroke='white'/>
-              Categories
-      </Button>
+        <PgButton text='Categories'/>
       </Link>
       </div>
-      <InfiniteScroll
+      <InfScroll
         dataLength={categoryPosts.length}
         next={fetchMorePosts}
         hasMore={hasMore}
@@ -149,7 +139,7 @@ const SubCategoryPage = () => {
           ))}
 
       </ul>
-      </InfiniteScroll>
+      </InfScroll>
     </div>
   );
 };

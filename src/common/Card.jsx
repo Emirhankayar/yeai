@@ -3,7 +3,7 @@ import { icons } from './content';
 import { Link } from 'react-router-dom';
 import { Card, CardBody, CardFooter, Button, Tooltip, Typography } from "@material-tailwind/react";
 
-function PostCard({ post, handleBookmarkClick, handlePostClick, handleRedirect, truncateDescription = true, showReadMoreButton = true }) {
+export function PostCard({ post, handleBookmarkClick, handlePostClick, handleRedirect, truncateDescription = true, showReadMoreButton = true }) {
   return (
     <Card variant='gradient' color='gray' className="w-full border-2 border-gray-800 text-gray-500">
       <CardBody>
@@ -44,20 +44,20 @@ function PostCard({ post, handleBookmarkClick, handlePostClick, handleRedirect, 
         </div>
       </CardBody>
 
-      {showReadMoreButton && (
         <CardFooter className="pt-0 flex items-start gap-4">
+          {showReadMoreButton && (
           <Button
             onClick={() => handlePostClick(post.id)}
-          >
+            >
             Read More
           </Button>
+            )}
           <Link onClick={() => handleRedirect(post.post_link)} target="_blank" rel="noopener noreferrer">
             <Button>
               Visit Website
             </Button>
           </Link>
         </CardFooter>
-      )}
     </Card>
   );
 }
@@ -78,4 +78,96 @@ PostCard.propTypes = {
   showReadMoreButton: PropTypes.bool,
 };
 
-export default PostCard;
+export function SinglePostCard({ post, handleBookmarkClick, handlePostClick, handleRedirect, showReadMoreButton = false }) {
+  return (
+    <Card variant='gradient' color='gray' className="w-full border-2 border-gray-800 text-gray-500">
+      <CardBody>
+        <div className="mb-2 flex flex-col items-start space-y-4">
+          <div className='flex flex-row items-center justify-between w-full'>
+          <Typography variant='h5' color="white" className="font-bold capitalize">
+            {post.post_title}
+        </Typography>
+
+            <div className='flex flex-row items-center justify-between gap-6'>
+
+              <Tooltip content={post.post_category} className='bg-orange-400 uppercase' >
+                <icons.SwatchIcon className='h-5 w-5' stroke='gray' />
+              </Tooltip>
+              <Tooltip
+                content="Save the Post"
+                className="bg-gray-400 capitalize"
+                key={post.id} 
+              >
+                <icons.BookmarkIcon
+                  className="h-5 w-5 cursor-pointer"
+                  fill={post.isBookmarked ? 'gray' : 'none'}
+                  onClick={() => handleBookmarkClick(post.id, true)} 
+                />
+              </Tooltip>
+            </div>
+
+          </div>
+            <Typography variant='paragraph'>
+              {post.post_description}
+            </Typography>
+        </div>
+      </CardBody>
+
+        <CardFooter className="pt-0 flex items-start gap-4">
+      {showReadMoreButton && (
+          <Button
+            onClick={() => handlePostClick(post.id)}
+          >
+            Read More
+          </Button>
+            )}
+          <Link onClick={() => handleRedirect(post.post_link)} target="_blank" rel="noopener noreferrer">
+            <Button>
+              Visit Website
+            </Button>
+          </Link>
+        </CardFooter>
+    </Card>
+  );
+}
+
+SinglePostCard.propTypes = {
+  post: PropTypes.shape({
+    post_title: PropTypes.string.isRequired,
+    post_category: PropTypes.string.isRequired,
+    post_description: PropTypes.string.isRequired,
+    post_link: PropTypes.string.isRequired,
+    isBookmarked: PropTypes.bool.isRequired,
+    id: PropTypes.number.isRequired,
+  }).isRequired,
+  handleBookmarkClick: PropTypes.func.isRequired,
+  handlePostClick: PropTypes.func.isRequired,
+  handleRedirect: PropTypes.func.isRequired,
+  truncateDescription: PropTypes.bool,
+  showReadMoreButton: PropTypes.bool,
+};
+
+
+export function CategoryCard({ category, handleCategoryClick }) {
+  return (
+    <Card variant="gradient" color="gray" className="w-full border-2 border-gray-800 text-gray-500">
+      <CardBody>
+        <div className="mb-2">
+          <Typography variant="h6" color="white" className="font-semibold uppercase text-center">
+            {category}
+          </Typography>
+        </div>
+      </CardBody>
+      <CardFooter className="pt-0 text-center">
+        <Button onClick={() => handleCategoryClick(category)}>View Posts</Button>
+      </CardFooter>
+    </Card>
+  );
+}
+
+CategoryCard.propTypes = {
+  category: PropTypes.string.isRequired,
+  handleCategoryClick: PropTypes.func.isRequired,
+};
+
+export default { CategoryCard, PostCard, SinglePostCard };
