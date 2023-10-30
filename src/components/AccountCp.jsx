@@ -1,10 +1,7 @@
-import { useState } from "react";
 import { Typography, Card, CardBody, IconButton, Tooltip, Checkbox, Button } from "@material-tailwind/react";
 import { icons } from "../common/content";
 
 export default function Account() {
-  const [select, setSelect] = useState(0)
-  const [selectAll, setSelectAll] = useState(0)
 
   return (
     <div className="container px-10 mt-20">

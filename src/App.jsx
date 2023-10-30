@@ -51,7 +51,7 @@ const router = createBrowserRouter([
   },
 ]);
 
-function App() {
+export function App() {
   return (
     <ThemeProvider value={theme}>
     <React.Suspense fallback={<CustomSpinner/>}>

@@ -1,4 +1,5 @@
-import SignInFormPage from '../components/SignInCp';
+import React from 'react';
+const SignInFormPage = React.lazy(() => import('../components/SignInCp'));
 
 export default function AccountSc() {
 

@@ -1,16 +1,15 @@
 import { createContext, useContext, useEffect, useState } from 'react'
+import PropTypes from 'prop-types'
 import { supabase } from '../utils/utils'
 
 const AuthContext = createContext()
 
-export function AuthProvider(props) {
+export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
 
   useEffect(() => {
     const { data: authListener } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        //console.log("Event:", event);
-        //console.log("Session:", session);
+      (event, session) => {
         setUser(session?.user ?? null);
       }
     );
@@ -23,7 +22,7 @@ export function AuthProvider(props) {
 
   async function signIn(email, password) {
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
@@ -59,9 +58,13 @@ export function AuthProvider(props) {
 
   return (
     <AuthContext.Provider value={{ user, signIn, signUp, signOut }}>
-      {props.children}
+      {children}
     </AuthContext.Provider>
   )
+}
+
+AuthProvider.propTypes = {
+  children: PropTypes.node.isRequired,
 }
 
 export function useAuth() {
