@@ -1,29 +1,41 @@
 import { Typography } from "@material-tailwind/react";
- 
+
+const LOGO = () => (
+  <div>
+    <Typography
+      as="a"
+      href="/"
+      variant="h5"
+      className="cursor-pointer inline-block font-oxanium font-extrabold"
+    >
+      yeai
+      <span className="bg-gradient-to-r from-emerald-600 via-emerald-700 to-emerald-900 inline-block text-transparent bg-clip-text hover:animate-shift">
+        .tech
+      </span>
+    </Typography>
+  </div>
+);
 const SITEMAP = [
   {
     title: "Company",
-    links: ["About Us", "Careers", "Our Team", "Projects"],
-  },
-  {
-    title: "Help Center",
-    links: ["Discord", "Twitter", "GitHub", "Contact Us"],
+    links: [<LOGO key="logo" />, "About"]
   },
   {
     title: "Resources",
-    links: ["Blog", "Newsletter", "Free Products", "Affiliate Program"],
+    links: ["Newsletter", "Free Products", "Promote Products"],
   },
   {
-    title: "Products",
-    links: ["Templates", "UI Kits", "Icons", "Mockups"],
+    title: "Help Center",
+    links: ["Discord", "Reach Us", "FAQs"],
   },
 ];
+
  
 const currentYear = new Date().getFullYear();
  
 export default function FooterWithSitemap() {
   return (
-    <footer className="relative w-full mt-40">
+    <footer className="relative w-full mt-40 border-t-2 border-gray-900">
       <div className="mx-auto w-full max-w-7xl px-8">
         <div className="mx-auto grid w-full grid-cols-1 gap-8 py-12 md:grid-cols-2 lg:grid-cols-4">
           {SITEMAP.map(({ title, links }, key) => (
@@ -50,12 +62,12 @@ export default function FooterWithSitemap() {
             </div>
           ))}
         </div>
-        <div className="flex w-full flex-col items-center justify-center border-t border-blue-gray-50 py-4 md:flex-row md:justify-between">
+        <div className="flex w-full flex-col items-center justify-center border-t border-gray-900 py-4 md:flex-row md:justify-between">
           <Typography
             variant="small"
             className="mb-4 text-center font-normal text-white md:mb-0"
           >
-            &copy; {currentYear} <a href="https://material-tailwind.com/">Material Tailwind</a>. All
+            &copy; {currentYear} <a href="https://yeai.tech/">yeai.tech</a>. All
             Rights Reserved.
           </Typography>
           <div className="flex gap-4 text-white sm:justify-center">

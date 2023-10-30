@@ -37,7 +37,7 @@ const CategoryList = () => {
   
       if (retrievedCategories.length > 0) {
         if (page === 1) {
-          setCategories(retrievedCategories); 
+          setCategories(retrievedCategories);
         } else {
           setCategories((prevCategories) => [
             ...prevCategories,
@@ -45,7 +45,7 @@ const CategoryList = () => {
           ]);
         }
       } else {
-        setHasMore(false);        
+        setHasMore(false);
       }
       setIsLoading(false);
     } catch (error) {
@@ -58,6 +58,9 @@ const CategoryList = () => {
     setNextPage(nextPage)
     fetchCategories(nextPage);
     setPage(nextPage);
+    if (nextPage === 0) {
+      setHasMore(false);
+    }
   };
   
   useEffect(() => {
@@ -86,7 +89,7 @@ const CategoryList = () => {
   <Card variant='gradient' color='gray' className="w-full border-2 border-gray-800 text-gray-500" key={index}>
       <CardBody>
         <div className="mb-2">
-          <Typography variant='lead' color="white"  className="font-medium  font-oxanium uppercase text-center">
+          <Typography variant='h6' color="white"  className="font-semibold uppercase text-center">
             {category}
           </Typography>
         </div>
@@ -114,11 +117,12 @@ const CategoryList = () => {
         />
       </div>
       <div className='flex flex-row items-center justify-between mb-10'>
-        <Typography variant='h3' color='white' className='font-bold capitalize'>Category List</Typography>
+        <Typography variant='h4' color='white' className='font-bold capitalize'>Category List</Typography>
         <Link to="/">
-          <Button>
-            Go Back To Home Page
-          </Button>
+        <Button className='flex flex-row gap-2 items-center uppercase h-7'>
+              <icons.ArrowUturnLeftIcon className='h-3 w-3' stroke='white'/>
+              Home
+      </Button>
         </Link>
       </div>
       <InfiniteScroll

@@ -6,27 +6,49 @@ import {
   Square3Stack3DIcon,
   QuestionMarkCircleIcon,
   ChatBubbleOvalLeftIcon,
-  RocketLaunchIcon,
-  CpuChipIcon,
   ViewfinderCircleIcon,
-  GiftIcon,
-  ComputerDesktopIcon,
-  LanguageIcon,
-  PaintBrushIcon,
   BookmarkIcon,
   BookmarkSlashIcon,
   EyeIcon,
   InformationCircleIcon,
   MagnifyingGlassIcon,
-  TagIcon,
   CheckCircleIcon,
   SparklesIcon,
   FolderPlusIcon,
   FolderMinusIcon,
   InboxArrowDownIcon,
   ArrowUpOnSquareIcon,
-  Squares2X2Icon
+  Squares2X2Icon,
+  SwatchIcon,
+  ArrowUturnLeftIcon,
 } from "@heroicons/react/24/outline";
+
+
+const icons = {
+  ChevronDownIcon,
+  UserCircleIcon,
+  Bars3Icon,
+  XMarkIcon,
+  Square3Stack3DIcon,
+  QuestionMarkCircleIcon,
+  SparklesIcon,
+  // up navbar
+  BookmarkIcon,
+  BookmarkSlashIcon,
+  EyeIcon,
+  InformationCircleIcon,
+  MagnifyingGlassIcon,
+  CheckCircleIcon,
+  FolderPlusIcon,
+  FolderMinusIcon,
+  InboxArrowDownIcon,
+  ArrowUpOnSquareIcon,
+  ChatBubbleOvalLeftIcon,
+  ViewfinderCircleIcon,
+  Squares2X2Icon,
+  SwatchIcon,
+  ArrowUturnLeftIcon,
+}
 
 const content = [
   {
@@ -51,101 +73,4 @@ const content_head = [
     description_3: "Free",
   },
 ];
-
-const category_items = [
-  {
-    color: "orange",
-    icon: CpuChipIcon,
-    title: "Machine Learning",
-    description: "Tools for model building and deployment.",
-    link: "/categories/machine-learning",
-  },
-  {
-    color: "green",
-    icon: ComputerDesktopIcon,
-    title: "Computer Vision",
-    description: "Interpretation of the visual world.",
-    link: "/categories/computer-vision",
-  },
-  {
-    color: "blue",
-    icon: LanguageIcon,
-    title: "NLP",
-    description: "Natural Language Processing tools.",
-    link: "/categories/nlp",
-  },
-  {
-    color: "blue-gray",
-    icon: PaintBrushIcon,
-    title: "AI-Art Tools",
-    description: "Tailored user experiences.",
-    link: "/categories/ai-art-tools",
-
-  },
-  {
-    color: "purple",
-    icon: RocketLaunchIcon,
-    title: "AI-Enabled Analytics",
-    description: "Advanced data-driven insights.",
-    link: "/categories/ai-enabled-analytics",
-  },
-  {
-    color: "cyan",
-    icon: ChatBubbleOvalLeftIcon,
-    title: "AI-Powered Chatbots",
-    description: "Virtual conversational assistants.",
-    link: "/categories/ai-powered-chatbots",
-
-  },
-  {
-    color: "pink",
-    icon: GiftIcon,
-    title: "Open Source",
-    description: "List of all open-source tools, it's all free.",
-    link: "/categories/open-source",
-
-  },
-  {
-    color: "teal",
-    icon: ViewfinderCircleIcon,
-    title: "All Categories",
-    description: "See everything listed.",
-    link: "/categories",
-  },
-];
-const colors = {
-  blue: "bg-blue-50 text-blue-500",
-  orange: "bg-orange-50 text-orange-500",
-  green: "bg-green-50 text-green-500",
-  "blue-gray": "bg-blue-gray-50 text-blue-gray-500",
-  purple: "bg-purple-50 text-purple-500",
-  teal: "bg-teal-50 text-teal-500",
-  cyan: "bg-cyan-50 text-cyan-500",
-  pink: "bg-pink-50 text-pink-500",
-};
-const icons = {
-  ChevronDownIcon,
-  UserCircleIcon,
-  Bars3Icon,
-  XMarkIcon,
-  Square3Stack3DIcon,
-  QuestionMarkCircleIcon,
-  SparklesIcon,
-  // up navbar
-  BookmarkIcon,
-  BookmarkSlashIcon,
-  EyeIcon,
-  InformationCircleIcon,
-  MagnifyingGlassIcon,
-  TagIcon,
-  CheckCircleIcon,
-  FolderPlusIcon,
-  FolderMinusIcon,
-  InboxArrowDownIcon,
-  ArrowUpOnSquareIcon,
-  ChatBubbleOvalLeftIcon,
-  ViewfinderCircleIcon,
-  Squares2X2Icon
-}
-
-export { content, content_head, category_items, colors, icons }
+export { content, content_head, icons }

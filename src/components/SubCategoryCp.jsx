@@ -1,18 +1,15 @@
 // SubCategoryCp.jsx
 import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { truncateDescription, handleRedirect, updatePostView } from '../utils/utils';
+import {  handleRedirect, updatePostView } from '../utils/utils';
 import { SkeletonPost } from '../common/Skeleton';
 import { icons } from '../common/content';
 import axios from 'axios';
+import PostCard from '../common/Card';
 import {
-  Card,
-  CardBody,
-  CardFooter,
   Typography,
   Button,
   Input,
-  Tooltip,
 } from "@material-tailwind/react";
 import InfiniteScroll from 'react-infinite-scroll-component';
 
@@ -98,7 +95,7 @@ const SubCategoryPage = () => {
   const renderLoadingPosts = Array.from({ length: nextPage }).map((_, index) => (
     <SkeletonPost key={index} />
   ));
-  if (isLoading || !categoryPosts || categoryPosts.length === 0) {
+  if (isLoading == true || !categoryPosts || categoryPosts.length === 0) {
     return (
       <div className="container px-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-10 mt-40">
           {renderLoadingPosts}          
@@ -106,50 +103,7 @@ const SubCategoryPage = () => {
     );
   }
 
-  const renderPosts = categoryPosts.map((post, index) => (
-    <Card variant='gradient' color='gray' className="w-full border-2 border-gray-800 text-gray-500" key={index}>
-    <CardBody>
-              <div className="mb-2 flex flex-col items-start space-y-4">
-                <div className='flex flex-row items-center justify-between w-full'>
-                  <Typography variant='lead' color="white" className="font-bold capitalize">
-                    {post.post_title}
-                  </Typography>
-                  <div className='flex flex-row items-center justify-between gap-6'>
 
-                  <Tooltip content={post.post_category} className='bg-orange-400 capitalize' >
-                    <icons.TagIcon className='h-5 w-5' stroke='gray' />
-                  </Tooltip>
-                  <Tooltip content="Save the Post" className='bg-gray-400 capitalize'>
-              <icons.BookmarkIcon
-                className='h-5 w-5 cursor-pointer'
-                fill={post.isBookmarked ? 'gray' : 'none'}
-                onClick={() => handleBookmarkClick(post.id)}
-              />
-            </Tooltip>
-                  </div>
-
-                </div>
-                <Typography variant='paragraph'>
-                  {truncateDescription(post.post_description, 120)}
-                </Typography>
-              </div>
-
-            </CardBody>
-
-            <CardFooter className="pt-0 flex items-start gap-4">
-              <Button
-                onClick={() => handlePostClick(post.id)}
-                >
-                Read More
-              </Button>
-              <Link onClick={() => handleRedirect(post.post_link)} target="_blank" rel="noopener noreferrer">
-                <Button>
-                  Visit Website
-                </Button>
-              </Link>
-            </CardFooter>
-          </Card>
-    ));
 
   return (
     <div className='space-y-10 px-10 container'>
@@ -164,10 +118,15 @@ const SubCategoryPage = () => {
         />
       </div>
       <div className='flex flex-row  items-center justify-between'>
-      <Typography variant='h3' color='white' className='capitalize font-bold '>Posts in {categoryName}</Typography>
+      <Typography variant='h4' color='white' className='font-bold '>Posts in&nbsp; 
+      <span className='uppercase'>
+        {categoryName}
+        </span>
+        </Typography>
       <Link to="/categories">
-      <Button>
-              Go Back To Categories
+      <Button className='flex flex-row gap-2 items-center uppercase h-7'>
+              <icons.ArrowUturnLeftIcon className='h-3 w-3' stroke='white'/>
+              Categories
       </Button>
       </Link>
       </div>
@@ -179,7 +138,16 @@ const SubCategoryPage = () => {
         loader={<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-10 mt-10'>{renderLoadingPosts}</div>} 
       >
       <ul className="gap-10 lg:grid-cols-2 md:grid-cols-2 grid grid-cols-1">  
-          {renderPosts}
+      {categoryPosts.map((post, index) => (
+          <PostCard
+          key={index}
+          post={post}
+          handleBookmarkClick={handleBookmarkClick}
+          handlePostClick={handlePostClick}
+          handleRedirect={handleRedirect}
+        />
+          ))}
+
       </ul>
       </InfiniteScroll>
     </div>

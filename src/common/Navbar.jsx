@@ -49,8 +49,7 @@ function NavListMenu() {
     if (categories.length === 0) {
       fetchCategories();
     }
-    console.log(categories)
-  }, []); 
+  }, [categories]); 
 
   const handleCategoryClick = async (category) => {
     onCategoryClick(`/categories/${category}`);
@@ -84,9 +83,9 @@ function NavListMenu() {
             <Typography
               variant="small"
               color="blue-gray"
-              className="flex items-center text-sm capitalize font-bold"
+              className="flex items-center text-sm uppercase font-semibold"
             >
-                          <icons.Squares2X2Icon className="w-5 h-5 mr-2" />
+            <icons.Squares2X2Icon className="w-5 h-5 mr-2" />
 
               {category}
             </Typography>
@@ -193,7 +192,7 @@ function NavList({ user, closeNav }) {
         </Typography>
       )}
         
-          <ListItem className="flex items-center gap-2 py-2" onClick={() => closeNav()}>
+          <ListItem className="flex items-center gap-2 py-2 hidden" onClick={() => closeNav()}>
             <icons.ChatBubbleOvalLeftIcon color="purple" className="h-[18px] w-[18px]" />
 
             <Chatbot />

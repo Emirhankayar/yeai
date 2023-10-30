@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { Input, Card, CardBody, Typography, Popover, PopoverHandler, PopoverContent, Button } from '@material-tailwind/react';
+import { Input, Card, CardBody, Typography, Popover, PopoverHandler, PopoverContent } from '@material-tailwind/react';
 import { icons } from '../common/content.js'
 
 const botUrl = import.meta.env.VITE_BOT_URL

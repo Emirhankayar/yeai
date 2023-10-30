@@ -1,4 +1,3 @@
-import React from 'react';
 import { Spinner } from "@material-tailwind/react";
 
 export default function CustomSpinner() {

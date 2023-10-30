@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Typography, Card, CardBody, IconButton, Tooltip, Checkbox, Button } from "@material-tailwind/react";
 import { icons } from "../common/content";
 

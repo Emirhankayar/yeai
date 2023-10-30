@@ -1,5 +1,3 @@
-import React from "react";
-
 export function SkeletonPost() {
     return (
         <div className="container mx-auto animate-pulse bg-gray-900 p-10 rounded-lg">
