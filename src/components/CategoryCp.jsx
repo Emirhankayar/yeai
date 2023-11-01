@@ -32,7 +32,6 @@ const CategoryList = () => {
       .get(`${SV_URL}/categories?offset=${index}&limit=12`)
       .then((res) => {
         setCategories((prevItems) => [...prevItems, ...res.data]);
-        console.log('length:', res.data.length)
         res.data.length > 0 ? setHasMore(true) : setHasMore(false);
         setDataLength(res.data.length);
       })

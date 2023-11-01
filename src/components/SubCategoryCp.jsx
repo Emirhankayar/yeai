@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { handleRedirect, updatePostView } from '../utils/utils';
 import { SkeletonPost, InfScroll, PgTitle, PgButton } from '../common/Skeleton';
@@ -13,9 +13,7 @@ import {
 const SV_URL = import.meta.env.VITE_SV_URL;
 
 const SubCategoryPage = () => {
-  const params = useParams();
-  const categoryName = useMemo(() => params.categoryName, [params]);
-
+  const { categoryName } = useParams();
   const [categoryPosts, setCategoryPosts] = useState([]);
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
@@ -28,7 +26,7 @@ const SubCategoryPage = () => {
     setCategoryPosts((prevCategoryPosts) => {
       return prevCategoryPosts.map((post) => {
         if (post.id === postId) {
-          return { ...post, isBookmarked: post.isBookmarked ? !post.isBookmarked : false };
+          return { ...post, isBookmarked: !post.isBookmarked };
         }
         return post;
       });
@@ -38,11 +36,10 @@ const SubCategoryPage = () => {
   useEffect(() => {
     axios
       .get(`${SV_URL}/postsByCategory?categoryName=${categoryName}&offset=0&limit=12`)
-      .then((res) => {
-        setCategoryPosts(res.data);
-        setIsLoading(false);
-      })
+      .then((res) => setCategoryPosts(res.data))
       .catch((err) => console.log(err));
+    setDataLength(12);
+    setIsLoading(false)
   }, [categoryName]);
 
 
@@ -50,13 +47,15 @@ const SubCategoryPage = () => {
     axios
       .get(`${SV_URL}/postsByCategory?categoryName=${categoryName}&offset=${index}&limit=12`)
       .then((res) => {
-        setCategoryPosts((prevItems) => [...prevItems, ...res.data]);
-        console.log('length:', res.data.length)
-        res.data.length > 0 ? setHasMore(true) : setHasMore(false);
-        setDataLength(res.data.length);
+        const newPosts = res.data.filter(
+          newPost => !categoryPosts.some(existingPost => existingPost.id === newPost.id)
+        );
+        setCategoryPosts((prevItems) => [...prevItems, ...newPosts]);
+        newPosts.length > 0 ? setHasMore(true) : setHasMore(false);
+        setDataLength(newPosts.length);
       })
       .catch((err) => console.log(err));
-
+  
     setIndex((prevIndex) => prevIndex + 1);
   };
 
@@ -66,7 +65,7 @@ const SubCategoryPage = () => {
     if (post) {
       try {
         await updatePostView(postId, post.post_view);
-        navigate(`${categoryName}/${postId}`);
+        navigate(`/categories/${categoryName}/${postId}`);
         window.scrollTo(0, 0);
       } catch (error) {
         console.error('Error updating post view:', error);

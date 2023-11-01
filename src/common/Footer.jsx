@@ -3,8 +3,6 @@ import { Typography } from "@material-tailwind/react";
 const LOGO = () => (
   <div>
     <Typography
-      as="a"
-      href="/"
       variant="h5"
       className="cursor-pointer inline-block font-oxanium font-extrabold"
     >
@@ -15,18 +13,36 @@ const LOGO = () => (
     </Typography>
   </div>
 );
+
 const SITEMAP = [
   {
     title: "Company",
-    links: [<LOGO key="logo" />, "About"]
+    links: [{ text: <LOGO key="logo" />, 
+              url: "/" }, 
+            { text: "About", 
+              url: "/about" }]
   },
   {
     title: "Resources",
-    links: ["Newsletter", "Free Products", "Promote Products"],
+    links: [
+      { text: "Newsletter", 
+        url: "/newsletter" },
+      { text: "Freebies", 
+        url: "/categories/freebies" },
+      { text: "Promote Products", 
+        url: "/promote-products" },
+    ],
   },
   {
     title: "Help Center",
-    links: ["Discord", "Reach Us", "FAQs"],
+    links: [
+      { text: "Discord",
+        url: "/discord" },
+      { text: "Reach Us", 
+        url: "/contact" },
+      { text: "FAQs", 
+        url: "/faqs" },
+    ],
   },
 ];
 
@@ -48,16 +64,16 @@ export default function FooterWithSitemap() {
                 {title}
               </Typography>
               <ul className="space-y-1">
-                {links.map((link, key) => (
-                  <Typography key={key} as="li" color="white" className="font-normal">
-                    <a
-                      href="#"
-                      className="inline-block py-1 pr-2 transition-transform hover:scale-105"
-                    >
-                      {link}
-                    </a>
-                  </Typography>
-                ))}
+              {links.map((link, key) => (
+                <Typography key={key} as="li" color="white" className="font-normal">
+                  <a
+                    href={link.url}
+                    className="inline-block py-1 pr-2 transition-transform hover:scale-105"
+                  >
+                    {link.text}
+                  </a>
+                </Typography>
+              ))}
               </ul>
             </div>
           ))}
