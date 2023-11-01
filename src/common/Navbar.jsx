@@ -26,30 +26,29 @@ function NavListMenu() {
   const [categories, setCategories] = useState([]);
   //const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const storedCategories = localStorage.getItem('categories');
-        if (storedCategories) {
-          setCategories(JSON.parse(storedCategories));
-        } else {
-          const response = await axios.get(`${SV_URL}/allCategories`, {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          });
-          setCategories(response.data);
-          localStorage.setItem('categories', JSON.stringify(response.data));
+
+    useEffect(() => {
+      const fetchCategories = async () => {
+        try {
+          const storedCategories = localStorage.getItem('categories');
+          if (storedCategories) {
+            setCategories(JSON.parse(storedCategories));
+          } else {
+            const response = await axios.get(`${SV_URL}/allCategories`, {
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            });
+            setCategories(response.data);
+            localStorage.setItem('categories', JSON.stringify(response.data));
+          }
+        } catch (error) {
+          console.error('Error fetching categories:', error);
         }
-      } catch (error) {
-        console.error('Error fetching categories:', error);
-      }
-    };
-    
-    if (categories.length === 0) {
+      };
+      
       fetchCategories();
-    }
-  }, [categories]); 
+    }, []); // No dependencies
 
   const handleCategoryClick = async (category) => {
     onCategoryClick(`/categories/${category}`);

@@ -117,5 +117,9 @@ module.exports = withMT({
       },
     },
   },
-  plugins: [],
+  plugins: [{
+    'postcss-import': {},
+    tailwindcss: {},
+    autoprefixer: {},
+  }],
 });
