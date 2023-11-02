@@ -4,7 +4,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { SkeletonCategory, PgTitle, PgButton, InfScroll } from '../common/Skeleton';
 import { CategoryCard, SearchBar } from '../common/Card';
 
-const SV_URL = import.meta.import.VITE_SV_URL;
+const SV_URL = import.meta.env.VITE_SV_URL;
 
 const CategoryList = () => {
   const [categories, setCategories] = useState([]);
