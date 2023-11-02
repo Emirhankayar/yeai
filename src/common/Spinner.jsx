@@ -1,9 +1,9 @@
-import { Spinner } from "@material-tailwind/react";
+import MaterialComponent from "./Material";
 
 export default function CustomSpinner() {
   return (
     <div className="flex items-center justify-center h-screen">
-      <Spinner color='white' className="h-16 w-16 text-gray-900" />
+      <MaterialComponent component="Spinner" color='white' className="h-16 w-16 text-gray-900" />
     </div>
   );
 }

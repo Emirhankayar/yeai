@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../services/AuthContext"; 
-import Chatbot from '../components/ChatBot';
 import '../index.css'
+import PropTypes from 'prop-types';
+import Icon from "./Icons";
 import {
   Navbar,
   Collapse,
@@ -16,16 +17,13 @@ import {
   MenuList,
   MenuItem,
 } from "@material-tailwind/react";
-import { icons } from "./content";
 
 const SV_URL = import.meta.env.VITE_SV_URL
 
-function NavListMenu() {
+function NavListMenu({ onCategoryClick }) {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
   const [categories, setCategories] = useState([]);
-  //const [isLoading, setIsLoading] = useState(true);
-
 
     useEffect(() => {
       const fetchCategories = async () => {
@@ -48,12 +46,18 @@ function NavListMenu() {
       };
       
       fetchCategories();
-    }, []); // No dependencies
+    }, []); 
 
   const handleCategoryClick = async (category) => {
     onCategoryClick(`/categories/${category}`);
   };
-
+  NavListMenu.propTypes = {
+    onCategoryClick: PropTypes.func.isRequired,
+  };
+  NavList.propTypes = {
+    user: PropTypes.object,
+    closeNav: PropTypes.func.isRequired,
+  };
   const renderItems = [
     <a href="/categories" key="all">
       <MenuItem
@@ -66,7 +70,7 @@ function NavListMenu() {
             color="blue-gray"
             className="flex items-center text-sm capitalize font-bold"
           >
-            <icons.ViewfinderCircleIcon className="w-5 h-5 mr-2" />
+            <Icon icon="ViewfinderCircleIcon" className="w-5 h-5 mr-2" />
             list all categories
           </Typography>
         </div>
@@ -84,8 +88,7 @@ function NavListMenu() {
               color="blue-gray"
               className="flex items-center text-sm uppercase font-semibold"
             >
-            <icons.Squares2X2Icon className="w-5 h-5 mr-2" />
-
+            <Icon icon="Squares2X2Icon" className="w-5 h-5 mr-2" />
               {category}
             </Typography>
           </div>
@@ -112,16 +115,16 @@ function NavListMenu() {
             >
 
 
-              <icons.Square3Stack3DIcon className="h-[18px] w-[18px]"/>
+              <Icon icon="Square3Stack3DIcon" className="h-[18px] w-[18px]"/>
                 Categories
 
-              <icons.ChevronDownIcon
+              <Icon icon="ChevronDownIcon"
                 strokeWidth={2.5}
                 className={`hidden h-3 w-3 transition-transform lg:block ${
                   isMenuOpen ? "rotate-180" : ""
                 }`}
               />
-              <icons.ChevronDownIcon
+              <Icon icon="ChevronDownIcon"
                 strokeWidth={2.5}
                 className={`block h-3 w-3 transition-transform lg:hidden ${
                   isMobileMenuOpen ? "rotate-180" : ""
@@ -130,7 +133,7 @@ function NavListMenu() {
             </ListItem>
           </Typography>
         </MenuHandler>
-        <MenuList className="hidden max-w-screen-2xl rounded-md lg:block custom-menu-list bg-gray-500 bg-opacity-90">
+        <MenuList className="hidden max-w-screen-2xl rounded-md lg:block custom-menu-list bg-gray-500 bg-opacity-80">
           <ul className="grid grid-cols-4 gap-y-2">{renderItems}</ul>
         </MenuList>
       </Menu>
@@ -156,7 +159,7 @@ function NavList({ user, closeNav }) {
         className="font-normal"
       >
         <ListItem className="flex items-center gap-2 py-2 pr-4">
-          <icons.QuestionMarkCircleIcon className="h-[18px] w-[18px]" />
+          <Icon icon="QuestionMarkCircleIcon" className="h-[18px] w-[18px]" />
           About
         </ListItem>
       </Typography>
@@ -169,7 +172,7 @@ function NavList({ user, closeNav }) {
         className="font-normal"
       >
         <ListItem className="flex items-center gap-2 py-2 pr-4">
-          <icons.SparklesIcon className="h-[18px] w-[18px]" />
+          <Icon icon="SparklesIcon" className="h-[18px] w-[18px]" />
           Freebies
         </ListItem>
       </Typography>
@@ -183,7 +186,7 @@ function NavList({ user, closeNav }) {
         >
           <ListItem className="flex items-center gap-2 py-2 pr-4">
 
-            <icons.UserCircleIcon className="h-[18px] w-[18px]" />
+            <Icon icon="UserCircleIcon" className="h-[18px] w-[18px]" />
             <a href="/account">
             Account
             </a>
@@ -192,9 +195,7 @@ function NavList({ user, closeNav }) {
       )}
         
           <ListItem className="flex items-center gap-2 py-2 hidden" onClick={() => closeNav()}>
-            <icons.ChatBubbleOvalLeftIcon color="purple" className="h-[18px] w-[18px]" />
-
-            <Chatbot />
+            <Icon icon="ChatBubbleOvalLeftIcon" color="purple" className="h-[18px] w-[18px]" />
             
           </ListItem>
     </List>
@@ -259,9 +260,9 @@ export default function NavbarWithMegaMenu() {
           onClick={() => setOpenNav(!openNav)}
         >
           {openNav ? (
-            <icons.XMarkIcon className="h-6 w-6" strokeWidth={2} />
+            <Icon icon="XMarkIcon" className="h-6 w-6" strokeWidth={2} />
           ) : (
-            <icons.Bars3Icon className="h-6 w-6" strokeWidth={2} />
+            <Icon icon="Bars3Icon" className="h-6 w-6" strokeWidth={2} />
           )}
         </IconButton>
       </div>

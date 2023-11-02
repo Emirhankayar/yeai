@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
-import { icons } from './content';
-import { Typography, Button } from "@material-tailwind/react";
+import Icon from './Icons';
+import MaterialComponent from './Material';
 
 export function SkeletonPost() {
     return (
@@ -40,9 +40,9 @@ export function SkeletonCategory() {
 
 export function PgTitle({ text }) {
     return (
-      <Typography variant="h4" color="white" className="font-bold capitalize">
+      <MaterialComponent component="Typography" variant="h4" color="white" className="font-bold capitalize">
         {text}
-      </Typography>
+      </MaterialComponent>
     );
   }
   PgTitle.propTypes = {
@@ -51,10 +51,10 @@ export function PgTitle({ text }) {
 
   export function PgButton({ text }) {
     return (
-        <Button className='flex flex-row gap-2 items-center uppercase h-7'>
-        <icons.ArrowUturnLeftIcon className='h-3 w-3' stroke='white'/>
+        <MaterialComponent component="Button" className='flex flex-row gap-2 items-center uppercase h-7'>
+        <Icon icon="ArrowUturnLeftIcon" className='h-3 w-3' stroke='white'/>
         {text}
-        </Button>
+        </MaterialComponent>
     );
   }
   PgButton.propTypes = {
@@ -69,8 +69,12 @@ export function PgTitle({ text }) {
         dataLength={dataLength}
         next={next}
         hasMore={hasMore}
-        scrollThreshold={0.6}
         loader={loader}
+        height={screen.height - 200}
+        endMessage={          
+        <p className='text-center text-gray-800 text-sm mt-40'>
+        <b>Nothing to load more...</b>
+        </p>}
       >
         {children}
       </InfiniteScroll>

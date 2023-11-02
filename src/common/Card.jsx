@@ -1,64 +1,71 @@
 import PropTypes from 'prop-types';
-import { icons } from './content';
+import Icon from './Icons';
 import { Link } from 'react-router-dom';
-import { Card, CardBody, CardFooter, Button, Tooltip, Typography } from "@material-tailwind/react";
+import MaterialComponent from "./Material";
 
 export function PostCard({ post, handleBookmarkClick, handlePostClick, handleRedirect, truncateDescription = true, showReadMoreButton = true }) {
   return (
-    <Card variant='gradient' color='gray' className="w-full border-2 border-gray-800 text-gray-500">
-      <CardBody>
+    <MaterialComponent component="Card" variant='gradient' color='gray' className="w-full border-2 border-gray-800 text-gray-500">
+      <MaterialComponent component="CardBody">
         <div className="mb-2 flex flex-col items-start space-y-4">
           <div className='flex flex-row items-center justify-between w-full'>
-          <Typography variant='h5' color="white" className="font-bold capitalize">
+          <MaterialComponent component="Typography" variant='h5' color="white" className="font-bold capitalize">
           {post.post_title.length >= 20 ? (
-            <Tooltip content={post.post_title} className="bg-black text-white capitalize">
+            <MaterialComponent component="Tooltip" content={post.post_title} className="bg-black text-white capitalize">
               {truncateDescription ? post.post_title.substring(0, 12) + '...' : post.post_title}
-            </Tooltip>
+            </MaterialComponent>
           ) : (
             post.post_title
           )}
-        </Typography>
+        </MaterialComponent>
 
             <div className='flex flex-row items-center justify-between gap-6'>
 
-              <Tooltip content={post.post_category} className='bg-orange-400 uppercase' >
-                <icons.SwatchIcon className='h-5 w-5' stroke='gray' />
-              </Tooltip>
-              <Tooltip
+            <MaterialComponent component="Tooltip" content={post.post_category} className='bg-orange-400 uppercase'>
+              <div>
+                <Icon icon="SwatchIcon" className="h-5 w-5" stroke="gray" />
+              </div>
+            </MaterialComponent>
+              <MaterialComponent
+                component="Tooltip"
                 content="Save the Post"
                 className="bg-gray-400 capitalize"
                 key={post.id} 
               >
-                <icons.BookmarkIcon
+                <div>
+                <Icon 
+                  icon="BookmarkIcon"
                   className="h-5 w-5 cursor-pointer"
                   fill={post.isBookmarked ? 'gray' : 'none'}
                   onClick={() => handleBookmarkClick(post.id, true)} 
-                />
-              </Tooltip>
+                  />
+                  </div>
+              </MaterialComponent>
             </div>
 
           </div>
-            <Typography variant='paragraph' className='md:h-28 lg:h-16'>
+            <MaterialComponent component="Typography" variant='paragraph' className='md:h-28 lg:h-16'>
               {truncateDescription ? post.post_description.substring(0, 120) + '...' : post.post_description}
-            </Typography>
+            </MaterialComponent>
         </div>
-      </CardBody>
+      </MaterialComponent>
 
-        <CardFooter className="pt-0 flex items-start gap-4">
+        <MaterialComponent component="CardFooter" className="pt-0 flex items-start gap-4">
           {showReadMoreButton && (
-          <Button
+          <MaterialComponent
+            component="Button"
             onClick={() => handlePostClick(post.id)}
             >
             Read More
-          </Button>
+          </MaterialComponent>
             )}
           <Link onClick={() => handleRedirect(post.post_link)} target="_blank" rel="noopener noreferrer">
-            <Button>
+            <MaterialComponent component="Button">
               Visit Website
-            </Button>
+            </MaterialComponent>
           </Link>
-        </CardFooter>
-    </Card>
+        </MaterialComponent>
+    </MaterialComponent>
   );
 }
 
@@ -80,54 +87,61 @@ PostCard.propTypes = {
 
 export function SinglePostCard({ post, handleBookmarkClick, handlePostClick, handleRedirect, showReadMoreButton = false }) {
   return (
-    <Card variant='gradient' color='gray' className="w-full border-2 border-gray-800 text-gray-500">
-      <CardBody>
+    <MaterialComponent component="Card" variant='gradient' color='gray' className="w-full border-2 border-gray-800 text-gray-500">
+      <MaterialComponent component="CardBody">
         <div className="mb-2 flex flex-col items-start space-y-4">
           <div className='flex flex-row items-center justify-between w-full'>
-          <Typography variant='h5' color="white" className="font-bold capitalize">
+          <MaterialComponent component="Typography" variant='h5' color="white" className="font-bold capitalize">
             {post.post_title}
-        </Typography>
+        </MaterialComponent>
 
             <div className='flex flex-row items-center justify-between gap-6'>
 
-              <Tooltip content={post.post_category} className='bg-orange-400 uppercase' >
-                <icons.SwatchIcon className='h-5 w-5' stroke='gray' />
-              </Tooltip>
-              <Tooltip
+              <MaterialComponent component="Tooltip" content={post.post_category} className='bg-orange-400 uppercase' >
+                <div>
+              <Icon icon="SwatchIcon" className="h-5 w-5" stroke="gray" />
+                </div>
+              </MaterialComponent>
+              <MaterialComponent
+                component="Tooltip"
                 content="Save the Post"
                 className="bg-gray-400 capitalize"
                 key={post.id} 
-              >
-                <icons.BookmarkIcon
+              > 
+                <div>
+                <Icon 
+                  icon="BookmarkIcon"
                   className="h-5 w-5 cursor-pointer"
                   fill={post.isBookmarked ? 'gray' : 'none'}
                   onClick={() => handleBookmarkClick(post.id, true)} 
-                />
-              </Tooltip>
+                  />
+                  </div>
+              </MaterialComponent>
             </div>
 
           </div>
-            <Typography variant='paragraph'>
+            <MaterialComponent component="Typography" variant='paragraph'>
               {post.post_description}
-            </Typography>
+            </MaterialComponent>
         </div>
-      </CardBody>
+      </MaterialComponent>
 
-        <CardFooter className="pt-0 flex items-start gap-4">
+        <MaterialComponent component="CardFooter" className="pt-0 flex items-start gap-4">
       {showReadMoreButton && (
-          <Button
+          <MaterialComponent
+            component="Button"
             onClick={() => handlePostClick(post.id)}
           >
             Read More
-          </Button>
+          </MaterialComponent>
             )}
           <Link onClick={() => handleRedirect(post.post_link)} target="_blank" rel="noopener noreferrer">
-            <Button>
+            <MaterialComponent component="Button">
               Visit Website
-            </Button>
+            </MaterialComponent>
           </Link>
-        </CardFooter>
-    </Card>
+        </MaterialComponent>
+    </MaterialComponent>
   );
 }
 
@@ -150,18 +164,18 @@ SinglePostCard.propTypes = {
 
 export function CategoryCard({ category, handleCategoryClick }) {
   return (
-    <Card variant="gradient" color="gray" className="w-full border-2 border-gray-800 text-gray-500">
-      <CardBody>
+    <MaterialComponent component="Card" variant="gradient" color="gray" className="w-full border-2 border-gray-800 text-gray-500">
+      <MaterialComponent component="CardBody">
         <div className="mb-2">
-          <Typography variant="h6" color="white" className="font-semibold uppercase text-center">
+          <MaterialComponent component="Typography" variant="h6" color="white" className="font-semibold uppercase text-center">
             {category}
-          </Typography>
+          </MaterialComponent>
         </div>
-      </CardBody>
-      <CardFooter className="pt-0 text-center">
-        <Button onClick={() => handleCategoryClick(category)}>View Posts</Button>
-      </CardFooter>
-    </Card>
+      </MaterialComponent>
+      <MaterialComponent component="CardFooter" className="pt-0 text-center">
+        <MaterialComponent component="Button" onClick={() => handleCategoryClick(category)}>View Posts</MaterialComponent>
+      </MaterialComponent>
+    </MaterialComponent>
   );
 }
 

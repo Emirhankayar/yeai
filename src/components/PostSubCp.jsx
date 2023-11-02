@@ -68,11 +68,9 @@ const PostDetailsPage = () => {
     }
   };
 
-
   const renderLoadingPosts = Array.from({ length: 4 }).map((_, index) => (
     <SkeletonPost key={index} />
   ));
-
 
   if (isLoading || !post) {
     return (

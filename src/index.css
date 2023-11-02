@@ -40,5 +40,7 @@ body{
   width: 100%;
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px); /* For Safari */
-  border: 1px;
+  outline: none;
+  border: none;
+  accent-color: none;
 }
