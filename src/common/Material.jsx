@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { Card, CardBody, CardFooter, Button, Tooltip, Typography, Input, IconButton, Checkbox } from "@material-tailwind/react";
+import { Card, CardBody, CardFooter, Button, Tooltip, Typography, Input, IconButton, Checkbox, Radio } from "@material-tailwind/react";
 
 const components = {
   Card,
@@ -11,6 +11,7 @@ const components = {
   Input,
   IconButton,
   Checkbox,
+  Radio,
 };
 
 const MaterialComponent = ({ component, ...props }) => {

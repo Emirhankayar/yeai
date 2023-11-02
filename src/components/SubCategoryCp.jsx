@@ -3,12 +3,7 @@ import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { handleRedirect, updatePostView } from '../utils/utils';
 import { SkeletonPost, InfScroll, PgTitle, PgButton } from '../common/Skeleton';
-import Icon from '../common/Icons';
-import { PostCard } from '../common/Card';
-
-import {
-  Input,
-} from "@material-tailwind/react";
+import { PostCard, SearchBar } from '../common/Card';
 
 const SV_URL = import.meta.env.VITE_SV_URL;
 
@@ -16,7 +11,7 @@ const SubCategoryPage = () => {
   const { categoryName } = useParams();
   const [categoryPosts, setCategoryPosts] = useState([]);
   const navigate = useNavigate();
-  const [search, setSearch] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [hasMore, setHasMore] = useState(true);
   const [index, setIndex] = useState(1);
@@ -87,7 +82,7 @@ const SubCategoryPage = () => {
 
 if (isLoading) {
   return (
-    <div className="container px-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-10 mt-40">
+    <div className="container px-10 grid grid-cols-1 gap-10 mt-40">
       {renderLoadingPosts}
     </div>
   );
@@ -95,30 +90,28 @@ if (isLoading) {
   
   return (
     <div className='space-y-10 px-10 container'>
-      <div className='mb-10'>
-        <Input
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          label="Search Posts"
-          variant='static'
-          color="white"
-          icon={<Icon icon="MagnifyingGlassIcon" className="h-4 w-4" stroke="white" />}
-        />
-      </div>
       <div className='flex flex-row  items-center justify-between'>
         <PgTitle text={`Posts in ${categoryName.toUpperCase()}`} />
         <Link to="/categories">
           <PgButton text='Categories' />
         </Link>
       </div>
-      <div className='h-1/2'>
+      <div className='flex flex-col md:flex-row lg:flex-row gap-10'>
+        <div className='w-full md:w-3/6 lg:w-2/6 px-5'>
+        <SearchBar
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+        />
+        </div>
+        <div className='w-full md:w-4/6 lg:w-4/6'>
+
       <InfScroll
         dataLength={categoryPosts.length}
         next={fetchMoreData}
         hasMore={hasMore}
-        loader={<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-10 mt-10'>{renderLoadingPosts}</div>}
+        loader={<div className='grid grid-cols-1 gap-10 mt-10'>{renderLoadingPosts}</div>}
         >
-        <ul className="gap-10 lg:grid-cols-2 md:grid-cols-2 grid grid-cols-1">
+          <ul className='gap-10 grid grid-cols-1'>
         {categoryPosts.map((post) => (
           <PostCard
           key={post.id}
@@ -130,6 +123,7 @@ if (isLoading) {
           ))}
         </ul>
       </InfScroll>
+      </div>
       </div>
       </div>
   );

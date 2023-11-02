@@ -2,43 +2,46 @@ import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { SkeletonCategory, PgTitle, PgButton, InfScroll } from '../common/Skeleton';
-import Icon from '../common/Icons';
-import { CategoryCard } from '../common/Card';
-import { Input } from '@material-tailwind/react';
+import { CategoryCard, SearchBar } from '../common/Card';
 
-const SV_URL = import.meta.env.VITE_SV_URL;
+const SV_URL = import.meta.import.VITE_SV_URL;
 
 const CategoryList = () => {
   const [categories, setCategories] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
-  const [search, setSearch] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [hasMore, setHasMore] = useState(true);
   const [index, setIndex] = useState(1);
   const [dataLength, setDataLength] = useState(0);
 
   useEffect(() => {
+    if (searchTerm === '') {
+      setCategories([]);
+      setIndex(1);
+      setHasMore(true);
+      setIsLoading(true);
+    }
+  
     axios
-      .get(`${SV_URL}/categories?offset=0&limit=12`)
+      .get(`${SV_URL}/categories?offset=0&limit=12&search=${searchTerm}`)
       .then((res) => {
         setCategories(res.data);
-        setDataLength(res.dataLength);
-      if (res.data.length < 12) {
-        setHasMore(false);
+        setDataLength(res.data.length);
+        if (res.data.length < 12) {
+          setHasMore(false);
+        }
         setIsLoading(false);
-      }
-      setIsLoading(false);
-    })
-    .catch((err) => {
-      console.log(err);
-      setIsLoading(false);
-    });
-  }, []);
-
+      })
+      .catch((err) => {
+        console.log(err);
+        setIsLoading(false);
+      });
+  }, [searchTerm]);
 
   const fetchMoreData = () => {
     axios
-      .get(`${SV_URL}/categories?offset=${index}&limit=12`)
+      .get(`${SV_URL}/categories?offset=${index}&limit=12&search=${searchTerm}`)
       .then((res) => {
         setCategories((prevItems) => [...prevItems, ...res.data]);
         res.data.length > 0 ? setHasMore(true) : setHasMore(false);
@@ -48,7 +51,6 @@ const CategoryList = () => {
 
     setIndex((prevIndex) => prevIndex + 1);
   };
-
 
   const handleCategoryClick = async (category) => {
     navigate(`/categories/${category}`);
@@ -61,7 +63,7 @@ const CategoryList = () => {
 
   if (isLoading) {
     return (
-      <div className="container px-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mt-40">
+      <div className="container px-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-10 mt-40">
         {renderLoadingCategories}
       </div>
     );
@@ -69,39 +71,39 @@ const CategoryList = () => {
 
   return (
     <div className="container mx-auto px-10">
-      <div className='mb-10'>
-        <Input
-          value={search}
-          variant='static'
-          onChange={(e) => setSearch(e.target.value)}
-          label="Search category"
-          color="white"
-          icon={<Icon icon="MagnifyingGlassIcon" className="h-4 w-4" stroke="white" />}
-        />
-      </div>
       <div className='flex flex-row items-center justify-between mb-10'>
         <PgTitle text='Category List' />
         <Link to="/">
           <PgButton text='Home'></PgButton>
         </Link>
       </div>
-      <InfScroll
-        dataLength={categories.length}
-        next={fetchMoreData}
-        hasMore={hasMore}
-        loader={<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mt-10'>{renderLoadingCategories}</div>}
-      >
-        <ul className='flex flex-col gap-10 grid md:grid-cols-2 lg:grid-cols-3'>
-          {categories.map((category, index) => (
-            <CategoryCard
-              key={index}
-              category={category.post_category}
-              handleCategoryClick={handleCategoryClick}
-            />
+      <div className='flex flex-col md:flex-row lg:flex-row gap-10'>
+        <div className='w-full md:w-3/6 lg:w-2/6 px-5'>
+        <SearchBar
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+        />
+        </div>
+        <div className='w-full md:w-4/6 lg:w-4/6'>
+        <InfScroll
+          dataLength={categories.length}
+          next={fetchMoreData}
+          hasMore={hasMore}
+          loader={<div className='grid grid-cols-1 lg:grid-cols-2 gap-10 mt-10'>{renderLoadingCategories}</div>}
+        >
+          <ul className='gap-10 grid grid-cols-1 lg:grid-cols-2'>
+            {categories.map((category, index) => (
+              <CategoryCard
+                key={index}
+                category={category.post_category}
+                handleCategoryClick={handleCategoryClick}
+              />
 
-          ))}
-        </ul>
-      </InfScroll>
+            ))}
+          </ul>
+        </InfScroll>
+    </div>
+    </div>
     </div>
   );
 };

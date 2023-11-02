@@ -75,6 +75,7 @@ export function PgTitle({ text }) {
         <p className='text-center text-gray-800 text-sm mt-40'>
         <b>Nothing to load more...</b>
         </p>}
+        className='px-5'
       >
         {children}
       </InfiniteScroll>

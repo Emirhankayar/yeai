@@ -6,7 +6,7 @@ const theme = {
         color: "green",
         fullWidth: false,
         ripple: true,
-        className: "text-[10px] py-1",
+        className: "text-[10px] py-1 rounded-md",
       },
       valid: {
         variants: ["filled", "outlined", "gradient", "text"],
@@ -1013,6 +1013,107 @@ const theme = {
         },
       },
 
+
+
+
+
+
+
+
+
+      radio: {
+        defaultProps: {
+          color: "green",
+          label: undefined,
+          icon: undefined,
+          ripple: true,
+          className: "",
+          disabled: false,
+          containerProps: undefined,
+          labelProps: undefined,
+          iconProps: undefined,
+        },
+        valid: {
+          colors: [
+            "green",
+            "red",
+          ],
+        },
+        styles: {
+          base: {
+            root: {
+              display: "inline-flex",
+              alignItems: "items-center",
+            },
+            container: {
+              position: "relative",
+              display: "flex",
+              alignItems: "items-center",
+              cursor: "cursor-pointer",
+              p: "px-5 py-4",
+              borderRadius: "rounded-full",
+            },
+            input: {
+              peer: "peer",
+              position: "relative",
+              appearance: "appearance-none",
+              width: "w-5",
+              height: "h-5",
+              borderWidth: "border",
+              borderRadius: "rounded-full",
+              borderColor: "border-blue-gray-200",
+              cursor: "cursor-pointer",
+              transition: "transition-all",
+              before: {
+                content: "before:content['']",
+                display: "before:block",
+                bg: "before:bg-blue-gray-500",
+                width: "before:w-12",
+                height: "before:h-12",
+                borderRadius: "before:rounded-full",
+                position: "before:absolute",
+                top: "before:top-2/4",
+                left: "before:left-2/4",
+                transform: "before:-translate-y-2/4 before:-translate-x-2/4",
+                opacity: "before:opacity-0 hover:before:opacity-10",
+                transition: "before:transition-opacity",
+              },
+            },
+            label: {
+              color: "text-gray-300",
+              fontWeight: "font-light",
+              userSelect: "select-none",
+              cursor: "cursor-pointer",
+              mt: "mt-px",
+            },
+            icon: {
+              position: "absolute",
+              top: "top-2/4",
+              left: "left-2/4",
+              translate: "-translate-y-2/4 -translate-x-2/4",
+              pointerEvents: "pointer-events-none",
+              opacity: "opacity-0 peer-checked:opacity-100",
+              transition: "transition-opacity",
+            },
+            disabled: {
+              opacity: "opacity-50",
+              pointerEvents: "pointer-events-none",
+            },
+          },
+          colors: {
+            green: {
+              color: "text-green-300",
+              border: "checked:border-none",
+              before: "checked:before:bg-green-300",
+            },
+            red: {
+              color: "text-red-500",
+              border: "checked:border-red-500",
+              before: "checked:before:bg-red-500",
+            },
+          },
+        },
+      },
         
       };
 
