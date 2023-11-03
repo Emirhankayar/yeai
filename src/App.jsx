@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import { ThemeProvider } from "@material-tailwind/react";
 import { theme } from "./utils/customTheme";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
@@ -55,6 +55,10 @@ const router = createBrowserRouter([
 ]);
 export function App() {
   const [captchaCompleted, setCaptchaCompleted] = useState(false);
+
+  useEffect(() => {
+    localStorage.setItem('captchaCompleted', captchaCompleted);
+  }, [captchaCompleted]);
 
   const handleCaptchaCompletion = (token) => {
     // You can verify the token here if needed
