@@ -54,7 +54,7 @@ const router = createBrowserRouter([
   },
 ]);
 export function App() {
-  const [captchaCompleted, setCaptchaCompleted] = useState(false);
+  const [captchaCompleted, setCaptchaCompleted] = useState(localStorage.getItem('captchaCompleted') === 'true');
 
   useEffect(() => {
     localStorage.setItem('captchaCompleted', captchaCompleted);
@@ -64,7 +64,7 @@ export function App() {
     // You can verify the token here if needed
     setCaptchaCompleted(true);
   };
-
+  
   return (
     <ThemeProvider value={theme}>
       <React.Suspense fallback={<CustomSpinner/>}>
