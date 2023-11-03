@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, {useState} from "react";
 import { ThemeProvider } from "@material-tailwind/react";
 import { theme } from "./utils/customTheme";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
@@ -11,6 +11,9 @@ const PostSubPg = React.lazy(() => import('./pages/PostSubPg'));
 const SignInPg = React.lazy(() => import('./pages/SignInPg'));
 const AccountPg = React.lazy(() => import('./pages/AccountPg'));
 const Footer = React.lazy(() => import('./common/Footer'));
+import { Turnstile } from '@marsidev/react-turnstile'
+
+const siteKey = import.meta.env.VITE_CAPTCHA_KEY;
 
 const router = createBrowserRouter([
   {
@@ -50,19 +53,38 @@ const router = createBrowserRouter([
     element: <MainPg />,
   },
 ]);
-
 export function App() {
+  const [captchaCompleted, setCaptchaCompleted] = useState(false);
+
+  const handleCaptchaCompletion = (token) => {
+    // You can verify the token here if needed
+    setCaptchaCompleted(true);
+  };
+
   return (
     <ThemeProvider value={theme}>
-    <React.Suspense fallback={<CustomSpinner/>}>
-
-      <Navbar/>
-      <div className="min-h-screen">
-        <RouterProvider router={router}/>
-      </div>
-      <Footer/>
-
-    </React.Suspense>
+      <React.Suspense fallback={<CustomSpinner/>}>
+        {captchaCompleted ? (
+          <>
+            <Navbar/>
+            <div className="min-h-screen">
+              <RouterProvider router={router}/>
+            </div>
+            <Footer/>
+          </>
+        ) : (
+          <div className="container h-screen w-full flex flex-col gap-10 items-center justify-center">
+            <div className="flex-col flex space-y-5">
+              <span>Please confirm that</span>
+              <span>You are a HOOMAN before proceeding.</span>
+            </div>
+            <Turnstile
+              siteKey={siteKey}
+              onSuccess={(token) => { handleCaptchaCompletion(token); }} // Fix this line
+            />
+          </div>
+        )}
+      </React.Suspense>
     </ThemeProvider>
   );
 }

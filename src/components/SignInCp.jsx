@@ -5,6 +5,7 @@ import { Typography } from "@material-tailwind/react";
 
 export default function SignInFormPage() {
 
+
   return (
     <div className="container grid grid-cols-1 place-items-center mx-auto p-10">
       <div className="">
@@ -21,7 +22,6 @@ export default function SignInFormPage() {
           providers={['google']}
           theme='dark'
         />
-
       </div>
     </div>
   );
