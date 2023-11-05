@@ -80,25 +80,14 @@ export function App() {
     <BookmarkContext.Provider value={{ bookmarks, setBookmarks, handleBookmarkClick }}>
 
       <React.Suspense fallback={<CustomSpinner />}>
-        {captchaCompleted ? (
-          <>
+
+
             <Navbar />
             <div className="min-h-screen">
               <RouterProvider router={router} />
             </div>
             <Footer />
-          </>
-        ) : (
-          <div className="container h-screen w-full flex flex-col gap-10 items-center justify-center">
-            <div className="flex-col flex space-y-5">
-              <span>Hooman being confirmed.</span>
-            </div>
-            <Turnstile
-              siteKey={siteKey}
-              onSuccess={(token) => { handleCaptchaCompletion(token); }} 
-            />
-          </div>
-        )}
+
       </React.Suspense>
       </BookmarkContext.Provider>
 
