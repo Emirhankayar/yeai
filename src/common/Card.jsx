@@ -1,18 +1,32 @@
+import { useContext } from 'react';
+import { BookmarkContext } from '../services/BookmarkContext';
 import PropTypes from 'prop-types';
 import Icon from './Icons';
 import { Link } from 'react-router-dom';
 import MaterialComponent from "./Material";
+import { UserContext } from '../services/UserContext';
 
 function formatDate(dateString) {
   const date = new Date(dateString);
   const day = String(date.getDate()).padStart(2, '0');
-  const month = String(date.getMonth() + 1).padStart(2, '0'); // January is 0!
+  const month = String(date.getMonth() + 1).padStart(2, '0');
   const year = date.getFullYear();
 
   return `${day}.${month}.${year}`;
 }
 
-export function PostCard({ post, handleBookmarkClick, handlePostClick, handleRedirect, truncateDescription = true, showReadMoreButton = true }) {
+export function PostCard({ post, handlePostClick, handleRedirect, truncateDescription = true, showReadMoreButton = true }) {
+  const user = useContext(UserContext);
+  const { bookmarks, setBookmarks, handleBookmarkClick } = useContext(BookmarkContext);
+
+  // Determine whether the post is bookmarked
+  const isBookmarked = bookmarks.includes(String(post.id));
+
+  // Update the bookmarkedPosts state when the bookmark button is clicked
+  const handleBookmarkButtonClick = () => {
+    handleBookmarkClick({postId: post.id, bookmarks, setBookmarks, user});
+  };
+
   return (
     <MaterialComponent component="Card" variant='gradient' color='gray' className="w-full border-2 border-gray-800 text-gray-500">
       <MaterialComponent component="CardBody">
@@ -29,25 +43,25 @@ export function PostCard({ post, handleBookmarkClick, handlePostClick, handleRed
         </MaterialComponent>
 
             <div className='flex flex-row items-center justify-between gap-6'>
-              <MaterialComponent
-                component="Tooltip"
-                content="Save the Post"
-                className="bg-gray-400 capitalize"
-                key={post.id} 
-              >
-                <div>
-                <Icon 
-                  icon="BookmarkIcon"
-                  className="h-5 w-5 cursor-pointer"
-                  fill={post.isBookmarked ? 'gray' : 'none'}
-                  onClick={() => handleBookmarkClick(post.id, true)} 
-                  />
-                  </div>
-              </MaterialComponent>
+            <MaterialComponent
+              component="Tooltip"
+              content={user ? "Save the Post" : "Log in to save the post"}
+              className={user ? "bg-gray-400 capitalize" : "bg-red-400 capitalize"}
+              key={post.id} 
+            >
+              <div>
+              <Icon 
+  icon={isBookmarked ? 'faSolidBookmark' : 'faRegularBookmark'}
+  className="h-5 w-5 cursor-pointer"
+  color={isBookmarked ? 'black' : 'none'}
+  onClick={() => user && handleBookmarkButtonClick({ postId: post.id, user, bookmarks, setBookmarks })}
+/>
+              </div>
+            </MaterialComponent>
             </div>
 
           </div>
-            <MaterialComponent component="Typography" variant='paragraph' className="md:h-36 sm:h-20 lg:h-20 h-20">
+            <MaterialComponent component="Typography" variant='paragraph' className="md:h-36 sm:h-20 lg:h-20 ">
               {truncateDescription ? post.post_description.substring(0, 120) + '...' : post.post_description}
             </MaterialComponent>
             <div className='flex flex-row items-center justify-start gap-4 w-full'>
@@ -71,7 +85,7 @@ export function PostCard({ post, handleBookmarkClick, handlePostClick, handleRed
                 <Icon 
                   icon="BanknotesIcon" 
                   className="h-5 w-5" 
-                  stroke={post.post_price === 'Free' ? 'green' : post.post_price === 'Paid' ? 'red' : 'pink'} 
+                  stroke={post.post_price === 'Free' ? 'lightgreen' : post.post_price === 'Paid' ? 'red' : 'pink'} 
                 />
               </div>
             </MaterialComponent>
@@ -101,6 +115,7 @@ export function PostCard({ post, handleBookmarkClick, handlePostClick, handleRed
 
 PostCard.propTypes = {
   post: PropTypes.shape({
+    user: PropTypes.object,
     post_title: PropTypes.string.isRequired,
     post_category: PropTypes.string.isRequired,
     post_description: PropTypes.string.isRequired,

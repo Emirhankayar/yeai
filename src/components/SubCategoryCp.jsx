@@ -1,13 +1,18 @@
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { handleRedirect, updatePostView } from '../utils/utils';
 import { SkeletonPost, InfScroll, PgTitle, PgButton } from '../common/Skeleton';
+import { BookmarkContext } from '../services/BookmarkContext';
+import { UserContext } from '../services/UserContext';
 import { PostCard, SearchBar } from '../common/Card';
 
-const SV_URL = import.meta.env.VITE_SV_URL;
+
+const SV_URL = import.meta.env.VITE_SV_URL
 
 const SubCategoryPage = () => {
+  const user = useContext(UserContext);
+  const { bookmarks, setBookmarks, handleBookmarkClick } = useContext(BookmarkContext);
   const { categoryName } = useParams();
   const [categoryPosts, setCategoryPosts] = useState([]);
   const navigate = useNavigate();
@@ -16,17 +21,6 @@ const SubCategoryPage = () => {
   const [hasMore, setHasMore] = useState(true);
   const [index, setIndex] = useState(1);
   const [dataLength, setDataLength] = useState(0);
-
-  const handleBookmarkClick = (postId) => {
-    setCategoryPosts((prevCategoryPosts) => {
-      return prevCategoryPosts.map((post) => {
-        if (post.id === postId) {
-          return { ...post, isBookmarked: !post.isBookmarked };
-        }
-        return post;
-      });
-    });
-  };
 
   useEffect(() => {
     axios
@@ -112,13 +106,13 @@ if (isLoading) {
         loader={<div className='grid grid-cols-1 gap-10 mt-10'>{renderLoadingPosts}</div>}
         >
           <ul className='gap-10 grid grid-cols-1'>
-        {categoryPosts.map((post) => (
-          <PostCard
-          key={post.id}
-          post={post}
-          handleBookmarkClick={handleBookmarkClick}
-          handlePostClick={handlePostClick}
-          handleRedirect={handleRedirect}
+          {categoryPosts.map((post) => (
+            <PostCard
+            key={post.id}
+            post={post}
+            handleBookmarkClick={() => handleBookmarkClick({postId: post.id, bookmarks, setBookmarks, user})}
+            handlePostClick={handlePostClick}
+            handleRedirect={handleRedirect}
           />
           ))}
         </ul>

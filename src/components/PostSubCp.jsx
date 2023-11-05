@@ -87,7 +87,7 @@ const PostDetailsPage = () => {
 
           <Link to={`/categories/${categoryName}`}>
             <PgButton
-              text={`(${categoryName})`}
+              text={`${categoryName}`}
             />
           </Link>
         </div>

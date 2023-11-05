@@ -1,11 +1,23 @@
+import { useEffect } from 'react';
 import { Auth } from '@supabase/auth-ui-react'
 import { ThemeSupa } from '@supabase/auth-ui-shared'
 import { supabase } from '../utils/utils'
 import { Typography } from "@material-tailwind/react";
 
 export default function SignInFormPage() {
+  useEffect(() => {
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        const user = session ? session.user : null;
+        console.log(user);
+      }
+    );
 
-
+    // Cleanup the listener
+    return () => {
+      authListener.unsubscribe();
+    };
+  }, []);
   return (
     <div className="container grid grid-cols-1 place-items-center mx-auto p-10">
       <div className="">
@@ -19,7 +31,7 @@ export default function SignInFormPage() {
         <Auth
           supabaseClient={supabase}
           appearance={{ theme: ThemeSupa }}
-          providers={['google']}
+          providers={['google', 'facebook']}
           theme='dark'
         />
       </div>

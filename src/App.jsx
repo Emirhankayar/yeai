@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { ThemeProvider } from "@material-tailwind/react";
 import { theme } from "./utils/customTheme";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
@@ -13,6 +13,12 @@ const AccountPg = React.lazy(() => import('./pages/AccountPg'));
 const Footer = React.lazy(() => import('./common/Footer'));
 import { Turnstile } from '@marsidev/react-turnstile'
 
+import { useSupabaseAuth, handleBookmarkClick } from './utils/utils';
+import { UserContext } from './services/UserContext';
+import { BookmarkContext } from './services/BookmarkContext';
+import { useBookmarks } from './hooks/useBookmarks';
+
+
 const siteKey = import.meta.env.VITE_CAPTCHA_KEY;
 
 const router = createBrowserRouter([
@@ -26,7 +32,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/categories",
-    element: <CategoryPg/>,
+    element: <CategoryPg />,
   },
   {
     path: "/categories/:categoryName",
@@ -53,34 +59,40 @@ const router = createBrowserRouter([
     element: <MainPg />,
   },
 ]);
+
 export function App() {
   const [captchaCompleted, setCaptchaCompleted] = useState(localStorage.getItem('captchaCompleted') === 'true');
+  const user = useSupabaseAuth();
+  const [bookmarks, setBookmarks] = useBookmarks(user);
 
   useEffect(() => {
     localStorage.setItem('captchaCompleted', captchaCompleted);
   }, [captchaCompleted]);
 
-  const handleCaptchaCompletion = (token) => {
-    // You can verify the token here if needed
+  const handleCaptchaCompletion = () => {
     setCaptchaCompleted(true);
   };
-  
+
   return (
     <ThemeProvider value={theme}>
-      <React.Suspense fallback={<CustomSpinner/>}>
+    <UserContext.Provider value={user}>
+
+    <BookmarkContext.Provider value={{ bookmarks, setBookmarks, handleBookmarkClick }}>
+
+      <React.Suspense fallback={<CustomSpinner />}>
         {captchaCompleted ? (
           <>
-            <Navbar/>
+            <Navbar />
             <div className="min-h-screen">
-              <RouterProvider router={router}/>
+              <RouterProvider router={router} />
             </div>
-            <Footer/>
+            <Footer />
           </>
         ) : (
           <div className="container h-screen w-full flex flex-col gap-10 items-center justify-center">
             <div className="flex-col flex space-y-5">
-              <span>Please confirm that</span>
-              <span>You are a HOOMAN before proceeding.</span>
+              <span>Hooman being confirmed.</span>
+              <CustomSpinner/>
             </div>
             <Turnstile
               siteKey={siteKey}
@@ -89,6 +101,9 @@ export function App() {
           </div>
         )}
       </React.Suspense>
+      </BookmarkContext.Provider>
+
+    </UserContext.Provider>
     </ThemeProvider>
   );
 }

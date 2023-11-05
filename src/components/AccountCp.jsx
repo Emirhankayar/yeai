@@ -1,7 +1,36 @@
+import { useState, useEffect } from 'react';
+import axios from "axios";
 import Icon from "../common/Icons";
 import MaterialComponent from "../common/Material";
+import { useSupabaseAuth } from '../utils/utils';
+import { useBookmarks } from '../hooks/useBookmarks';
 
-export default function Account() {
+const SV_URL = 'http://localhost:10000';
+
+export function AccountPg() {
+  const user = useSupabaseAuth();
+  console.log(user)
+  const [bookmarks] = useBookmarks(user);
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    if (bookmarks.length > 0) {
+      axios.get(`${SV_URL}/getBookmarkPosts`, { params: { ids: bookmarks } })
+      .then(response => {
+        console.log('Posts fetched:', response.data.posts);
+        if (response.data.posts) {
+          setPosts(response.data.posts);
+        } else {
+          setPosts([]);
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching posts:', error);
+      });
+    }
+  }, [bookmarks]);
+
+  
   return (
     <div className="container px-10 mt-20">
       <MaterialComponent component="Typography" variant="h1" color="white">Account</MaterialComponent>
@@ -10,13 +39,13 @@ export default function Account() {
         <div className="gap-10 ">
           <div className="grid grid-cols-1 gap-10">
             <MaterialComponent component="Typography" variant="h3" textGradient color="green">Bookmarks</MaterialComponent>
-
-            <MaterialComponent component="Card" color="gray" className="h-36">
-              <MaterialComponent component="CardBody"></MaterialComponent>
-            </MaterialComponent>
-            <MaterialComponent component="Card" color="gray" className="h-36">
-              <MaterialComponent component="CardBody"></MaterialComponent>
-            </MaterialComponent>
+            {posts.map((post, index) => (
+              <div key={index}>
+                {/* Render the post here */}
+                <h2>{post.title}</h2>
+                <p>{post.content}</p>
+              </div>
+            ))}
           </div>
         </div>
 
