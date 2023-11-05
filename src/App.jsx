@@ -92,7 +92,6 @@ export function App() {
           <div className="container h-screen w-full flex flex-col gap-10 items-center justify-center">
             <div className="flex-col flex space-y-5">
               <span>Hooman being confirmed.</span>
-              <CustomSpinner/>
             </div>
             <Turnstile
               siteKey={siteKey}
