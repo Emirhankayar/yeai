@@ -1,3 +1,7 @@
-User-agent: *
+User-agent: Googlebot
 Disallow: 
 
+User-agent: *
+Disallow: /
+
+Sitemap: https://yeai.tech/sitemap.xml
