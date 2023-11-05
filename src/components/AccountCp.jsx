@@ -1,50 +1,64 @@
-import { useState, useEffect } from 'react';
-import axios from "axios";
-import Icon from "../common/Icons";
-import MaterialComponent from "../common/Material";
-import { useSupabaseAuth } from '../utils/utils';
+import { useState, useEffect, useContext } from 'react';
+import axios from 'axios';
 import { useBookmarks } from '../hooks/useBookmarks';
+import { UserContext } from '../services/UserContext';
+import MaterialComponent from '../common/Material';
+import { PostCard } from '../common/Card';
+import Icon from '../common/Icons';
+import { useNavigate } from 'react-router-dom';
+import { handleRedirect, updatePostView, handleBookmarkClick } from '../utils/utils';
 
-const SV_URL = 'http://localhost:10000';
+const SV_URL = import.meta.env.VITE_SV_URL
 
-export function AccountPg() {
-  const user = useSupabaseAuth();
-  console.log(user)
-  const [bookmarks] = useBookmarks(user);
+export default function AccountPg() {
+  const user = useContext(UserContext);
+  const [bookmarks, setBookmarks] = useBookmarks(user);
   const [posts, setPosts] = useState([]);
+  const navigate = useNavigate();
+  const handlePostClick = async (postId) => {
+    const post = posts.find((post) => post.id === postId);
+    if (post) {
+      try {
+        await updatePostView(postId, post.post_view);
+        navigate(`/categories/${post.post_category}/${postId}`);
+        window.scrollTo(0, 0);
+      } catch (error) {
+        console.error('Error updating post view:', error);
+      }
+    }
+  };
 
   useEffect(() => {
-    if (bookmarks.length > 0) {
-      axios.get(`${SV_URL}/getBookmarkPosts`, { params: { ids: bookmarks } })
-      .then(response => {
-        console.log('Posts fetched:', response.data.posts);
-        if (response.data.posts) {
-          setPosts(response.data.posts);
-        } else {
-          setPosts([]);
+    const fetchPosts = async () => {
+      if (bookmarks.length > 0) {
+        try {
+          const response = await axios.get(`${SV_URL}/getBookmarkPosts`, { params: { ids: JSON.stringify(bookmarks) } });
+          setPosts(response.data.posts || []);
+        } catch (error) {
+          console.error('Error fetching posts:', error);
         }
-      })
-      .catch(error => {
-        console.error('Error fetching posts:', error);
-      });
-    }
+      }
+    };
+
+    fetchPosts();
   }, [bookmarks]);
 
-  
   return (
     <div className="container px-10 mt-20">
       <MaterialComponent component="Typography" variant="h1" color="white">Account</MaterialComponent>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mt-10">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-40 lg:gap-10 mt-10">
 
         <div className="gap-10 ">
           <div className="grid grid-cols-1 gap-10">
             <MaterialComponent component="Typography" variant="h3" textGradient color="green">Bookmarks</MaterialComponent>
-            {posts.map((post, index) => (
-              <div key={index}>
-                {/* Render the post here */}
-                <h2>{post.title}</h2>
-                <p>{post.content}</p>
-              </div>
+            {posts.map((post) => (
+                         <PostCard
+                         key={post.id}
+                         post={post}
+                         handleBookmarkClick={() => handleBookmarkClick({postId: post.id, bookmarks, setBookmarks, user})}
+                         handleRedirect={handleRedirect}
+                         handlePostClick={handlePostClick}
+                       />
             ))}
           </div>
         </div>
@@ -79,23 +93,13 @@ export function AccountPg() {
                     <div>
                       <MaterialComponent component="Typography" variant="small" className="text-left">
                         Drag the file or
-                        <MaterialComponent component="Button" className="rounded-full !bg-none !border-none !shadow-none px-2">Browse Files</MaterialComponent>
+                        <MaterialComponent component="Button" className="rounded-full !bg-none !border-none !shadow-none px-2">Browse Files (coming soon)</MaterialComponent>
                       </MaterialComponent>
                     </div>
                   </div>
                 </div>
               </MaterialComponent>
 
-              <MaterialComponent component="Card" color="gray" className="h-36">
-                <MaterialComponent component="CardBody">
-                  <MaterialComponent component="Checkbox" color="green" className="rounded-full"/>
-                </MaterialComponent>
-              </MaterialComponent>
-              <MaterialComponent component="Card" color="gray" className="h-36">
-                <MaterialComponent component="CardBody">
-                  <MaterialComponent component="Checkbox" color="green" className="rounded-full"/>
-                </MaterialComponent>
-              </MaterialComponent>
             </div>
           </div>
         </div>
