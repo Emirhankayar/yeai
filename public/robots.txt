@@ -1,5 +1,6 @@
-user-agent: *
-disallow: /downloads/
+User-agent: Googlebot
+Disallow: 
 
-user-agent: magicsearchbot
-disallow: /uploads/
+User-agent: *
+Disallow: /
+

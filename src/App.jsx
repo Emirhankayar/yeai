@@ -96,7 +96,7 @@ export function App() {
             </div>
             <Turnstile
               siteKey={siteKey}
-              onSuccess={(token) => { handleCaptchaCompletion(token); }} // Fix this line
+              onSuccess={(token) => { handleCaptchaCompletion(token); }} 
             />
           </div>
         )}
