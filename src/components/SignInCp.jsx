@@ -15,12 +15,14 @@ export default function SignInFormPage() {
 
     // Cleanup the listener
     return () => {
-      authListener.unsubscribe();
+      if (authListener && typeof authListener.unsubscribe === 'function') {
+        authListener.unsubscribe();
+      }
     };
   }, []);
   return (
     <div className="container grid grid-cols-1 place-items-center mx-auto p-10">
-      <div className="">
+      <div>
 
         <Typography variant="h4" textGradient className="text-green-300">
           Sign In / Sign Up

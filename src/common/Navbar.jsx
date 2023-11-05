@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React from "react";
 import { useAuth } from "../services/AuthContext"; 
 import '../index.css'
 import PropTypes from 'prop-types';
 import Icon from "./Icons";
+import useFetchCategories from '../hooks/useCategories';
+import SignInFormPage from "../components/SignInCp";
 import {
   Navbar,
   Collapse,
@@ -17,36 +18,12 @@ import {
   MenuList,
   MenuItem,
 } from "@material-tailwind/react";
-
-const SV_URL = import.meta.env.VITE_SV_URL
+import MaterialComponent from "./Material";
 
 function NavListMenu({ onCategoryClick }) {
+  const categories = useFetchCategories();
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
-  const [categories, setCategories] = useState([]);
-
-    useEffect(() => {
-      const fetchCategories = async () => {
-        try {
-          const storedCategories = localStorage.getItem('categories');
-          if (storedCategories) {
-            setCategories(JSON.parse(storedCategories));
-          } else {
-            const response = await axios.get(`${SV_URL}/allCategories`, {
-              headers: {
-                'Content-Type': 'application/json',
-              },
-            });
-            setCategories(response.data);
-            localStorage.setItem('categories', JSON.stringify(response.data));
-          }
-        } catch (error) {
-          console.error('Error fetching categories:', error);
-        }
-      };
-      
-      fetchCategories();
-    }, []); 
 
   const handleCategoryClick = async (category) => {
     onCategoryClick(`/categories/${category}`);
@@ -59,37 +36,20 @@ function NavListMenu({ onCategoryClick }) {
     closeNav: PropTypes.func.isRequired,
   };
   const renderItems = [
-    <a href="/categories" key="all">
-      <MenuItem
-        className="flex items-center gap-3 rounded-lg"
-        onClick={() => handleCategoryClick("all")}
-      >
-        <div>
-          <Typography
-            variant="small"
-            color="blue-gray"
-            className="flex items-center text-sm uppercase font-bold"
-          >
-            <Icon icon="ViewfinderCircleIcon" className="w-5 h-5 mr-2" />
-            list all categories
-          </Typography>
-        </div>
-      </MenuItem>
-    </a>,
     ...categories.map((category, index) => (
-      <a href={`/categories/${category}`} key={index}>
+      <a href={`/categories/${category.original}`} key={index}>
         <MenuItem
           className="flex items-center gap-3 rounded-lg"
-          onClick={() => handleCategoryClick(category)}
+          onClick={() => handleCategoryClick(category.original)}
         >
           <div>
             <Typography
               variant="small"
               color="blue-gray"
-              className="flex items-center text-sm uppercase font-semibold"
+              className="flex items-center text-sm capitalize font-semibold"
             >
             <Icon icon="Squares2X2Icon" className="w-5 h-5 mr-2" />
-              {category}
+              {category.modified}
             </Typography>
           </div>
         </MenuItem>
@@ -104,7 +64,7 @@ function NavListMenu({ onCategoryClick }) {
         handler={setIsMenuOpen}
         offset={{ mainAxis: 20 }}
         placement="bottom"
-        allowHover={false}
+        allowHover={true}
       >
         <MenuHandler>
           <Typography as="div" variant="small" color="blue-gray" className="font-normal">
@@ -115,9 +75,11 @@ function NavListMenu({ onCategoryClick }) {
             >
 
 
+              <a href="/categories" className="flex gap-1 items-center">
               <Icon icon="Square3Stack3DIcon" className="h-[18px] w-[18px]"/>
-                Categories
 
+                Categories
+              </a>
               <Icon icon="ChevronDownIcon"
                 strokeWidth={2.5}
                 className={`hidden h-3 w-3 transition-transform lg:block ${
@@ -158,24 +120,12 @@ function NavList({ user, closeNav }) {
         color="blue-gray"
         className="font-normal"
       >
-        <ListItem className="flex items-center gap-2 py-2 pr-4">
+        <ListItem className="flex items-center gap-2 py-2 pr-4 hidden">
           <Icon icon="QuestionMarkCircleIcon" className="h-[18px] w-[18px]" />
           About
         </ListItem>
       </Typography>
       <NavListMenu onCategoryClick={handleCategoryClick} />
-      <Typography
-        as="a"
-        href="/categories/freebies"
-        variant="small"
-        color="blue-gray"
-        className="font-normal"
-      >
-        <ListItem className="flex items-center gap-2 py-2 pr-4">
-          <Icon icon="SparklesIcon" className="h-[18px] w-[18px]" />
-          Freebies
-        </ListItem>
-      </Typography>
       {user && (
         <Typography
           as="a"
@@ -204,6 +154,8 @@ function NavList({ user, closeNav }) {
 
 export default function NavbarWithMegaMenu() {
   const [openNav, setOpenNav] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen((cur) => !cur);
   const { user, signOut } = useAuth();
   const closeNav = () => {
     if (openNav) {
@@ -238,20 +190,27 @@ export default function NavbarWithMegaMenu() {
           <NavList user={user}/>
         </div>
         <div className="hidden gap-2 lg:flex-row lg:flex lg:justify-end lg:items-center  lg:w-1/5">
-        
-          {user ? (
-            <Button variant="outlined" color="red" fullWidth size="sm" className="w-1/2" onClick={signOut}>
-              Sign Out
-            </Button>
-          ) : (
-              <a href="/sign-in">
-              <Button variant="gradient" fullWidth size="sm">
-              Sign in
-              </Button>
-              </a>
-
-          )}
-        </div>
+  {user ? (
+    <Button color="red" onClick={signOut}>
+      Sign Out
+    </Button>
+  ) : (
+    <>
+      <Button variant="gradient" size="sm" onClick={handleOpen}>
+        Sign in
+      </Button>
+      <MaterialComponent
+        component="Dialog"
+        size="xs"
+        open={open}
+        handler={handleOpen}
+        className="bg-transparent shadow-none"
+      >
+        <SignInFormPage/>
+      </MaterialComponent>
+    </>
+      )}
+    </div>
 
         <IconButton
           variant="text"
@@ -272,7 +231,7 @@ export default function NavbarWithMegaMenu() {
 
 
         {user ? (
-            <Button variant="outlined" color="red" size="sm" onClick={signOut} className="w-1/2">
+            <Button color="red" fullWidth onClick={signOut}>
               Sign Out
             </Button>
           ) : (

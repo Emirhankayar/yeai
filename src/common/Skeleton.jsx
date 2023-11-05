@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import Icon from './Icons';
 import MaterialComponent from './Material';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 export function SkeletonPost() {
     return (
@@ -40,7 +41,7 @@ export function SkeletonCategory() {
 
 export function PgTitle({ text }) {
     return (
-      <MaterialComponent component="Typography" variant="h4" color="white" className="font-bold capitalize">
+      <MaterialComponent component="Typography" variant="h5" color="white" className="font-bold capitalize">
         {text}
       </MaterialComponent>
     );
@@ -60,8 +61,6 @@ export function PgTitle({ text }) {
   PgButton.propTypes = {
     text: PropTypes.string.isRequired,
   };
-
-  import InfiniteScroll from 'react-infinite-scroll-component';
   
   export function InfScroll({ dataLength, next, hasMore, loader, children }) {
     return (
@@ -75,7 +74,7 @@ export function PgTitle({ text }) {
         <p className='text-center text-gray-800 text-sm mt-40'>
         <b>Nothing to load more...</b>
         </p>}
-        className='px-5'
+        className='hide-scrollbar'
       >
         {children}
       </InfiniteScroll>

@@ -3,8 +3,6 @@ import { useEffect, useState } from 'react';
 const supabaseUrl = import.meta.env.VITE_DB_URL;
 const supabaseKey = import.meta.env.VITE_DB_KEY;
 import { createClient } from '@supabase/supabase-js';
-
-
 const supabase = createClient(supabaseUrl, supabaseKey);
 const SV_URL = import.meta.env.VITE_SV_URL;
 
@@ -61,10 +59,6 @@ const handleRedirect = (link) => {
     console.error('Error redirecting:', error);
   }
 };
-
-
-
-
 
 const handleBookmarkClick = async ({postId, bookmarks, setBookmarks, user}) => {
   const userEmail = user.email; // Change this line

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { ThemeProvider } from "@material-tailwind/react";
 import { theme } from "./utils/customTheme";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
@@ -6,8 +6,6 @@ import CustomSpinner from "./common/Spinner";
 const Navbar = React.lazy(() => import('./common/Navbar'));
 const MainPg = React.lazy(() => import('./pages/MainPg'));
 const CategoryPg = React.lazy(() => import('./pages/CategoryPg'));
-const SubCategoryPg = React.lazy(() => import('./pages/SubCategoryPg'));
-const PostSubPg = React.lazy(() => import('./pages/PostSubPg'));
 const SignInPg = React.lazy(() => import('./pages/SignInPg'));
 const AccountPg = React.lazy(() => import('./pages/AccountPg'));
 const Footer = React.lazy(() => import('./common/Footer'));
@@ -17,7 +15,7 @@ import { useSupabaseAuth, handleBookmarkClick } from './utils/utils';
 import { UserContext } from './services/UserContext';
 import { BookmarkContext } from './services/BookmarkContext';
 import { useBookmarks } from './hooks/useBookmarks';
-
+import { CategoryContext } from './services/CategoryContext';
 
 const siteKey = import.meta.env.VITE_CAPTCHA_KEY;
 
@@ -33,14 +31,6 @@ const router = createBrowserRouter([
   {
     path: "/categories",
     element: <CategoryPg />,
-  },
-  {
-    path: "/categories/:categoryName",
-    element: <SubCategoryPg />,
-  },
-  {
-    path: "/categories/:categoryName/:postId",
-    element: <PostSubPg />,
   },
   {
     path: "/sign-in",
@@ -64,7 +54,7 @@ export function App() {
   const [captchaCompleted, setCaptchaCompleted] = useState(localStorage.getItem('captchaCompleted') === 'true');
   const user = useSupabaseAuth();
   const [bookmarks, setBookmarks] = useBookmarks(user);
-
+  const categories = useContext(CategoryContext);
   useEffect(() => {
     localStorage.setItem('captchaCompleted', captchaCompleted);
   }, [captchaCompleted]);
@@ -76,6 +66,7 @@ export function App() {
   return (
     <ThemeProvider value={theme}>
     <UserContext.Provider value={user}>
+    <CategoryContext.Provider value={categories}>
 
     <BookmarkContext.Provider value={{ bookmarks, setBookmarks, handleBookmarkClick }}>
 
@@ -101,7 +92,7 @@ export function App() {
         )}
       </React.Suspense>
       </BookmarkContext.Provider>
-
+      </CategoryContext.Provider>
     </UserContext.Provider>
     </ThemeProvider>
   );

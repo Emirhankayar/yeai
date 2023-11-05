@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { BookmarkContext } from '../services/BookmarkContext';
 import PropTypes from 'prop-types';
 import Icon from './Icons';
@@ -15,9 +15,12 @@ function formatDate(dateString) {
   return `${day}.${month}.${year}`;
 }
 
-export function PostCard({ post, handlePostClick, handleRedirect, truncateDescription = true, showReadMoreButton = true }) {
+const SV_URL = import.meta.env.VITE_SV_URL;
+
+export function PostCard({ post, handleRedirect }) {
   const user = useContext(UserContext);
   const { bookmarks, setBookmarks, handleBookmarkClick } = useContext(BookmarkContext);
+  const [imageUrl, setImageUrl] = useState(null);
 
   // Determine whether the post is bookmarked
   const isBookmarked = bookmarks.includes(String(post.id));
@@ -27,19 +30,33 @@ export function PostCard({ post, handlePostClick, handleRedirect, truncateDescri
     handleBookmarkClick({postId: post.id, bookmarks, setBookmarks, user});
   };
 
+  useEffect(() => {
+    const url = `http://${SV_URL}/postImage/${post.id}`;
+    fetch(url)
+      .then(response => {
+      if (response.status === 204) {
+        setImageUrl(null); // Set imageUrl to null if image not found
+        return;
+      }
+      if (!response.ok) {
+        throw new Error('Error fetching image');
+      }
+      return response.json(); // Get the response as a JSON object
+    })
+    .then(data => {
+      setImageUrl(data.publicUrl); // Set the public URL as the image URL
+    })
+    .catch(() => setImageUrl(null)); // Set imageUrl to null if there's an error
+  }, [post.id]);
+
   return (
-    <MaterialComponent component="Card" variant='gradient' color='gray' className="w-full border-2 border-gray-800 text-gray-500">
+    <MaterialComponent component="Card" variant='gradient' color='transparent' className="w-full border-2 border-gray-800 text-gray-500">
       <MaterialComponent component="CardBody">
         <div className="mb-2 flex flex-col items-start space-y-4">
           <div className='flex flex-row items-center justify-between w-full'>
-          <MaterialComponent component="Typography" variant='h5' color="white" className="font-bold capitalize">
-          {post.post_title.length >= 20 ? (
-            <MaterialComponent component="Tooltip" content={post.post_title} className="bg-black text-white capitalize">
-              {truncateDescription ? post.post_title.substring(0, 12) + '...' : post.post_title}
-            </MaterialComponent>
-          ) : (
-            post.post_title
-          )}
+          <MaterialComponent component="Typography" variant='h6' color="white" className="font-bold capitalize flex gap-2 items-center">
+          {imageUrl && <img src={imageUrl} alt="Post" onError={() => setImageUrl(null)} className='w-3 h-3' />}            {post.post_title}
+
         </MaterialComponent>
 
             <div className='flex flex-row items-center justify-between gap-6'>
@@ -51,36 +68,33 @@ export function PostCard({ post, handlePostClick, handleRedirect, truncateDescri
             >
               <div>
               <Icon 
-  icon={isBookmarked ? 'faSolidBookmark' : 'faRegularBookmark'}
-  className="h-5 w-5 cursor-pointer"
-  color={isBookmarked ? 'black' : 'none'}
-  onClick={() => user && handleBookmarkButtonClick({ postId: post.id, user, bookmarks, setBookmarks })}
-/>
+                icon={isBookmarked ? 'faSolidBookmark' : 'faRegularBookmark'}
+                className="h-5 w-5 cursor-pointer"
+                color={isBookmarked ? 'black' : 'none'}
+                onClick={() => user && handleBookmarkButtonClick({ postId: post.id, user, bookmarks, setBookmarks })}
+              />
               </div>
             </MaterialComponent>
             </div>
 
           </div>
-            <MaterialComponent component="Typography" variant='paragraph' className="md:h-36 sm:h-20 lg:h-20 ">
-              {truncateDescription ? post.post_description.substring(0, 120) + '...' : post.post_description}
+            <MaterialComponent component="Typography" variant='small'>
+              {post.post_description}
             </MaterialComponent>
             <div className='flex flex-row items-center justify-start gap-4 w-full'>
-            <MaterialComponent component="Typography" variant='paragraph' className='flex gap-1 items-center'>
+            <MaterialComponent component="Typography" variant='small' className='flex gap-1 items-center'>
               <div>
-                <Icon icon="ClockIcon" className="h-5 w-5" stroke="gray" />
+                <Icon icon="ClockIcon" className="h-4 w-4" stroke="gray" />
               </div>
               {formatDate(post.post_added)}
             </MaterialComponent>
-            <MaterialComponent component="Tooltip" content={post.post_category} className='bg-orange-400 uppercase'>
+            <MaterialComponent component="Typography" variant='small' className='flex gap-1 items-center'>
               <div>
-                <Icon icon="SwatchIcon" className="h-5 w-5" stroke="orange" />
+                <Icon icon="HashtagIcon" className="h-4 w-4" stroke="orange" />
               </div>
+                {post.post_category}
             </MaterialComponent>
-            <MaterialComponent 
-              component="Tooltip" 
-              content={post.post_price} 
-              className={post.post_price === 'Free' ? 'bg-green-400 uppercase' : post.post_price === 'Paid' ? 'bg-red-400 uppercase' : 'bg-pink-400 uppercase'}
-            >
+            <MaterialComponent component="Typography" variant='small' className='flex gap-1 items-center'>
               <div>
                 <Icon 
                   icon="BanknotesIcon" 
@@ -88,21 +102,14 @@ export function PostCard({ post, handlePostClick, handleRedirect, truncateDescri
                   stroke={post.post_price === 'Free' ? 'lightgreen' : post.post_price === 'Paid' ? 'red' : 'pink'} 
                 />
               </div>
-            </MaterialComponent>
+                {post.post_price}
+            </MaterialComponent>       
             </div>
           
         </div>
       </MaterialComponent>
 
         <MaterialComponent component="CardFooter" className="pt-0 flex items-center justify-between gap-6">
-          {showReadMoreButton && (
-          <MaterialComponent
-            component="Button"
-            onClick={() => handlePostClick(post.id)}
-            >
-            Read More
-          </MaterialComponent>
-            )}
           <Link onClick={() => handleRedirect(post.post_link)} target="_blank" rel="noopener noreferrer">
             <MaterialComponent component="Button">
               Visit Website
@@ -125,107 +132,26 @@ PostCard.propTypes = {
     isBookmarked: PropTypes.bool,
     id: PropTypes.number.isRequired,
   }).isRequired,
-  handleBookmarkClick: PropTypes.func.isRequired,
-  handlePostClick: PropTypes.func.isRequired,
   handleRedirect: PropTypes.func.isRequired,
-  truncateDescription: PropTypes.bool,
-  showReadMoreButton: PropTypes.bool,
 };
 
-export function SinglePostCard({ post, handleBookmarkClick, handlePostClick, handleRedirect, showReadMoreButton = false }) {
-  return (
-    <MaterialComponent component="Card" variant='gradient' color='gray' className="w-full border-2 border-gray-800 text-gray-500">
-      <MaterialComponent component="CardBody">
-        <div className="mb-2 flex flex-col items-start space-y-4">
-          <div className='flex flex-row items-center justify-between w-full'>
-          <MaterialComponent component="Typography" variant='h5' color="white" className="font-bold capitalize">
-            {post.post_title}
-        </MaterialComponent>
-
-            <div className='flex flex-row items-center justify-between gap-6'>
-
-              <MaterialComponent component="Tooltip" content={post.post_category} className='bg-orange-400 uppercase' >
-                <div>
-              <Icon icon="SwatchIcon" className="h-5 w-5" stroke="gray" />
-                </div>
-              </MaterialComponent>
-              <MaterialComponent
-                component="Tooltip"
-                content="Save the Post"
-                className="bg-gray-400 capitalize"
-                key={post.id} 
-              > 
-                <div>
-                <Icon 
-                  icon="BookmarkIcon"
-                  className="h-5 w-5 cursor-pointer"
-                  fill={post.isBookmarked ? 'gray' : 'none'}
-                  onClick={() => handleBookmarkClick(post.id, true)} 
-                  />
-                  </div>
-              </MaterialComponent>
-            </div>
-
-          </div>
-            <MaterialComponent component="Typography" variant='paragraph'>
-              {post.post_description}
-            </MaterialComponent>
-        </div>
-      </MaterialComponent>
-
-        <MaterialComponent component="CardFooter" className="pt-0 flex items-start gap-4">
-      {showReadMoreButton && (
-          <MaterialComponent
-            component="Button"
-            onClick={() => handlePostClick(post.id)}
-          >
-            Read More
-          </MaterialComponent>
-            )}
-          <Link onClick={() => handleRedirect(post.post_link)} target="_blank" rel="noopener noreferrer">
-            <MaterialComponent component="Button">
-              Visit Website
-            </MaterialComponent>
-          </Link>
-        </MaterialComponent>
-    </MaterialComponent>
-  );
-}
-
-SinglePostCard.propTypes = {
-  post: PropTypes.shape({
-    post_title: PropTypes.string.isRequired,
-    post_category: PropTypes.string.isRequired,
-    post_description: PropTypes.string.isRequired,
-    post_link: PropTypes.string.isRequired,
-    isBookmarked: PropTypes.bool,
-    id: PropTypes.number.isRequired,
-  }).isRequired,
-  handleBookmarkClick: PropTypes.func.isRequired,
-  handlePostClick: PropTypes.func.isRequired,
-  handleRedirect: PropTypes.func.isRequired,
-  truncateDescription: PropTypes.bool,
-  showReadMoreButton: PropTypes.bool,
-};
 
 
 export function CategoryCard({ category, handleCategoryClick }) {
   return (
-    <MaterialComponent component="Card" variant="gradient" color="gray" className="w-full border-2 border-gray-800 text-gray-500">
-      <MaterialComponent component="CardBody">
-        <div className="mb-2">
-          <MaterialComponent component="Typography" variant="h6" color="white" className="font-semibold uppercase text-center">
-            {category}
-          </MaterialComponent>
-        </div>
-      </MaterialComponent>
-      <MaterialComponent component="CardFooter" className="pt-0 text-center">
-        <MaterialComponent component="Button" onClick={() => handleCategoryClick(category)}>View Posts</MaterialComponent>
-      </MaterialComponent>
+    <MaterialComponent
+      component="Option"
+      className="bg-transparent gap-2 hover:bg-emerald-600 duration-300 ease-in-out"
+      onClick={() => handleCategoryClick(category.original)}
+    >
+      <div className='flex gap-2 items-center'>
+
+      <Icon icon="Squares2X2Icon" className="w-3 h-3" />
+      {category.modified}
+      </div>
     </MaterialComponent>
   );
 }
-
 CategoryCard.propTypes = {
   category: PropTypes.string.isRequired,
   handleCategoryClick: PropTypes.func.isRequired,
@@ -233,41 +159,20 @@ CategoryCard.propTypes = {
 
 export function SearchBar({ value, onChange }) {
   return (
-    <MaterialComponent component="Card" variant='gradient' color='gray' className="w-full border-2 border-gray-800 text-gray-500">
-    <MaterialComponent component="CardBody" className="flex flex-col gap-10">
-
-    <MaterialComponent 
-      component="Input"
-      type="text"
-      color="white"
-      value={value}
-      onChange={onChange}
-      variant="standard"
-      label="Search"
-      aria-label="Search"
-
-      />
-
-    <div className='grid grid-cols-1'>
-    <label htmlFor="sort" className='text-gray-300 mb-2'>Sort By</label>
-    <MaterialComponent component="Label" value="Sort By"/>
-    <MaterialComponent component="Radio" name="type" label="A-Z" color="green" className="w-4 h-4" aria-label="Sort by A to Z"/>
-    <MaterialComponent component="Radio" name="type" label="Z-A"className="w-4 h-4" aria-label="Sort by Z to A"/>
-    <MaterialComponent component="Radio" name="type" label="More Popular"className="w-4 h-4" aria-label="Sort by more popular"/>
-    <MaterialComponent component="Radio" name="type" label="Less Popular"className="w-4 h-4" aria-label="Sort by less popular"/>
-    </div>
-    <div className='grid grid-cols-1'>
-    <label htmlFor="sort" className='text-gray-300 mb-2'>Pricing</label>
-    <MaterialComponent component="Label" value="Sort By"/>
-    <MaterialComponent component="Radio" name="type" label="Free" color="green" className="w-4 h-4" aria-label="Show free options only"/>
-    <MaterialComponent component="Radio" name="type" label="Freemium"className="w-4 h-4" aria-label="Show freemium options"/>
-    <MaterialComponent component="Radio" name="type" label="Paid" className="w-4 h-4" aria-label="Show paid options only"/>
-    </div>
-
-    </MaterialComponent>
-    </MaterialComponent>
-  );
-}
+          <MaterialComponent 
+            component="Input"
+            type="text"
+            color="white"
+            value={value}
+            onChange={onChange}
+            variant="outlined"
+            label="Search"
+            size="md"
+            aria-label="Search"
+            containerProps={{ className: "min-w-[50px]" }}
+          />
+   );
+ }
 
 SearchBar.propTypes = {
   value: PropTypes.string.isRequired,
@@ -276,4 +181,4 @@ SearchBar.propTypes = {
 
 
 
-export default { CategoryCard, PostCard, SinglePostCard, SearchBar };
+export default { CategoryCard, PostCard, SearchBar };

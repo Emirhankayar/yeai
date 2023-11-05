@@ -122,5 +122,18 @@ module.exports = withMT({
     'postcss-import': {},
     tailwindcss: {},
     autoprefixer: {},
-  }],
+  },
+  function({ addUtilities }) {
+    const newUtilities = {
+      '.hide-scrollbar::-webkit-scrollbar': {
+        display: 'none',
+      },
+      '.hide-scrollbar': {
+        '-ms-overflow-style': 'none',
+        'scrollbar-width': 'none',
+      },
+    }
+    addUtilities(newUtilities)
+  }
+  ],
 });
