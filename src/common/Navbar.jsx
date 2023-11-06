@@ -187,7 +187,7 @@ export default function NavbarWithMegaMenu() {
 
         </Typography>
         <div className="hidden lg:block">
-          <NavList user={user}/>
+          <NavList user={user} closeNav={closeNav}/>
         </div>
         <div className="hidden gap-2 lg:flex-row lg:flex lg:justify-end lg:items-center  lg:w-1/5">
   {user ? (

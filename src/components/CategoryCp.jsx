@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { PgTitle, SkeletonPost, InfScroll } from '../common/Skeleton';
 import { CategoryCard, SearchBar, PostCard } from '../common/Card';
 import MaterialComponent from '../common/Material';
-import { updatePostView } from '../utils/utils';
+import { handleRedirect, updatePostView } from '../utils/utils';
 import { UserContext } from '../services/UserContext';
 import { BookmarkContext } from '../services/BookmarkContext';
 import useFetchCategories from '../hooks/useCategories';
@@ -143,6 +143,7 @@ const CategoryList = () => {
           post={post}
           handleBookmarkClick={() => handleBookmarkClick({postId: post.id, bookmarks, setBookmarks, user})}
           handlePostClick={handlePostClick}
+          handleRedirect={handleRedirect}
         />
       ))}
     </ul>
@@ -155,6 +156,7 @@ const CategoryList = () => {
         post={post}
         handleBookmarkClick={() => handleBookmarkClick({postId: post.id, bookmarks, setBookmarks, user})}
         handlePostClick={handlePostClick}
+        handleRedirect={handleRedirect}
       />
     ))}
   </ul>

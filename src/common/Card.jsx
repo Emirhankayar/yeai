@@ -5,6 +5,7 @@ import Icon from './Icons';
 import { Link } from 'react-router-dom';
 import MaterialComponent from "./Material";
 import { UserContext } from '../services/UserContext';
+import axios from 'axios';
 
 function formatDate(dateString) {
   const date = new Date(dateString);
@@ -32,21 +33,20 @@ export function PostCard({ post, handleRedirect }) {
 
   useEffect(() => {
     const url = `${SV_URL}/postImage/${post.id}`;
-    fetch(url)
+    axios.get(url)
       .then(response => {
-      if (response.status === 204) {
-        setImageUrl(null); // Set imageUrl to null if image not found
-        return;
-      }
-      if (!response.ok) {
-        throw new Error('Error fetching image');
-      }
-      return response.json(); // Get the response as a JSON object
-    })
-    .then(data => {
-      setImageUrl(data.publicUrl); // Set the public URL as the image URL
-    })
-    .catch(() => setImageUrl(null)); // Set imageUrl to null if there's an error
+        if (response.status === 204 || response.status === 400) {
+          setImageUrl(null); // Set imageUrl to null if image not found or bad request
+          throw new Error('No image found or bad request'); // Throw an error to stop the promise chain
+        }
+        setImageUrl(response.data.publicUrl); // Set the public URL as the image URL
+      })
+      .catch(error => {
+        if (!error.message.includes('No image found or bad request')) {
+          console.error(error); // Only log the error to the console if it's not one of the expected errors
+        }
+        setImageUrl(null); // Set imageUrl to null if there's an error
+      });
   }, [post.id]);
 
   return (
@@ -83,25 +83,19 @@ export function PostCard({ post, handleRedirect }) {
             </MaterialComponent>
             <div className='flex flex-row items-center justify-start gap-4 w-full'>
             <MaterialComponent component="Typography" variant='small' className='flex gap-1 items-center'>
-              <div>
-                <Icon icon="ClockIcon" className="h-4 w-4" stroke="gray" />
-              </div>
+              <Icon icon="ClockIcon" className="h-4 w-4" stroke="gray" />
               {formatDate(post.post_added)}
             </MaterialComponent>
             <MaterialComponent component="Typography" variant='small' className='flex gap-1 items-center'>
-              <div>
                 <Icon icon="HashtagIcon" className="h-4 w-4" stroke="orange" />
-              </div>
                 {post.post_category}
             </MaterialComponent>
             <MaterialComponent component="Typography" variant='small' className='flex gap-1 items-center'>
-              <div>
                 <Icon 
                   icon="BanknotesIcon" 
                   className="h-5 w-5" 
                   stroke={post.post_price === 'Free' ? 'lightgreen' : post.post_price === 'Paid' ? 'red' : 'pink'} 
                 />
-              </div>
                 {post.post_price}
             </MaterialComponent>       
             </div>
@@ -153,7 +147,10 @@ export function CategoryCard({ category, handleCategoryClick }) {
   );
 }
 CategoryCard.propTypes = {
-  category: PropTypes.string.isRequired,
+  category: PropTypes.shape({
+    original: PropTypes.string,
+    modified: PropTypes.string
+  }).isRequired,
   handleCategoryClick: PropTypes.func.isRequired,
 };
 
