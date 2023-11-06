@@ -74,7 +74,7 @@ export function PgTitle({ text }) {
         <p className='text-center text-gray-800 text-sm mt-40'>
         <b>Nothing to load more...</b>
         </p>}
-        className='hide-scrollbar'
+        className='hide-scrollbar overflow-x-hidden'
       >
         {children}
       </InfiniteScroll>
