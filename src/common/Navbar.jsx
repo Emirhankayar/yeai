@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import Icon from "./Icons";
 import useFetchCategories from '../hooks/useCategories';
 import SignInFormPage from "../components/SignInCp";
+
 import {
   Navbar,
   Collapse,
@@ -20,14 +21,16 @@ import {
 } from "@material-tailwind/react";
 import MaterialComponent from "./Material";
 
-function NavListMenu({ onCategoryClick }) {
+function NavListMenu() {
   const categories = useFetchCategories();
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
 
-  const handleCategoryClick = async (category) => {
-    onCategoryClick(`/categories/${category}`);
+  const handleCategoryClick = (category) => {
+    // Navigate to the category page and force a page refresh
+    window.location.href = `/categories?category=${category}`;
   };
+
   NavListMenu.propTypes = {
     onCategoryClick: PropTypes.func.isRequired,
   };
@@ -37,7 +40,7 @@ function NavListMenu({ onCategoryClick }) {
   };
   const renderItems = [
     ...categories.map((category, index) => (
-      <a href={`/categories/${category.original}`} key={index}>
+      <a key={index}>
         <MenuItem
           className="flex items-center gap-3 rounded-lg"
           onClick={() => handleCategoryClick(category.original)}
@@ -49,7 +52,7 @@ function NavListMenu({ onCategoryClick }) {
               className="flex items-center text-sm capitalize font-semibold"
             >
             <Icon icon="Squares2X2Icon" className="w-5 h-5 mr-2" />
-              {category.modified}
+              {category.modifiedName}
             </Typography>
           </div>
         </MenuItem>

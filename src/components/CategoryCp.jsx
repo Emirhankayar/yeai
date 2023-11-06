@@ -8,12 +8,13 @@ import { handleRedirect, updatePostView } from '../utils/utils';
 import { UserContext } from '../services/UserContext';
 import { BookmarkContext } from '../services/BookmarkContext';
 import useFetchCategories from '../hooks/useCategories';
-
 const SV_URL = import.meta.env.VITE_SV_URL;
+import { useLocation } from 'react-router-dom';
 
 const CategoryList = () => {
   const categories = useFetchCategories();
   const navigate = useNavigate();
+  const location = useLocation();
   const [popularPosts, setPopularPosts] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [categoryPosts, setCategoryPosts] = useState([]);
@@ -41,10 +42,15 @@ const CategoryList = () => {
   }, []);
 
   useEffect(() => {
-    if (selectedCategory) {
+    const params = new URLSearchParams(location.search);
+    const category = params.get('category');
+    if (category) {
+      // Update the selectedCategory state
+      setSelectedCategory(category);
+  
       setIsLoading(true);
       axios
-        .get(`${SV_URL}/postsByCategory?categoryName=${selectedCategory}&offset=0&limit=12`)
+        .get(`${SV_URL}/postsByCategory?categoryName=${category}&offset=0&limit=12`)
         .then((res) => {
           setCategoryPosts(res.data);
           setDataLength(res.data.length);
@@ -58,7 +64,7 @@ const CategoryList = () => {
           setIsLoading(false);
         });
     }
-  }, [selectedCategory]);
+  }, [location.search]);
 
   const fetchMoreData = () => {
     if (selectedCategory) {
@@ -78,10 +84,14 @@ const CategoryList = () => {
     }
   };
 
-  const handleCategoryClick = async (category) => {
+  const handleCategoryClick = (category) => {
+    // Update the state
     setSelectedCategory(category);
-  };
   
+    // Update the URL without causing a page refresh
+    navigate(`${location.pathname}?category=${category}`);
+  };
+
   const handlePostClick = async (postId) => {
     const post = popularPosts.find((post) => post.id === postId);
     if (post) {

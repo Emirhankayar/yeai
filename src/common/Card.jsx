@@ -141,7 +141,7 @@ export function CategoryCard({ category, handleCategoryClick }) {
       <div className='flex gap-2 items-center'>
 
       <Icon icon="Squares2X2Icon" className="w-3 h-3" />
-      {category.modified}
+      {category.modifiedName}
       </div>
     </MaterialComponent>
   );
@@ -149,7 +149,7 @@ export function CategoryCard({ category, handleCategoryClick }) {
 CategoryCard.propTypes = {
   category: PropTypes.shape({
     original: PropTypes.string,
-    modified: PropTypes.string
+    modifiedName: PropTypes.string
   }).isRequired,
   handleCategoryClick: PropTypes.func.isRequired,
 };

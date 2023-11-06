@@ -29,24 +29,19 @@ const useFetchCategories = () => {
         console.error('Error fetching categories:', error);
       }
     };
-
+    
     const modifyCategoryNames = (categories) => {
       return categories.map(category => {
-        if (typeof category === 'string') {
-          let modifiedName = category.split('-').map(word => {
-            if (word !== 'and') {
-              return word.charAt(0).toUpperCase() + word.slice(1);
-            } else {
-              return word;
-            }
-          }).join(' ');
-          return modifiedName;
+        if (category && typeof category === 'string') {
+          let original = category.split(' ').join('-').toLowerCase();
+          console.log(original, category)
+          return { original: original, modifiedName: category };
         } else {
-          return category;
+          return { original: '', modifiedName: category };
         }
       });
     };
-
+    
     fetchCategories();
   }, []);
 
