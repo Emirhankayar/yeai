@@ -11,7 +11,6 @@ export function useBookmarks(user) {
     if (user) {
       axios.get(`${SV_URL}/getBookmarks`, { params: { email: user.email } })
         .then(response => {
-          console.log('Bookmarks fetched:', response.data.bookmarks);
           setBookmarks(response.data.bookmarks);
         })
         .catch(error => {

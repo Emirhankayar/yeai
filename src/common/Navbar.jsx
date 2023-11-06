@@ -38,27 +38,27 @@ function NavListMenu() {
     user: PropTypes.object,
     closeNav: PropTypes.func.isRequired,
   };
-  const renderItems = [
-    ...categories.map((category, index) => (
-      <a key={index}>
-        <MenuItem
-          className="flex items-center gap-3 rounded-lg"
-          onClick={() => handleCategoryClick(category.original)}
-        >
-          <div>
-            <Typography
-              variant="small"
-              color="blue-gray"
-              className="flex items-center text-sm capitalize font-semibold"
-            >
+  const renderItems = categories.map((category, index) => {
+  
+    return (
+      <MenuItem
+        key={index}
+        className="flex items-center gap-3 rounded-lg"
+        onClick={() => handleCategoryClick(category.original)}
+      >
+        <div>
+          <Typography
+            variant="small"
+            color="blue-gray"
+            className="flex items-center text-sm capitalize font-semibold"
+          >
             <Icon icon="Squares2X2Icon" className="w-5 h-5 mr-2" />
-              {category.modifiedName}
-            </Typography>
-          </div>
-        </MenuItem>
-      </a>
-    )),
-  ];
+            {category.modifiedName}
+          </Typography>
+        </div>
+      </MenuItem>
+    );
+  });
   
   return (
     <>

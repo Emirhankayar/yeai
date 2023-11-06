@@ -4,12 +4,14 @@ import { useNavigate } from 'react-router-dom';
 import { PgTitle, SkeletonPost, InfScroll } from '../common/Skeleton';
 import { CategoryCard, SearchBar, PostCard } from '../common/Card';
 import MaterialComponent from '../common/Material';
-import { handleRedirect, updatePostView } from '../utils/utils';
+import { handleRedirect } from '../utils/utils';
 import { UserContext } from '../services/UserContext';
 import { BookmarkContext } from '../services/BookmarkContext';
 import useFetchCategories from '../hooks/useCategories';
-const SV_URL = import.meta.env.VITE_SV_URL;
 import { useLocation } from 'react-router-dom';
+
+const SV_URL = import.meta.env.VITE_SV_URL;
+
 
 const CategoryList = () => {
   const categories = useFetchCategories();
@@ -92,18 +94,7 @@ const CategoryList = () => {
     navigate(`${location.pathname}?category=${category}`);
   };
 
-  const handlePostClick = async (postId) => {
-    const post = popularPosts.find((post) => post.id === postId);
-    if (post) {
-      try {
-        await updatePostView(postId, post.post_view);
-        navigate(`/categories/${postId}`);
-        window.scrollTo(0, 0);
-      } catch (error) {
-        console.error('Error updating post view:', error);
-      }
-    }
-  };
+
 
   const renderLoadingPosts = Array.from({ length: dataLength }).map((_, index) => (
     <SkeletonPost key={index} />
@@ -152,7 +143,6 @@ const CategoryList = () => {
           key={post.id}
           post={post}
           handleBookmarkClick={() => handleBookmarkClick({postId: post.id, bookmarks, setBookmarks, user})}
-          handlePostClick={handlePostClick}
           handleRedirect={handleRedirect}
         />
       ))}
@@ -165,7 +155,6 @@ const CategoryList = () => {
         key={post.id}
         post={post}
         handleBookmarkClick={() => handleBookmarkClick({postId: post.id, bookmarks, setBookmarks, user})}
-        handlePostClick={handlePostClick}
         handleRedirect={handleRedirect}
       />
     ))}

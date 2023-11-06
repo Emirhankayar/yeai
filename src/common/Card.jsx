@@ -49,6 +49,36 @@ export function PostCard({ post, handleRedirect }) {
       });
   }, [post.id]);
 
+  const updatePostView = async () => {
+    try {
+      const response = await axios.put(`${SV_URL}/updatePostView`, {
+        postId: post.id,
+        post_view: post.post_view,
+      });
+  
+      if (response.status === 200) {
+        // Post view updated successfully
+      }
+    } catch (error) {
+      console.error('Error updating post view:', error);
+    }
+  };
+
+  const handleLinkClick = (link) => {
+    updatePostView(post.id, post.post_view);
+    handleRedirect(link);
+  };
+  function formatPostCategory(post_category) {
+    return post_category
+      .split('-')
+      .map(word => {
+        if (word === 'and') return word;
+        if (word === 'ai') return word.toUpperCase();
+        return word.charAt(0).toUpperCase() + word.slice(1);
+      })
+      .join(' ');
+  }
+
   return (
     <MaterialComponent component="Card" variant='gradient' color='transparent' className="w-full border-2 border-gray-800 text-gray-500">
       <MaterialComponent component="CardBody">
@@ -87,8 +117,8 @@ export function PostCard({ post, handleRedirect }) {
               {formatDate(post.post_added)}
             </MaterialComponent>
             <MaterialComponent component="Typography" variant='small' className='flex gap-1 items-center'>
-                <Icon icon="HashtagIcon" className="h-4 w-4" stroke="orange" />
-                {post.post_category}
+              <Icon icon="HashtagIcon" className="h-4 w-4" stroke="orange" />
+              {formatPostCategory(post.post_category)}
             </MaterialComponent>
             <MaterialComponent component="Typography" variant='small' className='flex gap-1 items-center'>
                 <Icon 
@@ -104,7 +134,7 @@ export function PostCard({ post, handleRedirect }) {
       </MaterialComponent>
 
         <MaterialComponent component="CardFooter" className="pt-0 flex items-center justify-between gap-6">
-          <Link onClick={() => handleRedirect(post.post_link)} target="_blank" rel="noopener noreferrer">
+          <Link onClick={() => handleLinkClick(post.post_link)} target="_blank" rel="noopener noreferrer">
             <MaterialComponent component="Button">
               Visit Website
             </MaterialComponent>
@@ -125,6 +155,7 @@ PostCard.propTypes = {
     post_price: PropTypes.string.isRequired,
     isBookmarked: PropTypes.bool,
     id: PropTypes.number.isRequired,
+    post_view: PropTypes.number.isRequired, 
   }).isRequired,
   handleRedirect: PropTypes.func.isRequired,
 };
