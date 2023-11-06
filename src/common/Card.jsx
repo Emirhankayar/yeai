@@ -31,7 +31,7 @@ export function PostCard({ post, handleRedirect }) {
   };
 
   useEffect(() => {
-    const url = `http://${SV_URL}/postImage/${post.id}`;
+    const url = `${SV_URL}/postImage/${post.id}`;
     fetch(url)
       .then(response => {
       if (response.status === 204) {

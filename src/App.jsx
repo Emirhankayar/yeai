@@ -33,10 +33,6 @@ const router = createBrowserRouter([
     element: <CategoryPg />,
   },
   {
-    path: "/categories/:categoryName",
-    element: <CategoryPg />,
-  },
-  {
     path: "/sign-in",
     element: <SignInPg />,
   },

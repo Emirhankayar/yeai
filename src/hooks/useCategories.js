@@ -32,7 +32,7 @@ const useFetchCategories = () => {
 
     const modifyCategoryNames = (categories) => {
       return categories.map(category => {
-        if (category) {
+        if (typeof category === 'string') {
           let modifiedName = category.split('-').map(word => {
             if (word !== 'and') {
               return word.charAt(0).toUpperCase() + word.slice(1);
@@ -40,9 +40,9 @@ const useFetchCategories = () => {
               return word;
             }
           }).join(' ');
-          return { original: category, modified: modifiedName };
+          return modifiedName;
         } else {
-          return { original: category, modified: category };
+          return category;
         }
       });
     };
