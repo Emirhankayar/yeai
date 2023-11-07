@@ -1,7 +1,17 @@
 User-agent: Googlebot
-Disallow: 
+Disallow:
+
+User-agent: bingbot
+Disallow:
+
+User-agent: DuckDuckBot
+Disallow:
+
+User-agent: archive.org_bot
+Disallow:
 
 User-agent: *
 Disallow: /
+
 
 Sitemap: https://yeai.tech/sitemap.xml

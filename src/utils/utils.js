@@ -24,22 +24,7 @@ export const useSupabaseAuth = () => {
 
   return user;
 };
-  
-const updatePostView = async (postId, post_view) => {
-  try {
-    const updatedView = (post_view || 0) + 1;
 
-    const { error } = await supabase
-      .from('tools')
-      .update({ post_view: updatedView })
-      .eq('id', postId);
-    if (error) {
-      throw error;
-    }
-  } catch (error) {
-    console.error('Error updating post view:', error);
-  }
-};
 
 const truncateDescription = (description, maxLength) => {
   if (!description) {
@@ -104,7 +89,6 @@ const handleBookmarkClick = async ({postId, bookmarks, setBookmarks, user}) => {
 
 export {
   truncateDescription,
-  updatePostView,
   supabase,
   handleRedirect,
   handleBookmarkClick,

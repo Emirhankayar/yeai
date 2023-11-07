@@ -137,7 +137,7 @@ const CategoryList = () => {
     hasMore={hasMore}
     loader={<div className='grid grid-cols-1 gap-10 mt-10'>{renderLoadingPosts}</div>}
   >
-    <ul className='gap-10 grid grid-cols-1'>
+    <ul className='gap-10 grid grid-cols-1 overflow-x-hidden'>
       {categoryPosts.map((post) => (
         <PostCard
           key={post.id}
