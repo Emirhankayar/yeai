@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 User-agent: Googlebot
 Disallow:
 
@@ -9,6 +10,9 @@ Disallow:
 
 User-agent: archive.org_bot
 Disallow:
+=======
+
+>>>>>>> 9962bc50ccd8a9f02d6ff5d5a006e2892296c5ee
 
 User-agent: *
 Disallow: /
