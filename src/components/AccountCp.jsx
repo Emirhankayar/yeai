@@ -5,8 +5,7 @@ import { UserContext } from '../services/UserContext';
 import MaterialComponent from '../common/Material';
 import { PostCard } from '../common/Card';
 import Icon from '../common/Icons';
-import { useNavigate } from 'react-router-dom';
-import { handleRedirect, updatePostView, handleBookmarkClick } from '../utils/utils';
+import { handleRedirect, handleBookmarkClick } from '../utils/utils';
 
 const SV_URL = import.meta.env.VITE_SV_URL
 
@@ -14,19 +13,6 @@ export default function AccountPg() {
   const user = useContext(UserContext);
   const [bookmarks, setBookmarks] = useBookmarks(user);
   const [posts, setPosts] = useState([]);
-  const navigate = useNavigate();
-  const handlePostClick = async (postId) => {
-    const post = posts.find((post) => post.id === postId);
-    if (post) {
-      try {
-        await updatePostView(postId, post.post_view);
-        navigate(`/categories/${post.post_category}/${postId}`);
-        window.scrollTo(0, 0);
-      } catch (error) {
-        console.error('Error updating post view:', error);
-      }
-    }
-  };
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -57,7 +43,6 @@ export default function AccountPg() {
                          post={post}
                          handleBookmarkClick={() => handleBookmarkClick({postId: post.id, bookmarks, setBookmarks, user})}
                          handleRedirect={handleRedirect}
-                         handlePostClick={handlePostClick}
                        />
             ))}
           </div>
