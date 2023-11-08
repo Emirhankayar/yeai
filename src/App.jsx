@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useContext } from "react";
+import PropTypes from 'prop-types';
 import { ThemeProvider } from "@material-tailwind/react";
 import { theme } from "./utils/customTheme";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider, useNavigate } from "react-router-dom";
 import CustomSpinner from "./common/Spinner";
 const Navbar = React.lazy(() => import('./common/Navbar'));
 const MainPg = React.lazy(() => import('./pages/MainPg'));
@@ -10,15 +11,42 @@ const SignInPg = React.lazy(() => import('./pages/SignInPg'));
 const AccountPg = React.lazy(() => import('./pages/AccountPg'));
 const PromotePg = React.lazy(() => import('./pages/PromotePg'));
 const Footer = React.lazy(() => import('./common/Footer'));
-import { Turnstile } from '@marsidev/react-turnstile'
+
+
 import ApproveTool from "./common/Approve";
+import { Turnstile } from '@marsidev/react-turnstile'
 import { useSupabaseAuth, handleBookmarkClick } from './utils/utils';
 import { UserContext } from './services/UserContext';
 import { BookmarkContext } from './services/BookmarkContext';
 import { useBookmarks } from './hooks/useBookmarks';
 import { CategoryContext } from './services/CategoryContext';
 
+
+import useFetchCategories from "./hooks/useCategories";
+
 const siteKey = import.meta.env.VITE_CAPTCHA_KEY;
+
+const PrivateRoute = ({ children }) => {
+  const user = useContext(UserContext);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!user) {
+      navigate('/sign-in');
+    }
+  }, [user, navigate]);
+
+  if (!user) {
+    return null;
+  }
+
+  return children;
+};
+
+PrivateRoute.propTypes = {
+  children: PropTypes.node.isRequired,
+};
+
 
 const router = createBrowserRouter([
   {
@@ -39,11 +67,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/account",
-    element: <AccountPg />,
+    element: <PrivateRoute><AccountPg /></PrivateRoute>,
   },
   {
     path: "/promote",
-    element: <PromotePg />,
+    element: <PrivateRoute><PromotePg /></PrivateRoute>,
   },
   {
     path: "/contact",
@@ -55,22 +83,35 @@ const router = createBrowserRouter([
   },
 ]);
 
+
 export function App() {
-  const [captchaCompleted, setCaptchaCompleted] = useState(localStorage.getItem('captchaCompleted') === 'true');
+  const captchaResponse = localStorage.getItem('captchaCompleted');
+  const [captchaCompleted, setCaptchaCompleted] = useState(!!captchaResponse);
   const user = useSupabaseAuth();
+  const categories = useFetchCategories(); 
   const [bookmarks, setBookmarks] = useBookmarks(user);
-  const categories = useContext(CategoryContext);
-  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     localStorage.setItem('captchaCompleted', captchaCompleted);
   }, [captchaCompleted]);
   
-  const handleCaptchaCompletion = () => {
-    setIsLoading(true);
+  const handleCaptchaCompletion = (captchaResponse) => {
+    localStorage.setItem('captchaCompleted', captchaResponse);
     setCaptchaCompleted(true);
-    setIsLoading(false);
   };
+
+  if (!captchaCompleted) {
+    return (
+      <div className="min-h-screen flex flex-col gap-10 items-center justify-center">
+        <h2>Hooman being confirmed</h2> 
+
+        <Turnstile
+          siteKey={siteKey}
+          onVerify={handleCaptchaCompletion}
+          />
+      </div>
+    );
+  }
 
   return (
     <ThemeProvider value={theme}>
@@ -78,14 +119,11 @@ export function App() {
         <CategoryContext.Provider value={categories}>
           <BookmarkContext.Provider value={{ bookmarks, setBookmarks, handleBookmarkClick }}>
             <React.Suspense fallback={<CustomSpinner />}>
-                <>
                   <Navbar />
                   <div className="min-h-screen">
                     <RouterProvider router={router} />
                   </div>
                   <Footer />
-                </>
-
             </React.Suspense>
           </BookmarkContext.Provider>
         </CategoryContext.Provider>

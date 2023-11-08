@@ -9,21 +9,13 @@ const useFetchCategories = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        let categories = localStorage.getItem('categories'); // Get the categories from the local storage
-        if (categories) {
-          categories = JSON.parse(categories); // Parse the stored categories
-        } else {
-          const response = await axios.get(`${SV_URL}/allCategories`, {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          });
-          console.log('Response data:', response.data);
-          categories = response.data;
-          categories = modifyCategoryNames(categories);
-          console.log('Modified categories:', categories);
-          localStorage.setItem('categories', JSON.stringify(categories)); // Store the categories in the local storage
-        }
+        const response = await axios.get(`${SV_URL}/allCategories`, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        let categories = response.data;
+        categories = modifyCategoryNames(categories);
         setCategories(categories);
       } catch (error) {
         console.error('Error fetching categories:', error);
@@ -53,7 +45,7 @@ const useFetchCategories = () => {
     if (categories.length === 0) {
       fetchCategories();
     }
-  }, [categories]);
+  }, []);
 
   return categories;
 };

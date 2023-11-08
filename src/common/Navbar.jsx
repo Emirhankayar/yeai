@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useAuth } from "../services/AuthContext"; 
 import '../index.css'
 import PropTypes from 'prop-types';
 import Icon from "./Icons";
-import useFetchCategories from '../hooks/useCategories';
+import { CategoryContext } from "../services/CategoryContext";
 import SignInFormPage from "../components/SignInCp";
 
 import {
@@ -22,7 +22,7 @@ import {
 import MaterialComponent from "./Material";
 
 function NavListMenu() {
-  const categories = useFetchCategories();
+  const categories = useContext(CategoryContext); // access the categories
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
 
@@ -109,10 +109,8 @@ function NavListMenu() {
   );
 }
  
-function NavList({ user, closeNav }) {
-  const handleCategoryClick = (path) => {
-    console.log("Navigating to:", path);
-  };
+function NavList({ closeNav }) {
+  const handleCategoryClick = (path) => {path};
 
   return (
     <List className="mt-4 mb-6 p-0 lg:mt-0 lg:mb-0 lg:flex-row lg:items-center lg:justify-center">
@@ -129,7 +127,6 @@ function NavList({ user, closeNav }) {
         </ListItem>
       </Typography>
       <NavListMenu onCategoryClick={handleCategoryClick} />
-      {user && (
         <Typography
           as="a"
           href="/account"
@@ -143,7 +140,6 @@ function NavList({ user, closeNav }) {
             Account
           </ListItem>
         </Typography>
-      )}
         <Typography
           as="a"
           href="/promote"
@@ -251,11 +247,14 @@ export default function NavbarWithMegaMenu() {
           ) : (
           <div className="flex w-full flex-nowrap items-center gap-2 lg:hidden">
 
-            <a href="/sign-in" className="w-full">
-              <Button variant="gradient" fullWidth size="sm">
+
+              <Button variant="gradient" fullWidth size="sm" onClick={() => {
+  handleOpen();
+  setOpenNav(prevState => !prevState);
+}}>
               Sign in
               </Button>
-              </a>
+
 
 
           </div>

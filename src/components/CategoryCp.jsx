@@ -7,14 +7,14 @@ import MaterialComponent from '../common/Material';
 import { handleRedirect } from '../utils/utils';
 import { UserContext } from '../services/UserContext';
 import { BookmarkContext } from '../services/BookmarkContext';
-import useFetchCategories from '../hooks/useCategories';
 import { useLocation } from 'react-router-dom';
+import { CategoryContext } from "../services/CategoryContext";
 
 const SV_URL = import.meta.env.VITE_SV_URL;
 
 
 const CategoryList = () => {
-  const categories = useFetchCategories();
+  const categories = useContext(CategoryContext);
   const navigate = useNavigate();
   const location = useLocation();
   const [popularPosts, setPopularPosts] = useState([]);

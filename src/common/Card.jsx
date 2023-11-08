@@ -6,6 +6,8 @@ import { Link } from 'react-router-dom';
 import MaterialComponent from "./Material";
 import { UserContext } from '../services/UserContext';
 import axios from 'axios';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
+import 'react-lazy-load-image-component/src/effects/blur.css';
 
 function formatDate(dateString) {
   const date = new Date(dateString);
@@ -132,7 +134,15 @@ export function PostCard({ post, handleRedirect }) {
         <div className='flex items-center justify-between'>
 
           <MaterialComponent component="Typography" variant='h6' color="white" className="font-bold capitalize flex gap-2 items-center mb-2">
-                  {iconUrl && <img src={iconUrl} alt="Post" onError={() => setIconUrl('/apple-icon-60x60.png')} className='w-3 h-3' />} 
+          {iconUrl && (
+              <LazyLoadImage 
+                src={iconUrl} 
+                alt="Post" 
+                onError={() => setIconUrl('/apple-icon-60x60.png')} 
+                effect="blur"
+                className='w-3 h-3' 
+              />
+            )}
                    {post.post_title}
 
         </MaterialComponent>
