@@ -8,9 +8,10 @@ const MainPg = React.lazy(() => import('./pages/MainPg'));
 const CategoryPg = React.lazy(() => import('./pages/CategoryPg'));
 const SignInPg = React.lazy(() => import('./pages/SignInPg'));
 const AccountPg = React.lazy(() => import('./pages/AccountPg'));
+const PromotePg = React.lazy(() => import('./pages/PromotePg'));
 const Footer = React.lazy(() => import('./common/Footer'));
 import { Turnstile } from '@marsidev/react-turnstile'
-
+import ApproveTool from "./common/Approve";
 import { useSupabaseAuth, handleBookmarkClick } from './utils/utils';
 import { UserContext } from './services/UserContext';
 import { BookmarkContext } from './services/BookmarkContext';
@@ -41,12 +42,16 @@ const router = createBrowserRouter([
     element: <AccountPg />,
   },
   {
-    path: "/faq",
-    element: <MainPg />,
+    path: "/promote",
+    element: <PromotePg />,
   },
   {
     path: "/contact",
     element: <MainPg />,
+  },
+  {
+    path: "/approve-tool",
+    element: <ApproveTool />,
   },
 ]);
 
@@ -73,9 +78,6 @@ export function App() {
         <CategoryContext.Provider value={categories}>
           <BookmarkContext.Provider value={{ bookmarks, setBookmarks, handleBookmarkClick }}>
             <React.Suspense fallback={<CustomSpinner />}>
-              {isLoading ? (
-                <CustomSpinner />
-              ) : captchaCompleted ? (
                 <>
                   <Navbar />
                   <div className="min-h-screen">
@@ -83,17 +85,7 @@ export function App() {
                   </div>
                   <Footer />
                 </>
-              ) : (
-                <div className="container h-screen w-full flex flex-col gap-10 items-center justify-center">
-                  <div className="flex-col flex space-y-5">
-                    <span>Hooman being confirmed.</span>
-                  </div>
-                  <Turnstile
-                    siteKey={siteKey}
-                    onSuccess={(token) => { handleCaptchaCompletion(token); }} 
-                  />
-                </div>
-              )}
+
             </React.Suspense>
           </BookmarkContext.Provider>
         </CategoryContext.Provider>

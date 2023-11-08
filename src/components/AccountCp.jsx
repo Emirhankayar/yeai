@@ -32,7 +32,7 @@ export default function AccountPg() {
   return (
     <div className="container px-10 mt-20">
       <MaterialComponent component="Typography" variant="h1" color="white">Account</MaterialComponent>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-40 lg:gap-10 mt-10">
+      <div className="grid grid-cols-1 gap-40 mt-10">
 
         <div className="gap-10 ">
           <div className="grid grid-cols-1 gap-10">

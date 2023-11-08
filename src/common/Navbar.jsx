@@ -118,7 +118,7 @@ function NavList({ user, closeNav }) {
     <List className="mt-4 mb-6 p-0 lg:mt-0 lg:mb-0 lg:flex-row lg:items-center lg:justify-center">
       <Typography
         as="a"
-        href="#"
+        href="/about"
         variant="small"
         color="blue-gray"
         className="font-normal"
@@ -132,7 +132,7 @@ function NavList({ user, closeNav }) {
       {user && (
         <Typography
           as="a"
-          href="#"
+          href="/account"
           variant="small"
           color="blue-gray"
           className="font-normal"
@@ -140,12 +140,23 @@ function NavList({ user, closeNav }) {
           <ListItem className="flex items-center gap-2 py-2 pr-4">
 
             <Icon icon="UserCircleIcon" className="h-[18px] w-[18px]" />
-            <a href="/account">
             Account
-            </a>
           </ListItem>
         </Typography>
       )}
+        <Typography
+          as="a"
+          href="/promote"
+          variant="small"
+          color="blue-gray"
+          className="font-normal"
+        >
+          <ListItem className="flex items-center gap-2 py-2 pr-4">
+
+            <Icon icon="InformationCircleIcon" className="h-[18px] w-[18px]" />
+            Promote
+          </ListItem>
+        </Typography>
         
           <ListItem className="flex items-center gap-2 py-2 hidden" onClick={() => closeNav()}>
             <Icon icon="ChatBubbleOvalLeftIcon" color="purple" className="h-[18px] w-[18px]" />

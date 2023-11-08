@@ -126,7 +126,7 @@ export function PostCard({ post, handleRedirect }) {
 //           {imageUrl && <img src={imageUrl} alt="Post" onError={() => setImageUrl('/ms-icon-310x310.png')} className='object-cover object-cover rounded-md'/>}
 
   return (
-    <MaterialComponent component="Card" variant='gradient' color='transparent' className="border-2 border-gray-800 lg:flex-row ">
+    <MaterialComponent component="Card" variant='gradient' color='transparent' className="border-2 border-gray-800 lg:flex-row justify-between">
       
       <MaterialComponent component="CardBody">
         <div className='flex items-center justify-between'>
@@ -148,7 +148,7 @@ export function PostCard({ post, handleRedirect }) {
 
         <MaterialComponent component="CardFooter" className=" pt-0 lg:pt-5 flex items-start justify-between gap-6">
 
-            <div className='flex flex-col lg:flex-col items-start justify-start gap-2 w-full'>
+            <div className='flex flex-col lg:flex-col items-start justify-start gap-4 w-full'>
     
             <MaterialComponent component="Typography" variant='small' className='flex gap-3 items-center'>
               <Icon icon="HashtagIcon" className="h-4 w-4" stroke="orange" />
@@ -156,8 +156,8 @@ export function PostCard({ post, handleRedirect }) {
             </MaterialComponent>
             <MaterialComponent component="Typography" variant='small' className='flex gap-3 items-center'>
                 <Icon 
-                  icon="BanknotesIcon" 
-                  className="h-5 w-5" 
+                  icon="CurrencyDollarIcon" 
+                  className="h-4 w-4" 
                   stroke={post.post_price === 'Free' ? 'lightgreen' : post.post_price === 'Paid' ? 'red' : 'pink'} 
                 />
                 {post.post_price}
