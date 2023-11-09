@@ -47,6 +47,12 @@ PrivateRoute.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
+let channel = new BroadcastChannel('my_channel');
+
+window.onbeforeunload = function() {
+  // Close the channel and remove listeners
+  channel.close();
+};
 
 const router = createBrowserRouter([
   {
