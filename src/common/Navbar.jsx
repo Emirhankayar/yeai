@@ -36,7 +36,6 @@ function NavListMenu() {
   };
   NavList.propTypes = {
     user: PropTypes.object,
-    closeNav: PropTypes.func.isRequired,
   };
   const renderItems = categories.map((category, index) => {
   
@@ -69,6 +68,8 @@ function NavListMenu() {
         offset={{ mainAxis: 20 }}
         placement="bottom"
         allowHover={true}
+        aria-expanded={isMenuOpen}
+        aria-haspopup="menu"
       >
         <MenuHandler>
           <Typography as="div" variant="small" color="blue-gray" className="font-normal">
@@ -81,21 +82,19 @@ function NavListMenu() {
             >
 
 
-              <a href="/categories" className="flex gap-1 items-center">
-              <Icon icon="Square3Stack3DIcon" className="h-[18px] w-[18px]" aria-label="open all categories page"/>
+              <a href="/categories" className="flex gap-1 items-center" aria-label="yeai.tech/categories">
+              <Icon icon="Square3Stack3DIcon" className="h-[18px] w-[18px]" />
 
                 Categories
               </a>
               <Icon icon="ChevronDownIcon"
                 strokeWidth={2.5}
-                aria-label="open all categories menu"
                 className={`hidden h-3 w-3 transition-transform lg:block ${
                   isMenuOpen ? "rotate-180" : ""
                 }`}
               />
               <Icon icon="ChevronDownIcon"
                 strokeWidth={2.5}
-                aria-label="close all categories menu"
                 className={`block h-3 w-3 transition-transform lg:hidden ${
                   isMobileMenuOpen ? "rotate-180" : ""
                 }`}
@@ -103,18 +102,24 @@ function NavListMenu() {
             </ListItem>
           </Typography>
         </MenuHandler>
-        <MenuList className="hidden w-full rounded-md lg:block custom-menu-list bg-gray-500 p-0 bg-opacity-80">
+        <MenuList 
+          className="hidden w-full rounded-md lg:block custom-menu-list bg-gray-500 p-0 bg-opacity-80" 
+          aria-label="Main navigation menu"
+          role="menu"
+        >
           <ul className="grid grid-cols-4 gap-y-2 border-none">{renderItems}</ul>
         </MenuList>
-      </Menu>
-      <div className="block lg:hidden custom-menu-list">
-        <Collapse open={isMobileMenuOpen}>{renderItems}</Collapse>
-      </div>
+        </Menu>
+        <div className="block lg:hidden custom-menu-list">
+          <Collapse open={isMobileMenuOpen} aria-label="Mobile navigation menu">
+            {renderItems}
+          </Collapse>
+        </div>
     </>
   );
 }
  
-function NavList({ closeNav }) {
+function NavList() {
   const handleCategoryClick = (path) => {path};
 
   return (
@@ -159,10 +164,6 @@ function NavList({ closeNav }) {
           </ListItem>
         </Typography>
         
-          <ListItem className="flex items-center gap-2 py-2 hidden" onClick={() => closeNav()}>
-            <Icon icon="ChatBubbleOvalLeftIcon" color="purple" className="h-[18px] w-[18px]" />
-            
-          </ListItem>
     </List>
   );
 }
@@ -172,11 +173,6 @@ export default function NavbarWithMegaMenu() {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen((cur) => !cur);
   const { user, signOut } = useAuth();
-  const closeNav = () => {
-    if (openNav) {
-      setOpenNav(false);
-    }
-  };
 
   React.useEffect(() => {
     window.addEventListener(
@@ -192,7 +188,7 @@ export default function NavbarWithMegaMenu() {
           as="a"
           href="/"
           variant="h5"
-          aria-label="home page"
+          aria-label="yeai.tech"
           className="mr-4 cursor-pointer py-1.5 lg:ml-2 flex flex-row items-center gap-1 font-oxanium font-extrabold"
         >
 
@@ -203,7 +199,7 @@ export default function NavbarWithMegaMenu() {
 
         </Typography>
         <div className="hidden lg:block">
-          <NavList user={user} closeNav={closeNav}/>
+          <NavList user={user} />
         </div>
         <div className="hidden gap-2 lg:flex-row lg:flex lg:justify-end lg:items-center  lg:w-1/5">
   {user ? (
@@ -246,8 +242,7 @@ export default function NavbarWithMegaMenu() {
         </IconButton>
       </div>
       <Collapse open={openNav}>
-        <NavList user={user}
-        closeNav={closeNav} />
+        <NavList user={user} />
 
 
         {user ? (
