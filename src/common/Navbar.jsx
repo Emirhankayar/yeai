@@ -28,7 +28,7 @@ function NavListMenu() {
 
   const handleCategoryClick = (category) => {
     // Navigate to the category page and force a page refresh
-    window.location.href = `/categories?category=${category}`;
+    window.location.href = `/tools?category=${category}`;
   };
 
   NavListMenu.propTypes = {
@@ -82,10 +82,10 @@ function NavListMenu() {
             >
 
 
-              <a href="/categories" className="flex gap-1 items-center" aria-label="yeai.tech/categories">
+              <a href="/tools" className="flex gap-1 items-center" aria-label="yeai.tech/tools">
               <Icon icon="Square3Stack3DIcon" className="h-[18px] w-[18px]" />
 
-                Categories
+                Tools
               </a>
               <Icon icon="ChevronDownIcon"
                 strokeWidth={2.5}

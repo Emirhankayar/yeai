@@ -64,7 +64,7 @@ const router = createBrowserRouter([
     element: <MainPg />,
   },
   {
-    path: "/categories",
+    path: "/tools",
     element: <CategoryPg />,
   },
   {

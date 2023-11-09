@@ -28,7 +28,7 @@ const SITEMAP = [
       { text: "Newsletter", 
         url: "/newsletter" },
       { text: "Freebies", 
-        url: "/categories/freebies" },
+        url: "/tools" },
       { text: "Promote Products", 
         url: "/promote-products" },
     ],
