@@ -42,6 +42,7 @@ function NavListMenu() {
   
     return (
       <MenuItem
+        role="menuitem"
         key={index}
         className="flex items-center gap-3 rounded-lg"
         onClick={() => handleCategoryClick(category.original)}
@@ -74,6 +75,8 @@ function NavListMenu() {
             <ListItem
               className="flex items-center gap-2 py-2 pr-4"
               selected={isMenuOpen || isMobileMenuOpen}
+              aria-expanded={isMenuOpen || isMobileMenuOpen}
+              aria-haspopup="menu"
               onClick={() => setIsMobileMenuOpen((cur) => !cur)}
             >
 
@@ -189,6 +192,7 @@ export default function NavbarWithMegaMenu() {
           as="a"
           href="/"
           variant="h5"
+          aria-label="home page"
           className="mr-4 cursor-pointer py-1.5 lg:ml-2 flex flex-row items-center gap-1 font-oxanium font-extrabold"
         >
 
@@ -225,9 +229,13 @@ export default function NavbarWithMegaMenu() {
     </div>
 
         <IconButton
+          role="button"
+          name="hamburgermenubutton"
           variant="text"
+          value={openNav}
           color="gray"
           className="lg:hidden"
+          aria-label="open nav"
           onClick={() => setOpenNav(!openNav)}
         >
           {openNav ? (
