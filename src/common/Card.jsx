@@ -87,7 +87,7 @@ export function PostCard({ post, handleRedirect }) {
   const Buttons = () => (
 <div className='flex flex-row lg:flex-col items-start justify-center gap-6 mb-2'>
   <div className='order-1 lg:order-2'>
-    <Link onClick={() => handleLinkClick(post.post_link)} target="_blank" rel="noopener noreferrer">
+    <Link onClick={() => handleLinkClick(post.post_link)} target="_blank" rel="noopener noreferrer" aria-label={`Open ${post.post_title} in a new tab.`}>
       <MaterialComponent component="Button" className="p-2 h-9">
         <Icon icon="ArrowUpRightIcon" stroke="white" className="h-4 w-4"/>
       </MaterialComponent>
@@ -96,6 +96,7 @@ export function PostCard({ post, handleRedirect }) {
   <div className='order-2 lg:order-1'>
     {user ? (
       <MaterialComponent component="Button"
+        aria-label={`Bookmark the post ${post.post_title}`}
         onClick={() => user && handleBookmarkButtonClick({ postId: post.id, user, bookmarks, setBookmarks })}
         className="p-2 h-9"
       >
@@ -108,6 +109,7 @@ export function PostCard({ post, handleRedirect }) {
         component="Tooltip"
         content="Log in to save the post"
         className="bg-red-400 capitalize"
+        aria-label="log in to bookmark the post"
         key={post.id} 
       >
         <div>
@@ -125,7 +127,7 @@ export function PostCard({ post, handleRedirect }) {
   </div>
 </div>
   );
-//           {imageUrl && <img src={imageUrl} alt="Post" onError={() => setImageUrl('/ms-icon-310x310.png')} className='object-cover object-cover rounded-md'/>}
+//  {imageUrl && <img src={imageUrl} alt="Post" onError={() => setImageUrl('/ms-icon-310x310.png')} className='object-cover object-cover rounded-md'/>}
 
   return (
     <MaterialComponent component="Card" variant='gradient' color='transparent' className="border-2 border-gray-800 lg:flex-row justify-between">
@@ -133,9 +135,11 @@ export function PostCard({ post, handleRedirect }) {
       <MaterialComponent component="CardBody">
         <div className='flex items-center justify-between'>
 
-          <MaterialComponent component="Typography" variant='h6' color="white" className="font-bold capitalize flex gap-2 items-center mb-2">
+          <MaterialComponent component="Typography" variant='h6' color="white" className="font-bold capitalize flex gap-2 items-center mb-2"
+          aria-label="post icon and post title">
           {iconUrl && (
               <LazyLoadImage 
+                aria-label='Post icon'
                 src={iconUrl} 
                 alt="Post" 
                 onError={() => setIconUrl('/apple-icon-60x60.png')} 
@@ -151,7 +155,8 @@ export function PostCard({ post, handleRedirect }) {
         <Buttons />
         </div>
         </div>
-            <MaterialComponent component="Typography" variant='small' className="text-gray-500">
+            <MaterialComponent component="Typography" variant='small' className="text-gray-500"
+            aria-label="post description">
               {post.post_description}
             </MaterialComponent>
       </MaterialComponent>
@@ -160,11 +165,13 @@ export function PostCard({ post, handleRedirect }) {
 
             <div className='flex flex-col lg:flex-col items-start justify-start gap-4 w-full'>
     
-            <MaterialComponent component="Typography" variant='small' className='flex gap-3 items-center'>
+            <MaterialComponent component="Typography" variant='small' className='flex gap-3 items-center'
+            aria-label="Post Category">
               <Icon icon="HashtagIcon" className="h-4 w-4" stroke="orange" />
               {formatPostCategory(post.post_category)}
             </MaterialComponent>
-            <MaterialComponent component="Typography" variant='small' className='flex gap-3 items-center'>
+            <MaterialComponent component="Typography" variant='small' className='flex gap-3 items-center'
+            aria-label="post price">
                 <Icon 
                   icon="CurrencyDollarIcon" 
                   className="h-4 w-4" 
@@ -172,11 +179,12 @@ export function PostCard({ post, handleRedirect }) {
                 />
                 {post.post_price}
             </MaterialComponent>    
-            <MaterialComponent component="Typography" variant='small' className='flex gap-3 items-center'>
+            <MaterialComponent component="Typography" variant='small' className='flex gap-3 items-center' aria-label="post views">
               <Icon icon="EyeIcon" className="h-4 w-4" stroke="whitesmoke" />
               {post.post_view}
             </MaterialComponent> 
-                    <MaterialComponent component="Typography" variant='small' className='flex gap-3 items-center'>
+                    <MaterialComponent component="Typography" variant='small' className='flex gap-3 items-center'
+                    aria-label="post date">
               <Icon icon="ClockIcon" className="h-4 w-4" stroke="gray" />
               {formatDate(post.post_added)}
             </MaterialComponent>  
@@ -215,6 +223,7 @@ export function CategoryCard({ category, handleCategoryClick }) {
     <MaterialComponent
       component="Option"
       className="bg-transparent gap-2 hover:bg-emerald-600 duration-300 ease-in-out"
+      aria-label="select category"
       onClick={() => handleCategoryClick(category.original)}
     >
       <div className='flex gap-2 items-center'>

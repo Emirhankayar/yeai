@@ -79,18 +79,20 @@ function NavListMenu() {
 
 
               <a href="/categories" className="flex gap-1 items-center">
-              <Icon icon="Square3Stack3DIcon" className="h-[18px] w-[18px]"/>
+              <Icon icon="Square3Stack3DIcon" className="h-[18px] w-[18px]" aria-label="open all categories page"/>
 
                 Categories
               </a>
               <Icon icon="ChevronDownIcon"
                 strokeWidth={2.5}
+                aria-label="open all categories menu"
                 className={`hidden h-3 w-3 transition-transform lg:block ${
                   isMenuOpen ? "rotate-180" : ""
                 }`}
               />
               <Icon icon="ChevronDownIcon"
                 strokeWidth={2.5}
+                aria-label="close all categories menu"
                 className={`block h-3 w-3 transition-transform lg:hidden ${
                   isMobileMenuOpen ? "rotate-180" : ""
                 }`}
@@ -201,12 +203,12 @@ export default function NavbarWithMegaMenu() {
         </div>
         <div className="hidden gap-2 lg:flex-row lg:flex lg:justify-end lg:items-center  lg:w-1/5">
   {user ? (
-    <Button color="red" onClick={signOut}>
+    <Button color="red" aria-label="sign out" onClick={signOut}>
       Sign Out
     </Button>
   ) : (
     <>
-      <Button variant="gradient" size="sm" onClick={handleOpen}>
+      <Button variant="gradient" aria-label="sign in" size="sm" onClick={handleOpen}>
         Sign in
       </Button>
       <MaterialComponent
@@ -229,9 +231,9 @@ export default function NavbarWithMegaMenu() {
           onClick={() => setOpenNav(!openNav)}
         >
           {openNav ? (
-            <Icon icon="XMarkIcon" className="h-6 w-6" strokeWidth={2} />
+            <Icon icon="XMarkIcon" className="h-6 w-6" strokeWidth={2} aria-label="close menu"/>
           ) : (
-            <Icon icon="Bars3Icon" className="h-6 w-6" strokeWidth={2} />
+            <Icon icon="Bars3Icon" className="h-6 w-6" strokeWidth={2} aria-label="open menu"/>
           )}
         </IconButton>
       </div>
@@ -241,14 +243,14 @@ export default function NavbarWithMegaMenu() {
 
 
         {user ? (
-            <Button color="red" fullWidth onClick={signOut}>
+            <Button color="red" fullWidth aria-label="sign out" onClick={signOut}>
               Sign Out
             </Button>
           ) : (
           <div className="flex w-full flex-nowrap items-center gap-2 lg:hidden">
 
 
-              <Button variant="gradient" fullWidth size="sm" onClick={() => {
+              <Button variant="gradient" fullWidth size="sm" aria-label="sign in" onClick={() => {
   handleOpen();
   setOpenNav(prevState => !prevState);
 }}>
