@@ -8,18 +8,20 @@ export function SimplePagination({ active, next, prev, totalPages }) {
         <MaterialComponent component="IconButton"
           size="sm"
           variant="outlined"
+          color="white"
           onClick={prev}
           disabled={active === 1}
         >
           <Icon icon="ArrowLeftIcon" strokeWidth={2} className="h-4 w-4" />
         </MaterialComponent>
-        <MaterialComponent component="Typography" color="gray" className="font-normal">
-          Page <strong className="text-gray-900">{active}</strong> of{" "}
-          <strong className="text-gray-900">{totalPages}</strong>
+        <MaterialComponent component="Typography" className="font-normal">
+          Page <strong className="text-emerald-900">{active}</strong> of{" "}
+          <strong className="text-emerald-400">{totalPages}</strong>
         </MaterialComponent>
         <MaterialComponent component="IconButton"
           size="sm"
           variant="outlined"
+          color="white"
           onClick={next}
           disabled={active === totalPages}
         >

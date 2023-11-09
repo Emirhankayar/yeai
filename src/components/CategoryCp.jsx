@@ -237,6 +237,9 @@ const handleOrderChange = (orderOption) => {
 />
   </div>
 
+        <div className='my-10 w-full flex items-center flex-col justify-center'>
+        <SimplePagination active={page} next={() => handlePageChange(page + 1)} prev={() => handlePageChange(page - 1)} totalPages={totalPages} />
+        </div>
 
   {isLoading ? (
       <div className="container gap-10 grid grid-cols-1">
@@ -247,14 +250,16 @@ const handleOrderChange = (orderOption) => {
         <ul className='gap-10 grid grid-cols-1 overflow-x-hidden place-items-center'>
           {categoryPosts.map((post) => (
             <PostCard
-              key={post.id}
-              post={post}
-              handleBookmarkClick={() => handleBookmarkClick({postId: post.id, bookmarks, setBookmarks, user})}
-              handleRedirect={handleRedirect}
+            key={post.id}
+            post={post}
+            handleBookmarkClick={() => handleBookmarkClick({postId: post.id, bookmarks, setBookmarks, user})}
+            handleRedirect={handleRedirect}
             />
-          ))}
+            ))}
         </ul>
+        <div className='mt-10 w-full flex items-center flex-col justify-center'>
         <SimplePagination active={page} next={() => handlePageChange(page + 1)} prev={() => handlePageChange(page - 1)} totalPages={totalPages} />
+        </div>
       </>
     )}
   </div>
