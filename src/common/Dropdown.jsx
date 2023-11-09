@@ -26,13 +26,19 @@ const DropdownComponent = ({ label, options, onChange, isOptionDisabled }) => (
 );
 
 DropdownComponent.propTypes = {
-  label: PropTypes.string.isRequired,
-  options: PropTypes.arrayOf(PropTypes.shape({
     label: PropTypes.string.isRequired,
-  })).isRequired,
-  selectedOption: PropTypes.string,
-  onChange: PropTypes.func.isRequired,
-  isOptionDisabled: PropTypes.func,
-};
+    options: PropTypes.arrayOf(PropTypes.shape({
+      label: PropTypes.string.isRequired,
+    })).isRequired,
+    selectedOption: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.shape({
+        field: PropTypes.string,
+        order: PropTypes.string,
+      }),
+    ]),
+    onChange: PropTypes.func.isRequired,
+    isOptionDisabled: PropTypes.func,
+  };
 
 export default DropdownComponent;

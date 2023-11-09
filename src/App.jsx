@@ -15,7 +15,8 @@ const Footer = React.lazy(() => import('./common/Footer'));
 
 import ApproveTool from "./common/Approve";
 import { Turnstile } from '@marsidev/react-turnstile'
-import { useSupabaseAuth, handleBookmarkClick } from './utils/utils';
+import { useSupabaseAuth } from './utils/utils';
+import { handleBookmarkClick } from "./utils/bookmarkUtils";
 import { UserContext } from './services/UserContext';
 import { BookmarkContext } from './services/BookmarkContext';
 import { useBookmarks } from './hooks/useBookmarks';

@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { Auth } from '@supabase/auth-ui-react'
 import { ThemeSupa } from '@supabase/auth-ui-shared'
 import { supabase } from '../utils/utils'
-import { Typography } from "@material-tailwind/react";
+import MaterialComponent from '../common/Material';
 
 export default function SignInFormPage() {
   useEffect(() => {
@@ -24,12 +24,12 @@ export default function SignInFormPage() {
     <div className="container grid grid-cols-1 place-items-center mx-auto p-10">
       <div>
 
-        <Typography variant="h4" textGradient className="text-green-300">
+        <MaterialComponent component="Typography" variant="h4" textGradient className="text-green-300">
           Sign In / Sign Up
-        </Typography>
-        <Typography color="gray" className="mt-1 font-normal">
+        </MaterialComponent>
+        <MaterialComponent component="Typography" color="gray" className="mt-1 font-normal">
           Welcome back again! Enter your credentials to sign-in.
-        </Typography>
+        </MaterialComponent>
         <Auth
           supabaseClient={supabase}
           appearance={{ theme: ThemeSupa }}

@@ -5,9 +5,9 @@ import { UserContext } from '../services/UserContext';
 import MaterialComponent from '../common/Material';
 import { PostCard } from '../common/Card';
 import Icon from '../common/Icons';
-import { handleRedirect, handleBookmarkClick } from '../utils/utils';
-
-const SV_URL = import.meta.env.VITE_SV_URL
+import { handleRedirect } from '../utils/redirectUtils';
+import { handleBookmarkClick } from '../utils/bookmarkUtils';
+import { SV_URL } from '../utils/utils';
 
 export default function AccountPg() {
   const user = useContext(UserContext);

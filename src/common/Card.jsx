@@ -1,24 +1,18 @@
 import { useContext, useEffect, useState } from 'react';
-import { BookmarkContext } from '../services/BookmarkContext';
-import PropTypes from 'prop-types';
+import { SV_URL } from '../utils/utils';
+import axios from 'axios';
 import Icon from './Icons';
+import PropTypes from 'prop-types';
+import { BookmarkContext } from '../services/BookmarkContext';
 import { Link } from 'react-router-dom';
 import MaterialComponent from "./Material";
 import { UserContext } from '../services/UserContext';
-import axios from 'axios';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
 
-function formatDate(dateString) {
-  const date = new Date(dateString);
-  const day = String(date.getDate()).padStart(2, '0');
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const year = date.getFullYear();
-
-  return `${day}.${month}.${year}`;
-}
-
-const SV_URL = import.meta.env.VITE_SV_URL;
+import { formatCategoryName } from '../utils/categoryUtils';
+import updatePostView from '../utils/postViewUtils';
+import { formatDate } from '../utils/dateUtils';
 
 export function PostCard({ post, handleRedirect }) {
   const user = useContext(UserContext);
@@ -55,35 +49,13 @@ export function PostCard({ post, handleRedirect }) {
       });
   }, [post.id]);
 
-  const updatePostView = async () => {
-    try {
-      const response = await axios.put(`${SV_URL}/updatePostView`, {
-        postId: post.id,
-        post_view: post.post_view,
-      });
-  
-      if (response.status === 200) {
-        // Post view updated successfully
-      }
-    } catch (error) {
-      console.error('Error updating post view:', error);
-    }
-  };
+
 
   const handleLinkClick = (link) => {
-    updatePostView(post.id, post.post_view);
+    updatePostView(post);
     handleRedirect(link);
   };
-  function formatPostCategory(post_category) {
-    return post_category
-      .split('-')
-      .map(word => {
-        if (word === 'and') return word;
-        if (word === 'ai') return word.toUpperCase();
-        return word.charAt(0).toUpperCase() + word.slice(1);
-      })
-      .join(' ');
-  }
+
   const Buttons = () => (
 <div className='flex flex-row lg:flex-col items-start justify-center gap-6 mb-2'>
   <div className='order-1 lg:order-2'>
@@ -130,15 +102,15 @@ export function PostCard({ post, handleRedirect }) {
 //  {imageUrl && <img src={imageUrl} alt="Post" onError={() => setImageUrl('/ms-icon-310x310.png')} className='object-cover object-cover rounded-md'/>}
 
   return (
-    <MaterialComponent component="Card" variant='gradient' color='transparent' className="border-2 border-gray-800 lg:flex-row justify-between">
+    <MaterialComponent component="Card" variant='gradient' color='transparent' className="border-2 border-gray-800 lg:flex-row justify-between lg:max-w-[900px]">
       
-      <MaterialComponent component="CardBody" className="max-w-3xl">
+      <MaterialComponent component="CardBody" className="max-w-[600px]">
         <div className='flex items-center justify-between'>
 
           <MaterialComponent component="Typography" variant='h6' color="white" className="font-bold capitalize flex gap-2 items-center mb-2"
           aria-label="post icon and post title">
           {iconUrl && (
-              <LazyLoadImage 
+            <LazyLoadImage 
                 aria-label='Post icon'
                 src={iconUrl} 
                 alt="Post" 
@@ -147,7 +119,7 @@ export function PostCard({ post, handleRedirect }) {
                 className='w-3 h-3' 
               />
             )}
-                   {post.post_title}
+            {post.post_title}
 
         </MaterialComponent>
         <div className=' lg:hidden'>
@@ -161,14 +133,17 @@ export function PostCard({ post, handleRedirect }) {
             </MaterialComponent>
       </MaterialComponent>
 
-        <MaterialComponent component="CardFooter" className=" pt-0 lg:pt-5 flex items-start justify-between gap-6 lg:w-1/3">
+        <MaterialComponent component="CardFooter" className=" pt-0 lg:pt-5 flex items-start justify-between gap-6 lg:w-[300px]">
 
             <div className='flex flex-col lg:flex-col items-start justify-start gap-4'>
     
-            <MaterialComponent component="Typography" variant='small' className='flex gap-3 items-center'
+            <MaterialComponent component="Typography" variant='small' className='flex shrink- gap-3 items-center'
             aria-label="Post Category">
-              <Icon icon="HashtagIcon" className="h-4 w-4" stroke="orange" />
-              {formatPostCategory(post.post_category)}
+              <div className='flex-shrink-0 h-4 w-4'>
+
+              <Icon icon="HashtagIcon" className="h-full w-full" stroke="orange" />
+              </div>
+              {formatCategoryName(post.post_category)}
             </MaterialComponent>
             <MaterialComponent component="Typography" variant='small' className='flex gap-3 items-center'
             aria-label="post price">
@@ -217,86 +192,4 @@ PostCard.propTypes = {
 };
 
 
-
-export function CategoryCard({ category, handleCategoryClick }) {
-  return (
-    <MaterialComponent
-      component="Option"
-      className="bg-transparent gap-2 hover:bg-emerald-600 duration-300 ease-in-out"
-      aria-label="select category"
-      onClick={() => handleCategoryClick(category.original)}
-    >
-      <div className='flex gap-2 items-center'>
-
-      <Icon icon="Squares2X2Icon" className="w-3 h-3" />
-      {category.modifiedName}
-      </div>
-    </MaterialComponent>
-  );
-}
-CategoryCard.propTypes = {
-  category: PropTypes.shape({
-    original: PropTypes.string,
-    modifiedName: PropTypes.string
-  }).isRequired,
-  handleCategoryClick: PropTypes.func.isRequired,
-};
-
-export function SearchBar({ value, onChange }) {
-  return (
-          <MaterialComponent 
-            component="Input"
-            type="text"
-            color="white"
-            value={value}
-            onChange={onChange}
-            variant="outlined"
-            label="Search"
-            size="md"
-            aria-label="Search"
-            containerProps={{ className: "min-w-[50px]" }}
-          />
-   );
- }
-
-SearchBar.propTypes = {
-  value: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired,
-};
-
-export function SimplePagination({ active, next, prev, totalPages }) {
-  return (
-    <div className="flex items-center gap-8">
-      <MaterialComponent component="IconButton"
-        size="sm"
-        variant="outlined"
-        onClick={prev}
-        disabled={active === 1}
-      >
-        <Icon icon="ArrowLeftIcon" strokeWidth={2} className="h-4 w-4" />
-      </MaterialComponent>
-      <MaterialComponent component="Typography" color="gray" className="font-normal">
-        Page <strong className="text-gray-900">{active}</strong> of{" "}
-        <strong className="text-gray-900">{totalPages}</strong>
-      </MaterialComponent>
-      <MaterialComponent component="IconButton"
-        size="sm"
-        variant="outlined"
-        onClick={next}
-        disabled={active === totalPages}
-      >
-        <Icon icon="ArrowRightIcon" strokeWidth={2} className="h-4 w-4" />
-      </MaterialComponent>
-    </div>
-  );
-}
-
-SimplePagination.propTypes = {
-  active: PropTypes.number.isRequired,
-  next: PropTypes.func.isRequired,
-  prev: PropTypes.func.isRequired,
-  totalPages: PropTypes.number.isRequired,
-};
-
-
-export default { CategoryCard, PostCard, SearchBar, SimplePagination };
+export default { PostCard };

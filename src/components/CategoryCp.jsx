@@ -1,17 +1,26 @@
 import axios from 'axios';
 import { useState, useEffect, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { PgTitle, SkeletonPost } from '../common/Skeleton';
-import { CategoryCard, SearchBar, PostCard, SimplePagination } from '../common/Card';
-import MaterialComponent from '../common/Material';
-import { handleRedirect } from '../utils/utils';
+import { useNavigate, useLocation } from 'react-router-dom';
+
+
 import { UserContext } from '../services/UserContext';
 import { BookmarkContext } from '../services/BookmarkContext';
-import { useLocation } from 'react-router-dom';
+
+import { formatCategoryName } from '../utils/categoryUtils';
+import { handleRedirect } from '../utils/redirectUtils';
+
+
+import MaterialComponent from '../common/Material';
+import { SkeletonPost } from '../common/Skeleton';
+import { PostCard } from '../common/Card';
 import { CategoryContext } from "../services/CategoryContext";
 import DropdownComponent from '../common/Dropdown';
+import { SimplePagination } from '../common/Pagination';
+import { CategoryCard } from '../common/CardCategory';
+import SearchBar from '../common/SearchBar';
+import PgTitle from '../common/Title';
 
-const SV_URL = import.meta.env.VITE_SV_URL;
+import { SV_URL } from '../utils/utils';
 
 
 const CategoryList = () => {
@@ -110,7 +119,7 @@ const CategoryList = () => {
   const handleRefresh = () => {
     setSearchTerm('');
     setInputValue('');
-    //navigate(`${location.pathname}?category=${selectedCategory}`);
+    navigate(`${location.pathname}?category=${selectedCategory}`);
   };
   
 
@@ -119,13 +128,7 @@ const CategoryList = () => {
     <SkeletonPost key={index} />
   ));
 
-  if (isLoading) {
-    return (
-      <div className="container px-10 grid grid-cols-1 gap-10 mt-40">
-        {renderLoadingPosts}
-      </div>
-    );
-  }
+
   const handleFilterChange = (filterOption) => {
     setSelectedFilter(filterOption);
   };
@@ -165,13 +168,6 @@ const handleOrderChange = (orderOption) => {
   setSelectedOrder({ field: order, order: sortOrder });
 };
 
-const formatCategoryName = (category) => {
-  return `${category.split('-').map(word => {
-    if (word === 'and') return word.toLowerCase();
-    if (word === 'ai') return word.toUpperCase();
-    return word.charAt(0).toUpperCase() + word.slice(1);
-  }).join(' ')}`;
-};
 
   return (
     <div className="container mx-auto px-10">
@@ -182,25 +178,25 @@ const formatCategoryName = (category) => {
       <p>Total Results: {totalPosts}</p>
       <p>Total pages: {totalPages}</p>
       <div className='flex gap-2'>
-  {selectedFilter && (
-    <div className='flex items-center gap-2'>
-      <span>Filtered by: {selectedFilter}</span>
-      <button onClick={() => setSelectedFilter('')}>x</button>
-    </div>
-  )}
-  {selectedOrder.field && (
-    <div className='flex items-center gap-2'>
-      <span>Sorted by: {orderOptions.find(option => orderFieldMapping[option.label].field === selectedOrder.field && orderFieldMapping[option.label].order === selectedOrder.order).label}</span>
-      <button onClick={() => setSelectedOrder({ field: '', order: '' })}>x</button>
-    </div>
-  )}
-  {selectedCategory && (
-  <div className='flex items-center gap-2'>
-  <span>Category: {formatCategoryName(selectedCategory)}</span>
-  <button onClick={() => handleCategoryClick('')}>x</button>
-</div>
-)}
-</div>
+        {selectedFilter && (
+          <div className='flex items-center gap-2'>
+            <span>Filtered by: {selectedFilter}</span>
+            <button onClick={() => setSelectedFilter('')}>x</button>
+          </div>
+        )}
+        {selectedOrder.field && (
+          <div className='flex items-center gap-2'>
+            <span>Sorted by: {orderOptions.find(option => orderFieldMapping[option.label].field === selectedOrder.field && orderFieldMapping[option.label].order === selectedOrder.order).label}</span>
+            <button onClick={() => setSelectedOrder({ field: '', order: '' })}>x</button>
+          </div>
+        )}
+        {selectedCategory && (
+        <div className='flex items-center gap-2'>
+        <span>Category: {formatCategoryName(selectedCategory)}</span>
+        <button onClick={() => handleCategoryClick('')}>x</button>
+      </div>
+      )}
+      </div>
       </div>
       <div className='flex flex-col md:flex-row lg:flex-row gap-10 max-w-lg mb-20'>
           <MaterialComponent component="Select"  
@@ -241,8 +237,14 @@ const formatCategoryName = (category) => {
 />
   </div>
 
+
+  {isLoading ? (
+      <div className="container gap-10 grid grid-cols-1">
+        {renderLoadingPosts}
+      </div>
+    ) : (
       <>
-        <ul className='gap-10 grid grid-cols-1 overflow-x-hidden'>
+        <ul className='gap-10 grid grid-cols-1 overflow-x-hidden place-items-center'>
           {categoryPosts.map((post) => (
             <PostCard
               key={post.id}
@@ -253,10 +255,10 @@ const formatCategoryName = (category) => {
           ))}
         </ul>
         <SimplePagination active={page} next={() => handlePageChange(page + 1)} prev={() => handlePageChange(page - 1)} totalPages={totalPages} />
-        </>
-
-    </div>
-  );
+      </>
+    )}
+  </div>
+);
 };
 
 export default CategoryList;
