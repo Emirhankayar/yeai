@@ -132,7 +132,7 @@ export function PostCard({ post, handleRedirect }) {
   return (
     <MaterialComponent component="Card" variant='gradient' color='transparent' className="border-2 border-gray-800 lg:flex-row justify-between">
       
-      <MaterialComponent component="CardBody">
+      <MaterialComponent component="CardBody" className="max-w-3xl">
         <div className='flex items-center justify-between'>
 
           <MaterialComponent component="Typography" variant='h6' color="white" className="font-bold capitalize flex gap-2 items-center mb-2"
@@ -161,9 +161,9 @@ export function PostCard({ post, handleRedirect }) {
             </MaterialComponent>
       </MaterialComponent>
 
-        <MaterialComponent component="CardFooter" className=" pt-0 lg:pt-5 flex items-start justify-between gap-6">
+        <MaterialComponent component="CardFooter" className=" pt-0 lg:pt-5 flex items-start justify-between gap-6 lg:w-1/3">
 
-            <div className='flex flex-col lg:flex-col items-start justify-start gap-4 w-full'>
+            <div className='flex flex-col lg:flex-col items-start justify-start gap-4'>
     
             <MaterialComponent component="Typography" variant='small' className='flex gap-3 items-center'
             aria-label="Post Category">

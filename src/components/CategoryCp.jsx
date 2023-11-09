@@ -11,7 +11,7 @@ import { useLocation } from 'react-router-dom';
 import { CategoryContext } from "../services/CategoryContext";
 import DropdownComponent from '../common/Dropdown';
 
-const SV_URL = 'http://localhost:10000';
+const SV_URL = import.meta.env.VITE_SV_URL;
 
 
 const CategoryList = () => {
