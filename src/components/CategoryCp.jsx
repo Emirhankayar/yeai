@@ -19,6 +19,7 @@ import { SimplePagination } from '../common/Pagination';
 import { CategoryCard } from '../common/CardCategory';
 import SearchBar from '../common/SearchBar';
 import PgTitle from '../common/Title';
+import FilterTag from '../common/FilterTag';
 
 import { SV_URL } from '../utils/utils';
 
@@ -178,27 +179,30 @@ const handleOrderChange = (orderOption) => {
       <p>Total Results: {totalPosts}</p>
       <p>Total pages: {totalPages}</p>
       <div className='flex gap-2'>
-        {selectedFilter && (
-          <div className='flex items-center gap-2'>
-            <span>Filtered by: {selectedFilter}</span>
-            <button onClick={() => setSelectedFilter('')}>x</button>
-          </div>
-        )}
-        {selectedOrder.field && (
-          <div className='flex items-center gap-2'>
-            <span>Sorted by: {orderOptions.find(option => orderFieldMapping[option.label].field === selectedOrder.field && orderFieldMapping[option.label].order === selectedOrder.order).label}</span>
-            <button onClick={() => setSelectedOrder({ field: '', order: '' })}>x</button>
-          </div>
-        )}
-        {selectedCategory && (
-        <div className='flex items-center gap-2'>
-        <span>Category: {formatCategoryName(selectedCategory)}</span>
-        <button onClick={() => handleCategoryClick('')}>x</button>
+  {selectedFilter && (
+    <FilterTag 
+      filterName="Filtered by" 
+      displayValue={selectedFilter} 
+      onClear={() => setSelectedFilter('')}
+    />
+  )}
+  {selectedOrder.field && (
+    <FilterTag 
+      filterName="Sorted by" 
+      displayValue={orderOptions.find(option => orderFieldMapping[option.label].field === selectedOrder.field && orderFieldMapping[option.label].order === selectedOrder.order).label} 
+      onClear={() => setSelectedOrder({ field: '', order: '' })}
+    />
+  )}
+  {selectedCategory && (
+    <FilterTag 
+      filterName="Category" 
+      displayValue={formatCategoryName(selectedCategory)} 
+      onClear={() => handleCategoryClick('')}
+    />
+  )}
+</div>
       </div>
-      )}
-      </div>
-      </div>
-      <div className='flex flex-col md:flex-row lg:flex-row gap-10 max-w-lg mb-20'>
+      <div className='flex flex-col gap-10 max-w-lg mb-20'>
           <MaterialComponent component="Select"  
           label="Select Category"
           labelProps={{ className: "text-white" }}
@@ -213,12 +217,8 @@ const handleOrderChange = (orderOption) => {
                 />
               ))}
             </MaterialComponent>
-            <SearchBar value={inputValue} onChange={(e) => setInputValue(e.target.value)} />      
-            <button onClick={handleSearch}>Search</button>
-            {searchTerm && <button onClick={handleRefresh}>Refresh</button>}
-             </div>
 
-             <div className='flex flex-col md:flex-row lg:flex-row gap-10 max-w-lg mb-20'>
+             <div className='flex flex-col md:flex-row lg:flex-row gap-10 max-w-lg'>
 
              <DropdownComponent
   label="Filter By"
@@ -236,6 +236,14 @@ const handleOrderChange = (orderOption) => {
   isOptionDisabled={(option) => selectedOrder.field === orderFieldMapping[option.label].field && selectedOrder.order === orderFieldMapping[option.label].order}
 />
   </div>
+            <SearchBar 
+  value={inputValue} 
+  onChange={(e) => setInputValue(e.target.value)} 
+  handleSearch={handleSearch}
+  handleRefresh={handleRefresh}
+  searchTerm={searchTerm}
+/>
+             </div>
 
         <div className='my-10 w-full flex items-center flex-col justify-center'>
         <SimplePagination active={page} next={() => handlePageChange(page + 1)} prev={() => handlePageChange(page - 1)} totalPages={totalPages} />
@@ -247,20 +255,27 @@ const handleOrderChange = (orderOption) => {
       </div>
     ) : (
       <>
+      {categoryPosts.length > 0 ? (
         <ul className='gap-10 grid grid-cols-1 overflow-x-hidden place-items-center'>
           {categoryPosts.map((post) => (
             <PostCard
-            key={post.id}
-            post={post}
-            handleBookmarkClick={() => handleBookmarkClick({postId: post.id, bookmarks, setBookmarks, user})}
-            handleRedirect={handleRedirect}
+              key={post.id}
+              post={post}
+              handleBookmarkClick={() => handleBookmarkClick({postId: post.id, bookmarks, setBookmarks, user})}
+              handleRedirect={handleRedirect}
             />
-            ))}
+          ))}
         </ul>
-        <div className='mt-10 w-full flex items-center flex-col justify-center'>
+      ) : (
+        <MaterialComponent component="Typography" variant="h4" color="red" textGradient className="text-center min-h-screen flex-col gap-5 flex">
+          No Search results found. <span>Try something else.</span>
+          {searchTerm && <MaterialComponent component="Button" className="w-1/6 place-self-center mt-5" onClick={handleRefresh}>Refresh</MaterialComponent>}
+          </MaterialComponent>
+      )}
+      <div className='mt-10 w-full flex items-center flex-col justify-center'>
         <SimplePagination active={page} next={() => handlePageChange(page + 1)} prev={() => handlePageChange(page - 1)} totalPages={totalPages} />
-        </div>
-      </>
+      </div>
+    </>
     )}
   </div>
 );
