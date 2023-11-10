@@ -101,30 +101,10 @@ const router = createBrowserRouter([
 ]);
 
 export function App() {
-  const captchaResponse = localStorage.getItem("captchaCompleted");
-  const [captchaCompleted, setCaptchaCompleted] = useState(!!captchaResponse);
   const user = useSupabaseAuth();
   const categories = useFetchCategories();
   const [bookmarks, setBookmarks] = useBookmarks(user);
 
-  useEffect(() => {
-    localStorage.setItem("captchaCompleted", captchaCompleted);
-  }, [captchaCompleted]);
-
-  const handleCaptchaCompletion = (captchaResponse) => {
-    localStorage.setItem("captchaCompleted", captchaResponse);
-    setCaptchaCompleted(true);
-  };
-
-  if (!captchaCompleted) {
-    return (
-      <div className="min-h-screen flex flex-col gap-10 items-center justify-center">
-        <h2>Hooman being confirmed</h2>
-
-        <Turnstile siteKey={siteKey} onVerify={handleCaptchaCompletion} />
-      </div>
-    );
-  }
 
   return (
     <ThemeProvider value={theme}>
