@@ -105,6 +105,7 @@ export function PostCard({ post, handleRedirect }) {
           <MaterialComponent
             component="Typography"
             variant="h6"
+            as="div"
             color="white"
             className="font-bold capitalize flex gap-2 items-center mb-2"
             aria-label="post icon and post title"
@@ -128,6 +129,8 @@ export function PostCard({ post, handleRedirect }) {
         <MaterialComponent
           component="Typography"
           variant="small"
+          as="div"
+
           className="text-gray-500"
           aria-label="post description"
         >
@@ -142,6 +145,8 @@ export function PostCard({ post, handleRedirect }) {
         <div className="flex flex-col lg:flex-col items-start justify-start gap-4">
           <MaterialComponent
             component="Typography"
+            as="div"
+
             variant="small"
             className="flex shrink- gap-3 items-center"
             aria-label="Post Category"
@@ -157,6 +162,8 @@ export function PostCard({ post, handleRedirect }) {
           </MaterialComponent>
           <MaterialComponent
             component="Typography"
+            as="div"
+
             variant="small"
             className="flex gap-3 items-center"
             aria-label="post price"
@@ -176,6 +183,8 @@ export function PostCard({ post, handleRedirect }) {
           </MaterialComponent>
           <MaterialComponent
             component="Typography"
+            as="div"
+
             variant="small"
             className="flex gap-3 items-center"
             aria-label="post views"
@@ -185,6 +194,7 @@ export function PostCard({ post, handleRedirect }) {
           </MaterialComponent>
           <MaterialComponent
             component="Typography"
+            as="div"
             variant="small"
             className="flex gap-3 items-center"
             aria-label="post date"

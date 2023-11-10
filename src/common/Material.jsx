@@ -41,10 +41,13 @@ const components = {
   Option,
   Dialog,
   Textarea,
+  
   Navbar,
   Collapse,
+  
   List,
   ListItem,
+  
   Menu,
   MenuHandler,
   MenuList,

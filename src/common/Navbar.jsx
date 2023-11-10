@@ -5,6 +5,20 @@ import PropTypes from "prop-types";
 import Icon from "./Icons";
 import { CategoryContext } from "../services/CategoryContext";
 import SignInFormPage from "../components/SignInCp";
+
+import {
+  Navbar,
+  Collapse,
+  Typography,
+  Button,
+  IconButton,
+  List,
+  ListItem,
+  Menu,
+  MenuHandler,
+  MenuList,
+  MenuItem,
+} from "@material-tailwind/react";
 import MaterialComponent from "./Material";
 
 function NavListMenu() {
@@ -25,32 +39,29 @@ function NavListMenu() {
   };
   const renderItems = categories.map((category, index) => {
     return (
-      <MaterialComponent
-        component="MenuItem"
+      <MenuItem
         role="menuitem"
         key={index}
         className="flex items-center gap-3 rounded-lg"
         onClick={() => handleCategoryClick(category.original)}
       >
         <div>
-          <MaterialComponent
-            component="Typography"
+          <Typography
             variant="small"
             color="blue-gray"
             className="flex items-center text-sm capitalize font-semibold"
           >
             <Icon icon="Squares2X2Icon" className="w-5 h-5 mr-2" />
             {category.modifiedName}
-          </MaterialComponent>
+          </Typography>
         </div>
-      </MaterialComponent>
+      </MenuItem>
     );
   });
 
   return (
     <>
-      <MaterialComponent
-        component="Menu"
+      <Menu
         open={isMenuOpen}
         handler={setIsMenuOpen}
         offset={{ mainAxis: 20 }}
@@ -59,16 +70,14 @@ function NavListMenu() {
         aria-expanded={isMenuOpen}
         aria-haspopup="menu"
       >
-        <MaterialComponent component="MenuHandler">
-          <MaterialComponent
-            component="Typography"
+        <MenuHandler>
+          <Typography
             as="div"
             variant="small"
             color="blue-gray"
             className="font-normal"
           >
-            <MaterialComponent
-              component="ListItem"
+            <ListItem
               className="flex items-center gap-2 py-2 pr-4"
               selected={isMenuOpen || isMobileMenuOpen}
               aria-expanded={isMenuOpen || isMobileMenuOpen}
@@ -97,11 +106,10 @@ function NavListMenu() {
                   isMobileMenuOpen ? "rotate-180" : ""
                 }`}
               />
-            </MaterialComponent>
-          </MaterialComponent>
-        </MaterialComponent>
-        <MaterialComponent
-          component="MenuList"
+            </ListItem>
+          </Typography>
+        </MenuHandler>
+        <MenuList
           className="hidden w-full rounded-md lg:block custom-menu-list bg-gray-500 p-0 bg-opacity-80"
           aria-label="Main navigation menu"
           role="menu"
@@ -109,16 +117,12 @@ function NavListMenu() {
           <ul className="grid grid-cols-4 gap-y-2 border-none">
             {renderItems}
           </ul>
-        </MaterialComponent>
-      </MaterialComponent>
+        </MenuList>
+      </Menu>
       <div className="block lg:hidden custom-menu-list">
-        <MaterialComponent
-          component="Collapse"
-          open={isMobileMenuOpen}
-          aria-label="Mobile navigation menu"
-        >
+        <Collapse open={isMobileMenuOpen} aria-label="Mobile navigation menu">
           {renderItems}
-        </MaterialComponent>
+        </Collapse>
       </div>
     </>
   );
@@ -130,60 +134,45 @@ function NavList() {
   };
 
   return (
-    <MaterialComponent
-      component="List"
-      className="mt-4 mb-6 p-0 lg:mt-0 lg:mb-0 lg:flex-row lg:items-center lg:justify-center"
-    >
-      <MaterialComponent
-        component="Typography"
+    <List className="mt-4 mb-6 p-0 lg:mt-0 lg:mb-0 lg:flex-row lg:items-center lg:justify-center">
+      <Typography
         as="a"
         href="/about"
         variant="small"
         color="blue-gray"
         className="font-normal"
       >
-        <MaterialComponent
-          component="ListItem"
-          className="flex items-center gap-2 py-2 pr-4 hidden"
-        >
+        <ListItem className="flex items-center gap-2 py-2 pr-4 hidden">
           <Icon icon="QuestionMarkCircleIcon" className="h-[18px] w-[18px]" />
           About
-        </MaterialComponent>
-      </MaterialComponent>
+        </ListItem>
+      </Typography>
       <NavListMenu onCategoryClick={handleCategoryClick} />
-      <MaterialComponent
-        component="Typography"
+      <Typography
         as="a"
         href="/account"
         variant="small"
         color="blue-gray"
         className="font-normal"
       >
-        <MaterialComponent
-          component="ListItem"
-          className="flex items-center gap-2 py-2 pr-4"
-        >
+        <ListItem className="flex items-center gap-2 py-2 pr-4">
           <Icon icon="UserCircleIcon" className="h-[18px] w-[18px]" />
           Account
-        </MaterialComponent>
-      </MaterialComponent>
-      <MaterialComponent
-        component="Typography"
+        </ListItem>
+      </Typography>
+      <Typography
         as="a"
         href="/promote"
         variant="small"
         color="blue-gray"
         className="font-normal"
       >
-        <MaterialComponent
-          component="ListItem"
-          className="flex items-center gap-2 py-2 pr-4"
-        >
+        <ListItem className="flex items-center gap-2 py-2 pr-4">
           <Icon icon="InformationCircleIcon" className="h-[18px] w-[18px]" />
           Promote
-        </MaterialComponent>
-      </MaterialComponent>
-    </MaterialComponent>
+        </ListItem>
+      </Typography>
+    </List>
   );
 }
 
@@ -201,14 +190,12 @@ export default function NavbarWithMegaMenu() {
   }, []);
 
   return (
-    <MaterialComponent
-      component="Navbar"
+    <Navbar
       color="gray"
       className="mx-auto max-w-full rounded-none px-4 py-2 fixed top-0 left-0 right-0 z-50"
     >
       <div className="flex items-center justify-between text-blue-gray-900">
-        <MaterialComponent
-          component="Typography"
+        <Typography
           as="a"
           href="/"
           variant="h5"
@@ -219,31 +206,25 @@ export default function NavbarWithMegaMenu() {
           <span className="bg-gradient-to-r from-emerald-600 via-emerald-700 to-emerald-900 inline-block text-transparent bg-clip-text hover:animate-shift">
             .tech
           </span>
-        </MaterialComponent>
+        </Typography>
         <div className="hidden lg:block">
           <NavList user={user} />
         </div>
         <div className="hidden gap-2 lg:flex-row lg:flex lg:justify-end lg:items-center  lg:w-1/5">
           {user ? (
-            <MaterialComponent
-              component="Button"
-              color="red"
-              aria-label="sign out"
-              onClick={signOut}
-            >
+            <Button color="red" aria-label="sign out" onClick={signOut}>
               Sign Out
-            </MaterialComponent>
+            </Button>
           ) : (
             <>
-              <MaterialComponent
-                component="Button"
+              <Button
                 variant="gradient"
                 aria-label="sign in"
                 size="sm"
                 onClick={handleOpen}
               >
                 Sign in
-              </MaterialComponent>
+              </Button>
               <MaterialComponent
                 component="Dialog"
                 size="xs"
@@ -257,8 +238,7 @@ export default function NavbarWithMegaMenu() {
           )}
         </div>
 
-        <MaterialComponent
-          component="IconButton"
+        <IconButton
           role="button"
           name="hamburgermenubutton"
           variant="text"
@@ -283,25 +263,18 @@ export default function NavbarWithMegaMenu() {
               aria-label="open menu"
             />
           )}
-        </MaterialComponent>
+        </IconButton>
       </div>
-      <MaterialComponent component="Collapse" open={openNav}>
+      <Collapse open={openNav}>
         <NavList user={user} />
 
         {user ? (
-          <MaterialComponent
-            component="Button"
-            color="red"
-            fullWidth
-            aria-label="sign out"
-            onClick={signOut}
-          >
+          <Button color="red" fullWidth aria-label="sign out" onClick={signOut}>
             Sign Out
-          </MaterialComponent>
+          </Button>
         ) : (
           <div className="flex w-full flex-nowrap items-center gap-2 lg:hidden">
-            <MaterialComponent
-              component="Button"
+            <Button
               variant="gradient"
               fullWidth
               size="sm"
@@ -312,10 +285,10 @@ export default function NavbarWithMegaMenu() {
               }}
             >
               Sign in
-            </MaterialComponent>
+            </Button>
           </div>
         )}
-      </MaterialComponent>
-    </MaterialComponent>
+      </Collapse>
+    </Navbar>
   );
 }

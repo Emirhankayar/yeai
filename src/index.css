@@ -29,13 +29,13 @@ html, body {
   padding: 0;
   width: 100%;
 }
+
 body{
   position: relative;
 }
 
-
 .custom-menu-list {
-  max-height: 400px; /* Define your desired max height */
+  max-height: 400px; 
   overflow-y: scroll;
   width: 100%;
   backdrop-filter: blur(5px);
