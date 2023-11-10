@@ -1,8 +1,8 @@
-import { useEffect } from 'react';
-import { Auth } from '@supabase/auth-ui-react'
-import { ThemeSupa } from '@supabase/auth-ui-shared'
-import { supabase } from '../utils/utils'
-import MaterialComponent from '../common/Material';
+import { useEffect } from "react";
+import { Auth } from "@supabase/auth-ui-react";
+import { ThemeSupa } from "@supabase/auth-ui-shared";
+import { supabase } from "../utils/utils";
+import MaterialComponent from "../common/Material";
 
 export default function SignInFormPage() {
   useEffect(() => {
@@ -15,7 +15,7 @@ export default function SignInFormPage() {
 
     // Cleanup the listener
     return () => {
-      if (authListener && typeof authListener.unsubscribe === 'function') {
+      if (authListener && typeof authListener.unsubscribe === "function") {
         authListener.unsubscribe();
       }
     };
@@ -23,18 +23,25 @@ export default function SignInFormPage() {
   return (
     <div className="container grid grid-cols-1 place-items-center mx-auto p-10">
       <div>
-
-        <MaterialComponent component="Typography" variant="h4" textGradient className="text-green-300">
+        <MaterialComponent
+          component="Typography"
+          variant="h4"
+          className="text-emerald-900"
+        >
           Sign In / Sign Up
         </MaterialComponent>
-        <MaterialComponent component="Typography" color="gray" className="mt-1 font-normal">
+        <MaterialComponent
+          component="Typography"
+          color="gray"
+          className="mt-1 font-normal"
+        >
           Welcome back again! Enter your credentials to sign-in.
         </MaterialComponent>
         <Auth
           supabaseClient={supabase}
           appearance={{ theme: ThemeSupa }}
-          providers={['google', 'facebook']}
-          theme='dark'
+          providers={["google", "facebook"]}
+          theme="dark"
         />
       </div>
     </div>

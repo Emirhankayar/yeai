@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 const SV_URL = import.meta.env.VITE_SV_URL;
 
@@ -11,33 +11,39 @@ const useFetchCategories = () => {
       try {
         const response = await axios.get(`${SV_URL}/allCategories`, {
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
         });
         let categories = response.data;
         categories = modifyCategoryNames(categories);
         setCategories(categories);
       } catch (error) {
-        console.error('Error fetching categories:', error);
+        console.error("Error fetching categories:", error);
       }
     };
 
     const modifyCategoryNames = (categories) => {
-      return categories.map(category => {
-        if (typeof category === 'string') {
+      return categories.map((category) => {
+        if (typeof category === "string") {
           let original = category;
-          let modifiedName = category.replace(/-/g, ' ').split(' ').map(word => {
-            if (word === 'and') {
-              return word;
-            } else if (word === 'ai') {
-              return word.toUpperCase();
-            } else {
-              return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-            }
-          }).join(' ');
+          let modifiedName = category
+            .replace(/-/g, " ")
+            .split(" ")
+            .map((word) => {
+              if (word === "and") {
+                return word;
+              } else if (word === "ai") {
+                return word.toUpperCase();
+              } else {
+                return (
+                  word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+                );
+              }
+            })
+            .join(" ");
           return { original: original, modifiedName: modifiedName };
         } else {
-          return { original: '', modifiedName: '' };
+          return { original: "", modifiedName: "" };
         }
       });
     };
