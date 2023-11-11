@@ -19,6 +19,8 @@ import SearchBar from "../common/SearchBar";
 import PgTitle from "../common/Title";
 import FilterTag from "../common/FilterTag";
 
+import { Helmet } from "react-helmet";
+
 import { SV_URL } from "../utils/utils";
 
 const CategoryList = () => {
@@ -189,6 +191,36 @@ const CategoryList = () => {
 
   return (
     <div className="container mx-auto px-10 lg:px-0 max-w-3xl">
+      <Helmet>
+        <title>{`Tools - ${formattedCategoryName || "Trending"}`}</title>
+        <meta
+          name="description"
+          content={`Posts in category: ${formattedCategoryName || "Trending"}`}
+        />
+        <meta name="robots" content="index, follow" />
+        <meta name="googlebot" content="index, follow" />
+        <meta name="bingbot" content="index, follow" />
+        <meta name="duckduckbot" content="index, follow" />
+        <meta name="baiduspider" content="index, follow" />
+        <meta name="yandex" content="index, follow" />
+        <meta
+          name="keywords"
+          content={`tools, ${formattedCategoryName}, posts`}
+        />
+        <meta
+          property="og:title"
+          content={`Tools - ${formattedCategoryName || "Trending"}`}
+        />
+        <meta
+          property="og:description"
+          content={`Posts in category: ${selectedCategory || "Trending"}`}
+        />
+        <meta property="og:type" content="website" />
+        <meta
+          property="og:url"
+          content={`https://yeai.tech${location.pathname}`}
+        />
+      </Helmet>
       <div className="flex flex-row items-center justify-start mb-10">
         <PgTitle
           text={
@@ -238,17 +270,14 @@ const CategoryList = () => {
         </div>
       </div>
 
-
       <div className="grid grid-cols-1 gap-10 w-full mb-20 place-items-center">
-
-            <CategoryCard
-              categories={categories}
-              handleCategoryClick={handleCategoryClick}
-              handleRefresh={handleRefresh}
-              selectedCategory={selectedCategory}
-              formattedCategoryName={formattedCategoryName}
-              />
-
+        <CategoryCard
+          categories={categories}
+          handleCategoryClick={handleCategoryClick}
+          handleRefresh={handleRefresh}
+          selectedCategory={selectedCategory}
+          formattedCategoryName={formattedCategoryName}
+        />
 
         <div className="grid grid-cols-1 lg:grid-cols-2 md:grid-cols-2 w-full place-content-center gap-10">
           <DropdownComponent
@@ -258,7 +287,7 @@ const CategoryList = () => {
             onChange={handleFilterChange}
             isOptionDisabled={(option) => selectedFilter === option.label}
             value={selectedFilter}
-            />
+          />
 
           <DropdownComponent
             label="Sort By"
@@ -266,13 +295,11 @@ const CategoryList = () => {
             onChange={handleOrderChange}
             isOptionDisabled={(option) =>
               selectedOrder.field === orderFieldMapping[option.label].field &&
-
               selectedOrder.order === orderFieldMapping[option.label].order
             }
             value={selectedOrderLabel} // Pass the label instead of the object
           />
-          </div>
-          
+        </div>
 
         <SearchBar
           value={inputValue}
@@ -281,9 +308,7 @@ const CategoryList = () => {
           handleRefresh={handleRefresh}
           searchTerm={searchTerm}
         />
-      
       </div>
-
 
       <div className="my-10 w-full flex items-center flex-col justify-center">
         <SimplePagination
