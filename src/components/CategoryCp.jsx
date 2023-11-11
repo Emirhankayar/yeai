@@ -207,6 +207,8 @@ const CategoryList = () => {
           name="keywords"
           content={`tools, ${formattedCategoryName}, posts`}
         />
+        <link rel="canonical" href={`https://yeai.tech${location.pathname}${location.search}`} />
+
         <meta
           property="og:title"
           content={`Tools - ${formattedCategoryName || "Trending"}`}
