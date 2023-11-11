@@ -243,7 +243,7 @@ export default function NavbarWithMegaMenu() {
           name="hamburgermenubutton"
           variant="text"
           value={openNav}
-          color="gray"
+          color="darkgray"
           className="lg:hidden"
           aria-label="open nav"
           onClick={() => setOpenNav(!openNav)}
@@ -274,18 +274,16 @@ export default function NavbarWithMegaMenu() {
           </Button>
         ) : (
           <div className="flex w-full flex-nowrap items-center gap-2 lg:hidden">
-            <Button
-              variant="gradient"
-              fullWidth
-              size="sm"
-              aria-label="sign in"
-              onClick={() => {
-                handleOpen();
-                setOpenNav((prevState) => !prevState);
-              }}
-            >
-              Sign in
-            </Button>
+            <a href="/sign-in" className="w-full">
+              <Button
+                variant="gradient"
+                fullWidth
+                size="sm"
+                aria-label="sign in"
+              >
+                Sign in
+              </Button>
+            </a>
           </div>
         )}
       </Collapse>

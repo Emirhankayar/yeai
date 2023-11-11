@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import Icon from "./Icons";
 import PropTypes from "prop-types";
 import { BookmarkContext } from "../services/BookmarkContext";
@@ -7,11 +7,13 @@ import MaterialComponent from "./Material";
 import { UserContext } from "../services/UserContext";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
-
+import { truncateDescription } from "../utils/truncateUtils";
 import { formatCategoryName } from "../utils/categoryUtils";
 import updatePostView from "../utils/postViewUtils";
 import { formatDate } from "../utils/dateUtils";
-
+import axios from "axios";
+import { SV_URL } from "../utils/utils";
+import "../index.css"
 export function PostCard({ post, handleRedirect }) {
   const user = useContext(UserContext);
   const { bookmarks, setBookmarks, handleBookmarkClick } =
@@ -19,6 +21,58 @@ export function PostCard({ post, handleRedirect }) {
 
   // Determine whether the post is bookmarked
   const isBookmarked = bookmarks.includes(String(post.id));
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [scrollPosition, setScrollPosition] = useState(window.pageYOffset);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [message, setMessage] = useState("");
+  const [email, setEmail] = useState("");
+
+  // Add these functions in your PostCard component
+  const handleOpenModal = () => {
+    setModalOpen(true);
+  };
+  const handleCloseModal = (event) => {
+    if (event.target === event.currentTarget) {
+      setModalOpen(false);
+    }
+  };
+  const handleSubmitReport = async (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    try {
+      await axios.post(`${SV_URL}/report-issue`, {
+        post: post.post_title,
+        message,
+        email,
+      });
+      alert("Report sent successfully");
+      setModalOpen(false);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to send report");
+    }
+  };
+
+  const postRef = useRef();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollPosition = window.pageYOffset;
+      const scrollDistance = currentScrollPosition - scrollPosition;
+
+      if (Math.abs(scrollDistance) > 50) {
+        setIsExpanded(false);
+      }
+
+      setScrollPosition(currentScrollPosition);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [scrollPosition]);
 
   // Update the bookmarkedPosts state when the bookmark button is clicked
   const handleBookmarkButtonClick = () => {
@@ -30,68 +84,75 @@ export function PostCard({ post, handleRedirect }) {
     handleRedirect(link);
   };
 
-  const Buttons = () => (
-    <div className="flex flex-row lg:flex-col items-start justify-center gap-6 mb-2">
-      <div className="order-1 lg:order-2">
-        <Link
-          onClick={() => handleLinkClick(post.post_link)}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label={`Open ${post.post_title} in a new tab.`}
-        >
-          <MaterialComponent component="Button" className="p-2 h-9">
-            <Icon icon="ArrowUpRightIcon" stroke="white" className="h-4 w-4" />
-          </MaterialComponent>
-        </Link>
-      </div>
-      <div className="order-2 lg:order-1">
-        {user ? (
-          <MaterialComponent
-            component="Button"
-            aria-label={`Bookmark the post ${post.post_title}`}
-            onClick={() =>
-              user &&
-              handleBookmarkButtonClick({
-                postId: post.id,
-                user,
-                bookmarks,
-                setBookmarks,
-              })
-            }
-            className="p-2 h-9"
-          >
-            <Icon
-              icon={isBookmarked ? "faSolidBookmark" : "faRegularBookmark"}
-              color={isBookmarked ? "white" : "none"}
-              className="h-4 w-4"
-            />
-          </MaterialComponent>
-        ) : (
-          <MaterialComponent
-            component="Tooltip"
-            content="Log in to save the post"
-            className="bg-red-400 capitalize"
-            aria-label="log in to bookmark the post"
-            key={post.id}
-          >
-            <div>
-              <MaterialComponent
-                component="Button"
-                className="p-2 h-9"
-                disabled
-              >
-                <Icon
-                  icon="faRegularBookmark"
-                  stroke="none"
-                  className="h-4 w-4"
-                />
-              </MaterialComponent>
-            </div>
-          </MaterialComponent>
-        )}
-      </div>
-    </div>
+  const ButtonComponent = ({ icon, clickHandler, disabled, fill, color }) => (
+    <MaterialComponent
+      component="IconButton"
+      className="rounded-full"
+      onClick={clickHandler}
+      color={color}
+      disabled={disabled}
+    >
+      <Icon icon={icon} stroke="white" fill={fill} className="h-4 w-4" />
+    </MaterialComponent>
   );
+  ButtonComponent.propTypes = {
+    icon: PropTypes.string.isRequired,
+    color: PropTypes.string,
+    clickHandler: PropTypes.func,
+    disabled: PropTypes.bool,
+    fill: PropTypes.string,
+  };
+
+  // Refactored Buttons component
+  const Buttons = () => {
+    const handleButtonClick = (originalHandler, message, loggedInHandler) => {
+      if (!user) {
+        alert(message);
+      } else {
+        loggedInHandler && loggedInHandler();
+        originalHandler && originalHandler();
+      }
+    };
+
+    return (
+      <div className="flex flex-row lg:flex-col items-start justify-center gap-7 mb-2">
+        <div className="order-1 lg:order-2">
+          <Link
+            onClick={() => handleLinkClick(post.post_link)}
+            aria-label={`Open ${post.post_title} in a new tab.`}
+          >
+            <ButtonComponent icon="ArrowUpRightIcon" />
+          </Link>
+        </div>
+        <div className="order-2 lg:order-2">
+          <ButtonComponent
+            icon="ExclamationCircleIcon"
+            fill="none"
+            color="red"
+            clickHandler={() =>
+              handleButtonClick(
+                null,
+                "Sign up / Log in to use report abuse.",
+                handleOpenModal
+              )
+            }
+          />
+        </div>
+        <div className="order-2 lg:order-1">
+          <ButtonComponent
+            icon="HeartIcon"
+            fill={isBookmarked ? "white" : "none"}
+            clickHandler={() =>
+              handleButtonClick(
+                handleBookmarkButtonClick,
+                "Sign Up / Log in to use Bookmarks."
+              )
+            }
+          />
+        </div>
+      </div>
+    );
+  };
 
   return (
     <MaterialComponent
@@ -100,6 +161,59 @@ export function PostCard({ post, handleRedirect }) {
       color="transparent"
       className="border-2 border-gray-800 lg:flex-row justify-between lg:max-w-[900px]"
     >
+      <MaterialComponent
+        component="Dialog"
+        open={modalOpen}
+        onClose={handleCloseModal}
+        className="max-w-lg bg-gray-900 border-gray-800  border-2 bg-opacity-80 custom-dialog-list"
+      >
+        <div>
+          <MaterialComponent
+            component="DialogHeader"
+            className="flex items-center justify-between text-white"
+          >
+            Report Abuse
+            <MaterialComponent component="IconButton">
+              <Icon
+                icon="XMarkIcon"
+                stroke="white"
+                className="h-4 w-4"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  handleCloseModal(event);
+                }}
+              />
+            </MaterialComponent>
+          </MaterialComponent>
+
+          <MaterialComponent component="DialogBody">
+            <form onSubmit={handleSubmitReport} className="space-y-4">
+            <MaterialComponent
+                component="Input"
+                label="Your Email"
+                className="text-white"
+                containerProps={{ className: "text-white" }}
+                labelProps={{ className: "text-white" }}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+              <MaterialComponent
+                component="Textarea"
+                label="Message"
+                value={message}
+                className="text-white"
+                containerProps={{ className: "text-white" }}
+                labelProps={{ className: "text-white" }}
+                onChange={(e) => setMessage(e.target.value)}
+                required
+              />
+              <MaterialComponent component="Button" type="submit">
+                Submit
+              </MaterialComponent>
+            </form>
+          </MaterialComponent>
+        </div>
+      </MaterialComponent>
       <MaterialComponent component="CardBody" className="max-w-[600px]">
         <div className="flex items-center justify-between">
           <MaterialComponent
@@ -126,16 +240,35 @@ export function PostCard({ post, handleRedirect }) {
             <Buttons />
           </div>
         </div>
-        <MaterialComponent
-          component="Typography"
-          variant="small"
-          as="div"
-
-          className="text-gray-500"
-          aria-label="post description"
+        <div
+          className={`overflow-hidden animation-text-height duration-500 ease-in-out ${
+            isExpanded ? "max-h-full" : "max-h-32"
+          }`}
         >
-          {post.post_description}
-        </MaterialComponent>
+          <MaterialComponent
+            component="Typography"
+            variant="small"
+            as="div"
+            className="text-gray-500"
+            aria-label="post description"
+            ref={postRef}
+          >
+            {isExpanded || post.post_description.length <= 200
+              ? post.post_description
+              : truncateDescription(post.post_description, 200)}
+          </MaterialComponent>
+          {truncateDescription(post.post_description, 300).length > 200 &&
+            !isExpanded && (
+              <MaterialComponent
+                component="Button"
+                color="gray"
+                onClick={() => setIsExpanded(true)}
+                className="!bg-none !shadow-none capitalize text-[10px] p-0"
+              >
+                Read more
+              </MaterialComponent>
+            )}
+        </div>
       </MaterialComponent>
 
       <MaterialComponent
@@ -146,7 +279,6 @@ export function PostCard({ post, handleRedirect }) {
           <MaterialComponent
             component="Typography"
             as="div"
-
             variant="small"
             className="flex shrink- gap-3 items-center"
             aria-label="Post Category"
@@ -163,7 +295,6 @@ export function PostCard({ post, handleRedirect }) {
           <MaterialComponent
             component="Typography"
             as="div"
-
             variant="small"
             className="flex gap-3 items-center"
             aria-label="post price"
@@ -184,7 +315,6 @@ export function PostCard({ post, handleRedirect }) {
           <MaterialComponent
             component="Typography"
             as="div"
-
             variant="small"
             className="flex gap-3 items-center"
             aria-label="post views"

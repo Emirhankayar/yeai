@@ -44,3 +44,7 @@ body{
   border: none;
   accent-color: none;
 }
+.custom-dialog-list {
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px); /* For Safari */
+}

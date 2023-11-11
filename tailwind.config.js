@@ -10,7 +10,38 @@ module.exports = withMT({
       fontFamily: {
         oxanium: ['Oxanium', 'sans-serif'],
       },
+      maxHeight: {
+        '0': '0',
+        '1/4': '25%',
+        '1/2': '50%',
+        '3/4': '75%',
+        'full': '100%',
+      },
+      transitionProperty: {
+        'height': 'max-height',
+        'opacity': 'opacity',
+        'blur': 'backdrop-blur',
+      },
+      opacity: {
+        '0': '0',
+        '25': '0.25',
+        '50': '0.5',
+        '75': '0.75',
+        '100': '1',
+      },
+      backdropBlur: {
+        'none': '0',
+        'sm': '4px',
+        'DEFAULT': '8px',
+        'md': '12px',
+        'lg': '16px',
+        'xl': '24px',
+        '2xl': '40px',
+        '3xl': '64px',
+      },
       animation: {
+        'text-animation': 'textAnimation 1s both',
+
         'go-in': 'goIn 2s both',
         'slide-in-left': 'slideInLeft 2s both',
         'slide-in-right': 'slideInRight 1s both',
@@ -23,6 +54,10 @@ module.exports = withMT({
       },
 
       keyframes: {
+        textAnimation: {
+          '0%': { maxHeight: '0', opacity: '0', backdropBlur: '0' },
+          '100%': { maxHeight: '100%', opacity: '1', backdropBlur: '16px' },
+        },
         goIn: {
           '0%': {
             opacity: 0,
@@ -122,6 +157,7 @@ module.exports = withMT({
     'postcss-import': {},
     tailwindcss: {},
     autoprefixer: {},
+    typography: {},
   },
   function({ addUtilities }) {
     const newUtilities = {

@@ -14,6 +14,9 @@ import {
   Select,
   Option,
   Dialog,
+  DialogHeader,
+  DialogBody,
+
   Textarea,
   Navbar,
   Collapse,
@@ -40,6 +43,9 @@ const components = {
   Select,
   Option,
   Dialog,
+  DialogHeader,
+  DialogBody,
+
   Textarea,
   
   Navbar,
