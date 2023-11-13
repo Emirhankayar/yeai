@@ -8,26 +8,42 @@ import Icon from '../common/Icons';
 import { handleRedirect } from '../utils/redirectUtils';
 import { handleBookmarkClick } from '../utils/bookmarkUtils';
 import { SV_URL } from '../utils/utils';
+import { SimplePagination } from '../common/Pagination';
 
 export default function AccountPg() {
   const user = useContext(UserContext);
   const [bookmarks, setBookmarks] = useBookmarks(user);
+  const [addedPosts, setAddedPosts] = useState([]);
   const [posts, setPosts] = useState([]);
+  const [totalBookmarkedPosts, setTotalBookmarkedPosts] = useState(0);
+  const [totalAddedPosts, setTotalAddedPosts] = useState(0);
+  const [bookmarkedPage, setBookmarkedPage] = useState(1);
+  const [addedPage, setAddedPage] = useState(1);
+  const limit = 5;
+  console.log('Component rendered');
+  const handleBookmarkedPageChange = (newPage) => {
+    setBookmarkedPage(newPage);
+  };
+
+  const handleAddedPageChange = (newPage) => {
+    setAddedPage(newPage);
+  };
 
   useEffect(() => {
     const fetchPosts = async () => {
-      if (bookmarks.length > 0) {
-        try {
-          const response = await axios.get(`${SV_URL}/getBookmarkPosts`, { params: { ids: JSON.stringify(bookmarks) } });
-          setPosts(response.data.posts || []);
-        } catch (error) {
-          console.error('Error fetching posts:', error);
-        }
+      try {
+        const response = await axios.get(`${SV_URL}/getPosts`, { params: { ids: JSON.stringify(bookmarks), email: user.email, bookmarkedPage, addedPage, limit } });
+        setPosts(response.data.bookmarkedPosts || []);
+        setAddedPosts(response.data.addedPosts || []);
+        setTotalBookmarkedPosts(response.data.totalBookmarkedPosts || 0);
+        setTotalAddedPosts(response.data.totalAddedPosts || 0);
+      } catch (error) {
+        console.error('Error fetching posts:', error);
       }
     };
-
+  
     fetchPosts();
-  }, [bookmarks]);
+  }, [bookmarks, user.email, bookmarkedPage, addedPage]);
 
   return (
     <div className="container px-10 mt-20">
@@ -46,6 +62,12 @@ export default function AccountPg() {
                        />
             ))}
           </div>
+          <SimplePagination
+        active={bookmarkedPage}
+        next={() => handleBookmarkedPageChange(bookmarkedPage + 1)}
+        prev={() => handleBookmarkedPageChange(bookmarkedPage - 1)}
+        totalPages={Math.ceil(totalBookmarkedPosts / limit)}
+      />
         </div>
 
         <div>
@@ -71,21 +93,22 @@ export default function AccountPg() {
             </div>
 
             <div className="grid grid-cols-1 gap-10">
-              <MaterialComponent component="Card" color="transparent" className="h-36 border-2 border-dashed border-gray-800 grid-cols-1 place-content-center justify-content-center">
-                <div className="flex flex-col items-center space-y-5">
-                  <Icon icon="InboxArrowDownIcon" color="gray" className="h-9 w-9 mt-12" />
-                  <div className="flex flex-row place-items-center">
-                    <div>
-                      <MaterialComponent component="Typography" variant="small" className="text-left">
-                        Drag the file or
-                        <MaterialComponent component="Button" className="rounded-full !bg-none !border-none !shadow-none px-2">Browse Files (coming soon)</MaterialComponent>
-                      </MaterialComponent>
-                    </div>
-                  </div>
-                </div>
-              </MaterialComponent>
+            {addedPosts.map((post) => (
+    <PostCard
+      key={post.id}
+      post={post}
+      handleBookmarkClick={() => handleBookmarkClick({postId: post.id, bookmarks, setBookmarks, user})}
+      handleRedirect={handleRedirect}
+    />
+  ))}
 
             </div>
+            <SimplePagination
+        active={addedPage}
+        next={() => handleAddedPageChange(addedPage + 1)}
+        prev={() => handleAddedPageChange(addedPage - 1)}
+        totalPages={Math.ceil(totalAddedPosts / limit)}
+      />
           </div>
         </div>
       </div>

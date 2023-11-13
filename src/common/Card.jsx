@@ -322,6 +322,20 @@ export function PostCard({ post, handleRedirect }) {
             <Icon icon="EyeIcon" className="h-4 w-4" stroke="whitesmoke" />
             {post.post_view}
           </MaterialComponent>
+          {post.status && (
+            <MaterialComponent
+  component="Typography"
+  as="div"
+  variant="small"
+  className="flex gap-3 items-center capitalize"
+  aria-label="post status"
+>
+  {post.status === 'pending' && <Icon icon="EllipsisHorizontalCircleIcon" className="h-4 w-4" stroke="yellow" />}
+  {post.status === 'approved' && <Icon icon="CheckCircleIcon" className="h-4 w-4" stroke="green" />}
+  {post.status === 'declined' && <Icon icon="XCircleIcon" className="h-4 w-4" stroke="red" />}
+  {post.status}
+</MaterialComponent>
+)}
           <MaterialComponent
             component="Typography"
             as="div"
@@ -357,6 +371,7 @@ PostCard.propTypes = {
     icon: PropTypes.shape({
       publicUrl: PropTypes.string,
     }),
+    status: PropTypes.oneOf(['pending', 'approved', 'declined']),
   }).isRequired,
   handleRedirect: PropTypes.func.isRequired,
 };

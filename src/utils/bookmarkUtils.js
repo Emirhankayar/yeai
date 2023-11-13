@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { SV_URL } from "./utils";
 export const handleBookmarkClick = async ({
   postId,
@@ -5,38 +6,37 @@ export const handleBookmarkClick = async ({
   setBookmarks,
   user,
 }) => {
-  const userEmail = user.email; // Change this line
+  // If there's no user, do nothing
+  if (!user) {
+    return;
+  }
+
+  const userEmail = user.email;
   const postIdString = String(postId);
 
   const isBookmarked = bookmarks.includes(postIdString);
-  const endpoint = isBookmarked ? "/removeBookmark" : "/updateBookmark";
-  const method = isBookmarked ? "DELETE" : "PUT";
+  const endpoint = "/toggleBookmark";
+  const method = "put";
 
   try {
-    const response = await fetch(`${SV_URL}${endpoint}`, {
+    const response = await axios({
       method,
+      url: `${SV_URL}${endpoint}`,
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ userEmail, postId: postIdString }), // Send postId as an array
+      data: { userEmail, postId: postIdString },
     });
 
-    if (!response.ok) {
+    if (response.status !== 200) {
       throw new Error("Network response was not ok");
     }
 
+    // Update the state only after the network request is successful
     if (isBookmarked) {
-      setBookmarks((prevBookmarks) => {
-        const newBookmarks = prevBookmarks.filter((id) => id !== postIdString);
-        //console.log('New bookmarks:', newBookmarks);
-        return newBookmarks;
-      });
+      setBookmarks((prevBookmarks) => prevBookmarks.filter((id) => id !== postIdString));
     } else {
-      setBookmarks((prevBookmarks) => {
-        const newBookmarks = [...prevBookmarks, postIdString];
-        //console.log('New bookmarks:', newBookmarks);
-        return newBookmarks;
-      });
+      setBookmarks((prevBookmarks) => [...prevBookmarks, postIdString]);
     }
   } catch (error) {
     console.error("Error updating bookmark:", error);
