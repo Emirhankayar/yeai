@@ -1,30 +1,17 @@
 // utils.js
-import { useEffect, useState } from "react";
 const supabaseUrl = import.meta.env.VITE_DB_URL;
 const supabaseKey = import.meta.env.VITE_DB_KEY;
+
 import { createClient } from "@supabase/supabase-js";
-const supabase = createClient(supabaseUrl, supabaseKey);
+const supabase = createClient(supabaseUrl, supabaseKey ,{
+  auth: {
+    autoRefreshToken: true,
+    persistSession: true,
+    detectSessionInUrl: false
+  }
+})
+// export const SV_URL = import.meta.env.VITE_SV_URL;
+export const SV_URL = 'http://localhost:10000';
 
-export const SV_URL = import.meta.env.VITE_SV_URL;
 
-
-const useSupabaseAuth = () => {
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    const { data: authListener } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        setUser(session ? session.user : null);
-      }
-    );
-
-    // Cleanup the listener
-    return () => {
-      authListener.unsubscribe();
-    };
-  }, []);
-
-  return user;
-};
-
-export { supabase, useSupabaseAuth };
+export { supabase };

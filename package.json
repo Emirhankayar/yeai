@@ -19,7 +19,7 @@
     "@material-tailwind/react": "^2.1.2",
     "@supabase/auth-ui-react": "^0.4.6",
     "@supabase/auth-ui-shared": "^0.1.8",
-    "@supabase/supabase-js": "^2.38.2",
+    "@supabase/supabase-js": "^2.38.4",
     "@tailwindcss/typography": "^0.5.10",
     "axios": "^1.5.1",
     "prop-types": "^15.8.1",

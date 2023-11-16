@@ -1,71 +1,55 @@
-import { createContext, useContext, useEffect, useState } from "react";
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
+import { createContext, useContext, useState, useEffect } from "react";
 import { supabase } from "../utils/utils";
 
-const AuthContext = createContext();
+const AuthContext = createContext({});
 
-export function AuthProvider({ children }) {
+export const useAuth = () => useContext(AuthContext);
+
+const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [session, setSession] = useState(null);
+  const [isLoading, setLoading] = useState(true);
 
   useEffect(() => {
-    const { data: authListener } = supabase.auth.onAuthStateChange(
+    const session = supabase.auth.session;
+    setSession(session);
+    setUser(session?.user ?? null);
+    setLoading(false);
+
+    const authListener = supabase.auth.onAuthStateChange(
       (event, session) => {
+        setSession(session);
         setUser(session?.user ?? null);
       }
     );
 
+    // Clear session when window is closed
+    window.addEventListener('beforeunload', supabase.auth.signOut);
+
     return () => {
       authListener.unsubscribe();
+
+      // Remove the event listener when the component is unmounted
+      window.removeEventListener('beforeunload', supabase.auth.signOut);
     };
   }, []);
 
-  async function signIn(email, password) {
-    try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-
-      if (error) {
-        throw error;
-      }
-
-      // Handle successful sign-in if needed
-    } catch (error) {
-      console.error("Error signing in:", error.message);
-      throw error;
-    }
-  }
-
-  async function signUp(name, email, password) {
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: { name },
-      },
-    });
-
-    if (error) {
-      throw error;
-    }
-  }
-
-  async function signOut() {
+  const signOut = async () => {
     await supabase.auth.signOut();
-  }
+    setUser(null);
+    setSession(null);
+  };
 
   return (
-    <AuthContext.Provider value={{ user, signIn, signUp, signOut }}>
+    <AuthContext.Provider value={{ user, session, signOut, isLoading, id: user?.id }}>
       {children}
     </AuthContext.Provider>
   );
-}
+};
 
 AuthProvider.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-export function useAuth() {
-  return useContext(AuthContext);
-}
+export default AuthProvider;

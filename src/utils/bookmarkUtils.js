@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { SV_URL } from "./utils";
+
 export const handleBookmarkClick = async ({
   postId,
   bookmarks,
@@ -11,7 +12,7 @@ export const handleBookmarkClick = async ({
     return;
   }
 
-  const userEmail = user.email;
+  const userId = user.id;
   const postIdString = String(postId);
 
   const isBookmarked = bookmarks.includes(postIdString);
@@ -25,7 +26,7 @@ export const handleBookmarkClick = async ({
       headers: {
         "Content-Type": "application/json",
       },
-      data: { userEmail, postId: postIdString },
+      data: { userId, postId: postIdString },
     });
 
     if (response.status !== 200) {

@@ -44,6 +44,7 @@ function PromoteCp() {
   const handleSubmit = () => {
     axios
       .post(`${SV_URL}/send-email`, {
+        user_id: user.id,
         email: user.email,
         post_title: toolTitle,
         post_link: toolLink,

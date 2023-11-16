@@ -2,23 +2,27 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-const SV_URL = import.meta.env.VITE_SV_URL;
+import { SV_URL } from "../utils/utils";
 
-export function useBookmarks(user) {
+export function useBookmarks( user ) {
   const [bookmarks, setBookmarks] = useState([]);
+  const [added, setAdded] = useState([]);
 
   useEffect(() => {
     if (user) {
       axios
-        .get(`${SV_URL}/getBookmarks`, { params: { email: user.email } })
+        .get(`${SV_URL}/getBookmarkIds`, { params: { userId: user.id } })
         .then((response) => {
-          setBookmarks(response.data.bookmarks);
+          setBookmarks(response.data.bookmarkedPostIds || []);
+          setAdded(response.data.userAddedPostIds || []);
+          //console.log(response.data);
         })
         .catch((error) => {
-          console.error("Error fetching bookmarks:", error);
+          console.error("Error fetching bookmark IDs:", error);
+          console.log(error.response.data);
         });
     }
   }, [user]);
 
-  return [bookmarks, setBookmarks];
+  return [bookmarks, setBookmarks, added, setAdded];
 }
