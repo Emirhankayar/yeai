@@ -5,15 +5,18 @@ import { CategoryContext } from "../services/CategoryContext";
 import { useAuth } from "../services/AuthContext";
 import { SV_URL } from "../utils/utils";
 import PgTitle from "../common/Title";
+import { SmallSpinner } from "../common/Spinner";
 
 function PromoteCp() {
   const { user } = useAuth();
+  console.log(user.id)
   const categories = useContext(CategoryContext);
   const [toolTitle, setToolTitle] = useState("");
   const [toolLink, setToolLink] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedPrice, setSelectedPrice] = useState("");
   const [toolDescription, setToolDescription] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const options = [
     { label: "Free" },
     { label: "Freemium" },
@@ -42,6 +45,7 @@ function PromoteCp() {
   };
 
   const handleSubmit = () => {
+    setIsLoading(true); // Set isLoading to true at the start
     axios
       .post(`${SV_URL}/send-email`, {
         user_id: user.id,
@@ -54,11 +58,14 @@ function PromoteCp() {
       })
       .then((response) => {
         console.log(response.data);
+        setIsLoading(false); // Set isLoading to false once the request is complete
       })
       .catch((error) => {
         console.error(error);
+        setIsLoading(false); // Also set isLoading to false if there's an error
       });
   };
+
 
   return (
 
@@ -96,17 +103,19 @@ function PromoteCp() {
           <MaterialComponent
             component="Select"
             label="Select Category"
-            labelProps={{ className: "text-white" }}
-            menuProps={{ className: "bg-gray-200" }}
+            labelProps={{ className: "!text-white" }}
+            menuProps={{ className: "!bg-gray-300 text-gray-900" }}
             size="md"
             containerProps={{ className: "min-w-[50px]" }}
+            className="text-white"
             onChange={handleToolCategoryChange}
           >
             {categories.map((category, index) => (
               <MaterialComponent
                 key={index}
                 component="Option"
-                className="bg-transparent gap-2 hover:bg-emerald-600 duration-300 ease-in-out"
+                className="gap-2 bg-transparent hover:!bg-emerald-600 duration-300 ease-in-out active:!bg-emerald-700"
+
                 value={category.original}
               >
                 <div className="flex gap-2 items-center">
@@ -125,6 +134,7 @@ function PromoteCp() {
             name="toolPrice"
             labelProps={{ className: "text-white" }}
             menuProps={{ className: "bg-gray-200" }}
+            className="text-white"
             size="md"
             containerProps={{ className: "min-w-[50px]" }}
             onChange={handleToolPriceChange}
@@ -133,7 +143,7 @@ function PromoteCp() {
               <MaterialComponent
                 key={index}
                 component="Option"
-                className="bg-transparent gap-2 hover:bg-emerald-600 duration-300 ease-in-out"
+                className="gap-2 bg-transparent hover:!bg-emerald-600 duration-300 ease-in-out active:!bg-emerald-700"
                 value={option.label}
               >
                 <div className="flex gap-2 items-center">{option.label}</div>
@@ -154,17 +164,18 @@ function PromoteCp() {
             className="text-white"
             onChange={handleToolDescriptionChange}
           />
-          <MaterialComponent
-            htmlFor="submit"
-            component="Button"
-            id="submit"
-            name="submit"
 
-            onClick={handleSubmit} 
-            fullWidth
-          >
-            Submit
-          </MaterialComponent>
+<MaterialComponent
+  htmlFor="submit"
+  component="Button"
+  id="submit"
+  name="submit"
+  onClick={handleSubmit} 
+  fullWidth
+  disabled={isLoading}
+>
+  {isLoading ? <SmallSpinner /> : "Submit"}
+</MaterialComponent>
         </div>
       </div>
 

@@ -8,6 +8,7 @@ import { SimplePagination } from "../common/Pagination";
 import axios from "axios";
 import { SV_URL } from "../utils/utils";
 import { useAuth } from "../services/AuthContext";
+import { debounce } from "lodash";
 
 export default function AccountPg() {
   const { user } = useAuth();
@@ -19,31 +20,36 @@ export default function AccountPg() {
   const [addedPage, setAddedPage] = useState(1);
   const [addedTotalPages, setAddedTotalPages] = useState(1);
 
+  const fetchAddedPosts = debounce((userId, page) => {
+    axios
+      .get(`${SV_URL}/added-posts/${userId}?page=${page}`)
+      .then((response) => {
+        const data = response.data;
+        if (Array.isArray(data.addedPosts)) {
+          setAddedPosts(data.addedPosts);
+          setAddedTotalPages(data.totalPages);
+        }
+      });
+  }, 500); // 500ms delay
+  
+  const fetchBookmarkedPosts = debounce((bookmarksString, page) => {
+    axios
+      .get(`${SV_URL}/bookmarked-posts/${bookmarksString}?page=${page}`)
+      .then((response) => {
+        const data = response.data;
+        if (Array.isArray(data.bookmarkedPosts)) {
+          setBookmarkedPosts(data.bookmarkedPosts);
+          setBookmarkedTotalPages(data.totalPages);
+        }
+      });
+  }, 500); // 500ms delay
   useEffect(() => {
     if (user) {
-      axios
-        .get(`${SV_URL}/added-posts/${user.id}?page=${addedPage}`)
-        .then((response) => {
-          const data = response.data;
-          if (Array.isArray(data.addedPosts)) {
-            setAddedPosts(data.addedPosts);
-            setAddedTotalPages(data.totalPages);
-          }
-        });
-
+      fetchAddedPosts(user.id, addedPage);
+  
       if (bookmarks.length > 0) {
         const bookmarksString = bookmarks.join(",");
-        axios
-          .get(
-            `${SV_URL}/bookmarked-posts/${bookmarksString}?page=${bookmarkedPage}`
-          )
-          .then((response) => {
-            const data = response.data;
-            if (Array.isArray(data.bookmarkedPosts)) {
-              setBookmarkedPosts(data.bookmarkedPosts);
-              setBookmarkedTotalPages(data.totalPages);
-            }
-          });
+        fetchBookmarkedPosts(bookmarksString, bookmarkedPage);
       }
     }
   }, [user, addedPage, bookmarkedPage, bookmarks]);
@@ -157,6 +163,7 @@ export default function AccountPg() {
                         user,
                       })
                     }
+                    showButtons={false}
                     handleRedirect={handleRedirect}
                     favicon={post.icon} // Pass the favicon URL as a prop
                   />

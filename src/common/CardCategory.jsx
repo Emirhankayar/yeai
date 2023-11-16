@@ -29,7 +29,7 @@ export function CategoryCard({ categories, handleCategoryClick, handleRefresh, s
         unmount: { y: 25, opacity: 0 },
       }}
       containerProps={{ className: "min-w-[50px]" }}
-      className="text-gray-500"
+      className="text-white"
       value={formattedCategoryName}
     >
       {categories.map((category, index) => (

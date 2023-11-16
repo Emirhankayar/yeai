@@ -14,7 +14,7 @@ import { formatDate } from "../utils/dateUtils";
 import axios from "axios";
 import { SV_URL } from "../utils/utils";
 import "../index.css";
-export function PostCard({ post, handleRedirect }) {
+export function PostCard({ post, handleRedirect, showButtons = true }) {
   const { user } = useAuth();
   const { bookmarks, setBookmarks, handleBookmarkClick } =
     useContext(BookmarkContext);
@@ -27,7 +27,7 @@ export function PostCard({ post, handleRedirect }) {
   const [message, setMessage] = useState("");
   const [email, setEmail] = useState("");
 
-  // Add these functions in your PostCard component
+
   const handleOpenModal = () => {
     setModalOpen(true);
   };
@@ -105,6 +105,9 @@ export function PostCard({ post, handleRedirect }) {
 
   // Refactored Buttons component
   const Buttons = () => {
+    if (!showButtons) {
+      return null;
+    }
     const handleButtonClick = (originalHandler, message, loggedInHandler) => {
       if (!user) {
         alert(message);
@@ -387,6 +390,7 @@ PostCard.propTypes = {
     }),
     status: PropTypes.oneOf(["pending", "approved", "declined"]),
   }).isRequired,
+  showButtons: PropTypes.bool,
   handleRedirect: PropTypes.func.isRequired,
 };
 
