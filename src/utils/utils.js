@@ -10,8 +10,7 @@ const supabase = createClient(supabaseUrl, supabaseKey ,{
     detectSessionInUrl: false
   }
 })
-// export const SV_URL = import.meta.env.VITE_SV_URL;
-export const SV_URL = 'http://localhost:10000';
+export const SV_URL = import.meta.env.VITE_SV_URL;
 
 
 export { supabase };
