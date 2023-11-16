@@ -1,16 +1,10 @@
-import React from "react";
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "../utils/utils";
 import MaterialComponent from "../common/Material";
-import { useAuth } from "../services/AuthContext";
 
 export default function SignInFormPage() {
-  const { user } = useAuth();
 
-  React.useEffect(() => {
-    console.log(user);
-  }, [user]);
   return (
     <div className="container grid grid-cols-1 place-items-center mx-auto p-10">
       <div>

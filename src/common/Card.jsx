@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { BookmarkContext } from "../services/BookmarkContext";
 import { Link } from "react-router-dom";
 import MaterialComponent from "./Material";
-import { UserContext } from "../services/UserContext";
+import { useAuth } from "../services/AuthContext";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import { truncateDescription } from "../utils/truncateUtils";
@@ -13,9 +13,9 @@ import updatePostView from "../utils/postViewUtils";
 import { formatDate } from "../utils/dateUtils";
 import axios from "axios";
 import { SV_URL } from "../utils/utils";
-import "../index.css"
+import "../index.css";
 export function PostCard({ post, handleRedirect }) {
-  const user = useContext(UserContext);
+  const { user } = useAuth();
   const { bookmarks, setBookmarks, handleBookmarkClick } =
     useContext(BookmarkContext);
 
@@ -188,7 +188,7 @@ export function PostCard({ post, handleRedirect }) {
 
           <MaterialComponent component="DialogBody">
             <form onSubmit={handleSubmitReport} className="space-y-4">
-            <MaterialComponent
+              <MaterialComponent
                 component="Input"
                 label="Your Email"
                 className="text-white"
@@ -324,18 +324,32 @@ export function PostCard({ post, handleRedirect }) {
           </MaterialComponent>
           {post.status && (
             <MaterialComponent
-  component="Typography"
-  as="div"
-  variant="small"
-  className="flex gap-3 items-center capitalize"
-  aria-label="post status"
->
-  {post.status === 'pending' && <Icon icon="EllipsisHorizontalCircleIcon" className="h-4 w-4" stroke="yellow" />}
-  {post.status === 'approved' && <Icon icon="CheckCircleIcon" className="h-4 w-4" stroke="green" />}
-  {post.status === 'declined' && <Icon icon="XCircleIcon" className="h-4 w-4" stroke="red" />}
-  {post.status}
-</MaterialComponent>
-)}
+              component="Typography"
+              as="div"
+              variant="small"
+              className="flex gap-3 items-center capitalize"
+              aria-label="post status"
+            >
+              {post.status === "pending" && (
+                <Icon
+                  icon="EllipsisHorizontalCircleIcon"
+                  className="h-4 w-4"
+                  stroke="yellow"
+                />
+              )}
+              {post.status === "approved" && (
+                <Icon
+                  icon="CheckCircleIcon"
+                  className="h-4 w-4"
+                  stroke="green"
+                />
+              )}
+              {post.status === "declined" && (
+                <Icon icon="XCircleIcon" className="h-4 w-4" stroke="red" />
+              )}
+              {post.status}
+            </MaterialComponent>
+          )}
           <MaterialComponent
             component="Typography"
             as="div"
@@ -371,7 +385,7 @@ PostCard.propTypes = {
     icon: PropTypes.shape({
       publicUrl: PropTypes.string,
     }),
-    status: PropTypes.oneOf(['pending', 'approved', 'declined']),
+    status: PropTypes.oneOf(["pending", "approved", "declined"]),
   }).isRequired,
   handleRedirect: PropTypes.func.isRequired,
 };

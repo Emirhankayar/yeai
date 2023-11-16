@@ -2,7 +2,7 @@ import axios from "axios";
 import { useState, useEffect, useContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
-import { UserContext } from "../services/UserContext";
+import { useAuth } from "../services/AuthContext";
 import { BookmarkContext } from "../services/BookmarkContext";
 
 import { formatCategoryName } from "../utils/categoryUtils";
@@ -32,7 +32,7 @@ const CategoryList = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [dataLength, setDataLength] = useState(0);
-  const user = useContext(UserContext);
+  const user = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1); // New state variable for the current page
   const [totalPosts, setTotalPosts] = useState(0);
@@ -207,7 +207,10 @@ const CategoryList = () => {
           name="keywords"
           content={`tools, ${formattedCategoryName}, posts`}
         />
-        <link rel="canonical" href={`https://yeai.tech${location.pathname}${location.search}`} />
+        <link
+          rel="canonical"
+          href={`https://yeai.tech${location.pathname}${location.search}`}
+        />
 
         <meta
           property="og:title"

@@ -2,9 +2,12 @@ import { SV_URL } from "./utils";
 import axios from "axios";
 
 export default async function updatePostView(post) {
+  // Use post.post_id if post.id is not available
+  const postId = post.id || post.post_id;
+
   try {
     const response = await axios.put(`${SV_URL}/updatePostView`, {
-      postId: post.id,
+      postId: postId,
       post_view: post.post_view,
     });
 

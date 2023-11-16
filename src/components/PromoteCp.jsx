@@ -2,12 +2,12 @@ import { useState, useContext } from "react";
 import MaterialComponent from "../common/Material";
 import axios from "axios";
 import { CategoryContext } from "../services/CategoryContext";
-import { UserContext } from "../services/UserContext";
+import { useAuth } from "../services/AuthContext";
 import { SV_URL } from "../utils/utils";
 import PgTitle from "../common/Title";
 
 function PromoteCp() {
-  const user = useContext(UserContext);
+  const { user } = useAuth();
   const categories = useContext(CategoryContext);
   const [toolTitle, setToolTitle] = useState("");
   const [toolLink, setToolLink] = useState("");
