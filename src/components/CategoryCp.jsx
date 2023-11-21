@@ -9,7 +9,6 @@ import { formatCategoryName } from "../utils/categoryUtils";
 import { handleRedirect } from "../utils/redirectUtils";
 
 import MaterialComponent from "../common/Material";
-import { SkeletonPost } from "../common/Skeleton";
 import { PostCard } from "../common/Card";
 import { CategoryContext } from "../services/CategoryContext";
 import DropdownComponent from "../common/Dropdown";
@@ -18,6 +17,7 @@ import { CategoryCard } from "../common/CardCategory";
 import SearchBar from "../common/SearchBar";
 import PgTitle from "../common/Title";
 import FilterTag from "../common/FilterTag";
+import LoadingPosts from "../common/LoadingPosts";
 
 import { Helmet } from "react-helmet";
 
@@ -128,10 +128,6 @@ const CategoryList = () => {
     setSelectedCategory("");
     navigate(`${location.pathname}?category=${selectedCategory}`);
   };
-
-  const renderLoadingPosts = Array.from({ length: dataLength }).map(
-    (_, index) => <SkeletonPost key={index} />
-  );
 
   const handleFilterChange = (filterOption) => {
     if (filterOption) {
@@ -326,7 +322,7 @@ const CategoryList = () => {
 
       {isLoading ? (
         <div className="container gap-10 grid grid-cols-1">
-          {renderLoadingPosts}
+            <LoadingPosts count={dataLength} />
         </div>
       ) : (
         <>

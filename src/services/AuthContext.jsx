@@ -14,22 +14,22 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     const session = supabase.auth.session;
     setSession(session);
-    setUser(session?.user ?? null);
+    setUser(user => session?.user?.id !== user?.id ? session?.user : user);
     setLoading(false);
-
+  
     const authListener = supabase.auth.onAuthStateChange(
       (event, session) => {
+        setUser(user => session?.user?.id !== user?.id ? session?.user : user);
         setSession(session);
-        setUser(session?.user ?? null);
       }
     );
-
+  
     // Clear session when window is closed
     window.addEventListener('beforeunload', supabase.auth.signOut);
-
+  
     return () => {
       authListener.unsubscribe();
-
+  
       // Remove the event listener when the component is unmounted
       window.removeEventListener('beforeunload', supabase.auth.signOut);
     };

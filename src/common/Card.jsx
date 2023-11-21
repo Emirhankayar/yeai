@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import Icon from "./Icons";
 import PropTypes from "prop-types";
 import { BookmarkContext } from "../services/BookmarkContext";
@@ -14,7 +14,7 @@ import { formatDate } from "../utils/dateUtils";
 import axios from "axios";
 import { SV_URL } from "../utils/utils";
 import "../index.css";
-export function PostCard({ post, handleRedirect, showButtons = true }) {
+function PostCard({ post, handleRedirect, showButtons = true }) {
   const { user } = useAuth();
   const { bookmarks, setBookmarks, handleBookmarkClick } =
     useContext(BookmarkContext);
@@ -393,5 +393,6 @@ PostCard.propTypes = {
   showButtons: PropTypes.bool,
   handleRedirect: PropTypes.func.isRequired,
 };
+const MemoizedPostCard = React.memo(PostCard);
 
-export default { PostCard };
+export  { MemoizedPostCard as PostCard };
