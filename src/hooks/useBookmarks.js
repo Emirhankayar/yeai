@@ -8,7 +8,9 @@ import { SV_URL } from "../utils/utils";
 export function useBookmarks(user) {
   const [bookmarks, setBookmarks] = useState([]);
   const [added, setAdded] = useState([]);
+  const [loading, setLoading] = useState(true);
   const prevUserRef = useRef();
+
   useEffect(() => {
     if (!isEqual(user, prevUserRef.current)) {
       prevUserRef.current = user;
@@ -20,6 +22,7 @@ export function useBookmarks(user) {
           .then((response) => {
             setBookmarks(response.data.bookmarkedPostIds || []);
             setAdded(response.data.userAddedPostIds || []);
+            setLoading(false);
           })
           .catch((error) => {
             if (axios.isCancel(error)) {
@@ -37,5 +40,5 @@ export function useBookmarks(user) {
     }
   }, [user]);
 
-  return [bookmarks, setBookmarks, added, setAdded];
+  return [bookmarks, setBookmarks, added, setAdded, loading];
 }

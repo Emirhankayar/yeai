@@ -3,6 +3,8 @@ import { ThemeProvider } from "@material-tailwind/react";
 import { theme } from "./utils/customTheme";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import CustomSpinner from "./common/Spinner";
+import { QueryClient, QueryClientProvider } from 'react-query';
+
 const Navbar = React.lazy(() => import("./common/Navbar"));
 const MainPg = React.lazy(() => import("./pages/MainPg"));
 const CategoryPg = React.lazy(() => import("./pages/CategoryPg"));
@@ -70,6 +72,8 @@ export function App() {
   const { captchaCompleted, handleCaptchaCompletion } =
     useContext(CaptchaContext);
   const categories = useFetchCategories();
+  const queryClient = new QueryClient();
+
 
   if (!captchaCompleted) {
     return (
@@ -84,6 +88,8 @@ export function App() {
   return (
     <AuthProvider>
       <ThemeProvider value={theme}>
+      <QueryClientProvider client={queryClient}>
+
         <BookmarkProvider>
           <CategoryContext.Provider value={categories}>
             <React.Suspense fallback={<CustomSpinner />}>
@@ -95,6 +101,7 @@ export function App() {
             </React.Suspense>
           </CategoryContext.Provider>
         </BookmarkProvider>
+        </QueryClientProvider>
       </ThemeProvider>
     </AuthProvider>
   );

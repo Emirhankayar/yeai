@@ -129,18 +129,18 @@ function PostCard({ post, handleRedirect, showButtons = true }) {
     const labelProps = {
       variant: "small",
       color: "white",
-      className: "absolute bottom-0 translate-y-5 -translate-x-0 font-normal",
+      className: "absolute top-0 translate-y-4 -translate-x-16 font-normal",
     };
 
     return (
-      <SpeedDial placement="left" offset={{ crossAxis: -60 }}>
+      <SpeedDial>
         <SpeedDialHandler>
           <IconButton className="rounded-full h-5 w-5">
             <PlusIcon className="h-5 w-5 transition-transform group-hover:rotate-45" />
           </IconButton>
         </SpeedDialHandler>
 
-        <SpeedDialContent className="gap-16 flex-row h-60 px-10">
+        <SpeedDialContent className="flex-col bg-gray-900 bg-opacity-60 rounded-lg backdrop-blur-sm border-[0.5px] border-gray-600 w-36 items-end">
           <SpeedDialAction className="relative bg-transparent border-none">
             <Link
               onClick={() => handleLinkClick(post.post_link)}
