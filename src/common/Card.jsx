@@ -14,6 +14,17 @@ import { formatDate } from "../utils/dateUtils";
 import axios from "axios";
 import { SV_URL } from "../utils/utils";
 import "../index.css";
+
+import {
+  IconButton,
+  SpeedDial,
+  SpeedDialHandler,
+  SpeedDialContent,
+  SpeedDialAction,
+  Typography,
+} from "@material-tailwind/react";
+import { PlusIcon } from "@heroicons/react/24/outline";
+
 function PostCard({ post, handleRedirect, showButtons = true }) {
   const { user } = useAuth();
   const { bookmarks, setBookmarks, handleBookmarkClick } =
@@ -26,7 +37,6 @@ function PostCard({ post, handleRedirect, showButtons = true }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [email, setEmail] = useState("");
-
 
   const handleOpenModal = () => {
     setModalOpen(true);
@@ -116,44 +126,60 @@ function PostCard({ post, handleRedirect, showButtons = true }) {
         originalHandler && originalHandler();
       }
     };
+    const labelProps = {
+      variant: "small",
+      color: "white",
+      className: "absolute bottom-0 translate-y-5 -translate-x-0 font-normal",
+    };
 
     return (
-      <div className="flex flex-row lg:flex-col items-start justify-center gap-7 mb-2">
-        <div className="order-1 lg:order-2">
-          <Link
-            onClick={() => handleLinkClick(post.post_link)}
-            aria-label={`Open ${post.post_title} in a new tab.`}
-          >
-            <ButtonComponent icon="ArrowUpRightIcon" />
-          </Link>
-        </div>
-        <div className="order-2 lg:order-2">
-          <ButtonComponent
-            icon="ExclamationCircleIcon"
-            fill="none"
-            color="red"
-            clickHandler={() =>
-              handleButtonClick(
-                null,
-                "Sign up / Log in to use report abuse.",
-                handleOpenModal
-              )
-            }
-          />
-        </div>
-        <div className="order-2 lg:order-1">
-          <ButtonComponent
-            icon="HeartIcon"
-            fill={isBookmarked ? "white" : "none"}
-            clickHandler={() =>
-              handleButtonClick(
-                handleBookmarkButtonClick,
-                "Sign Up / Log in to use Bookmarks."
-              )
-            }
-          />
-        </div>
-      </div>
+      <SpeedDial placement="left" offset={{ crossAxis: -60 }}>
+        <SpeedDialHandler>
+          <IconButton className="rounded-full h-5 w-5">
+            <PlusIcon className="h-5 w-5 transition-transform group-hover:rotate-45" />
+          </IconButton>
+        </SpeedDialHandler>
+
+        <SpeedDialContent className="gap-16 flex-row h-60 px-10">
+          <SpeedDialAction className="relative bg-transparent border-none">
+            <Link
+              onClick={() => handleLinkClick(post.post_link)}
+              aria-label={`Open ${post.post_title} in a new tab.`}
+            >
+              <ButtonComponent icon="ArrowUpRightIcon" />
+            </Link>
+            <Typography {...labelProps}>Visit</Typography>
+          </SpeedDialAction>
+          <SpeedDialAction className="relative bg-transparent border-none">
+            <ButtonComponent
+              icon="HeartIcon"
+              fill={isBookmarked ? "white" : "none"}
+              clickHandler={() =>
+                handleButtonClick(
+                  handleBookmarkButtonClick,
+                  "Sign Up / Log in to use Bookmarks."
+                )
+              }
+            />
+            <Typography {...labelProps}>Bookmark</Typography>
+          </SpeedDialAction>
+          <SpeedDialAction className="relative bg-transparent border-none">
+            <ButtonComponent
+              icon="ExclamationCircleIcon"
+              fill="none"
+              color="red"
+              clickHandler={() =>
+                handleButtonClick(
+                  null,
+                  "Sign up / Log in to use report abuse.",
+                  handleOpenModal
+                )
+              }
+            />
+            <Typography {...labelProps}>Report</Typography>
+          </SpeedDialAction>
+        </SpeedDialContent>
+      </SpeedDial>
     );
   };
 
@@ -162,7 +188,7 @@ function PostCard({ post, handleRedirect, showButtons = true }) {
       component="Card"
       variant="gradient"
       color="transparent"
-      className="border-2 border-gray-800 lg:flex-row justify-between lg:max-w-[900px]"
+      className="border-2 border-gray-800 lg:flex-row justify-between gap-0 lg:min-w-[48rem]"
     >
       <MaterialComponent
         component="Dialog"
@@ -218,7 +244,7 @@ function PostCard({ post, handleRedirect, showButtons = true }) {
         </div>
       </MaterialComponent>
       <MaterialComponent component="CardBody" className="max-w-[600px]">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-row items-start justify-between w-full">
           <MaterialComponent
             component="Typography"
             variant="h6"
@@ -239,9 +265,7 @@ function PostCard({ post, handleRedirect, showButtons = true }) {
             />
             {post.post_title}
           </MaterialComponent>
-          <div className=" lg:hidden">
-            <Buttons />
-          </div>
+          <Buttons />
         </div>
         <div
           className={`overflow-hidden animation-text-height duration-500 ease-in-out ${
@@ -276,14 +300,14 @@ function PostCard({ post, handleRedirect, showButtons = true }) {
 
       <MaterialComponent
         component="CardFooter"
-        className=" pt-0 lg:pt-5 flex items-start justify-between gap-6 lg:w-[300px]"
+        className=" pt-0 lg:pt-5 flex items-start justify-between gap-6 lg:min-w-[200px]"
       >
         <div className="flex flex-col lg:flex-col items-start justify-start gap-4">
           <MaterialComponent
             component="Typography"
             as="div"
             variant="small"
-            className="flex shrink- gap-3 items-center"
+            className="flex shrink-0 gap-3 items-center"
             aria-label="Post Category"
           >
             <div className="flex-shrink-0 h-4 w-4">
@@ -364,10 +388,6 @@ function PostCard({ post, handleRedirect, showButtons = true }) {
             {formatDate(post.post_added)}
           </MaterialComponent>
         </div>
-
-        <div className="hidden lg:block">
-          <Buttons />
-        </div>
       </MaterialComponent>
     </MaterialComponent>
   );
@@ -395,4 +415,4 @@ PostCard.propTypes = {
 };
 const MemoizedPostCard = React.memo(PostCard);
 
-export  { MemoizedPostCard as PostCard };
+export { MemoizedPostCard as PostCard };

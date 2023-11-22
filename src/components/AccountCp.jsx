@@ -6,6 +6,7 @@ import { SV_URL } from "../utils/utils";
 import { useAuth } from "../services/AuthContext";
 import PostsSection from "../common/PostsSection";
 import { ButtonGroup, Button } from "@material-tailwind/react";
+import PgTitle from "../common/Title";
 
 export default function AccountPg() {
   const { user } = useAuth();
@@ -71,11 +72,11 @@ export default function AccountPg() {
   }, [fetchPosts]);
 
   return (
-    <div className="container px-10 place-content-center grid mt-20">
-      <MaterialComponent component="Typography" variant="h1" color="white">
-        Account
-      </MaterialComponent>
-      <div className="grid grid-cols-1 gap-20 mt-10">
+    <div className="container mx-auto px-10 lg:px-0 max-w-3xl">
+      <div className="flex flex-row items-center justify-start mb-10">
+        <PgTitle text="Account"/>
+      </div>
+      <div className="flex flex-col lg:flex-row md:flex-row gap-5 mb-10">
         <ButtonGroup variant="text">
           <Button
             className={`rounded-none ${
@@ -93,7 +94,7 @@ export default function AccountPg() {
           </Button>
         </ButtonGroup>
 
-
+        </div>
           <MaterialComponent
             component="Typography"
             variant="h3"
@@ -120,7 +121,7 @@ export default function AccountPg() {
                 setPage={setAddedPage}
               />
             )}
-          </div>
+          
         </div>
 
     </div>
