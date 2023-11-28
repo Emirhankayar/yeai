@@ -1,9 +1,9 @@
-import React, { useContext } from "react";
+import React from "react";
 import { useAuth } from "../services/AuthContext";
 import "../index.css";
 import PropTypes from "prop-types";
 import Icon from "./Icons";
-import { CategoryContext } from "../services/CategoryContext";
+import { useCategories } from "../hooks/useCategories";
 import SignInFormPage from "../components/SignInCp";
 
 import {
@@ -22,7 +22,8 @@ import {
 import MaterialComponent from "./Material";
 
 function NavListMenu() {
-  const categories = useContext(CategoryContext); // access the categories
+  const { categories, isLoading } = useCategories();
+
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
 
@@ -37,6 +38,9 @@ function NavListMenu() {
   NavList.propTypes = {
     user: PropTypes.object,
   };
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
   const renderItems = categories.map((category, index) => {
     return (
       <MenuItem

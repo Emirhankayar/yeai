@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 import { createContext, useContext, useState, useEffect } from "react";
 import { supabase } from "../utils/utils";
 
@@ -12,26 +12,26 @@ const AuthProvider = ({ children }) => {
   const [isLoading, setLoading] = useState(true);
 
   useEffect(() => {
-    const session = supabase.auth.session;
+    const session = supabase.auth.getSession;
     setSession(session);
-    setUser(user => session?.user?.id !== user?.id ? session?.user : user);
+    setUser((user) => (session?.user?.id !== user?.id ? session?.user : user));
     setLoading(false);
-  
-    const authListener = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        setUser(user => session?.user?.id !== user?.id ? session?.user : user);
-        setSession(session);
-      }
-    );
-  
+
+    const authListener = supabase.auth.onAuthStateChange((event, session) => {
+      setUser((user) =>
+        session?.user?.id !== user?.id ? session?.user : user
+      );
+      setSession(session);
+    });
+
     // Clear session when window is closed
-    window.addEventListener('beforeunload', supabase.auth.signOut);
-  
+    window.addEventListener("beforeunload", supabase.auth.signOut);
+
     return () => {
       authListener.unsubscribe();
-  
+
       // Remove the event listener when the component is unmounted
-      window.removeEventListener('beforeunload', supabase.auth.signOut);
+      window.removeEventListener("beforeunload", supabase.auth.signOut);
     };
   }, []);
 
@@ -40,9 +40,11 @@ const AuthProvider = ({ children }) => {
     setUser(null);
     setSession(null);
   };
-
+  console.log(session);
   return (
-    <AuthContext.Provider value={{ user, session, signOut, isLoading, id: user?.id }}>
+    <AuthContext.Provider
+      value={{ user, session, signOut, isLoading, id: user?.id }}
+    >
       {children}
     </AuthContext.Provider>
   );

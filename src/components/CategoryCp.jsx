@@ -10,7 +10,6 @@ import { handleRedirect } from "../utils/redirectUtils";
 
 import MaterialComponent from "../common/Material";
 import { PostCard } from "../common/Card";
-import { CategoryContext } from "../services/CategoryContext";
 import DropdownComponent from "../common/Dropdown";
 import { SimplePagination } from "../common/Pagination";
 import { CategoryCard } from "../common/CardCategory";
@@ -18,18 +17,18 @@ import SearchBar from "../common/SearchBar";
 import PgTitle from "../common/Title";
 import FilterTag from "../common/FilterTag";
 import LoadingPosts from "../common/LoadingPosts";
-
+import useCategories from "../hooks/useCategories";
 import { Helmet } from "react-helmet";
 
 import { SV_URL } from "../utils/utils";
 
 const CategoryList = () => {
-  const categories = useContext(CategoryContext);
+  const { categories, isLoading } = useCategories();
   const navigate = useNavigate();
   const location = useLocation();
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [categoryPosts, setCategoryPosts] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [dataLength, setDataLength] = useState(0);
   const user = useAuth();
@@ -73,7 +72,7 @@ const CategoryList = () => {
     setSelectedCategory(category);
     setPage(parseInt(page));
 
-    setIsLoading(true);
+    setLoading(true);
     axios
       .get(
         `${SV_URL}/postsByCategory?categoryName=${category}&offset=${
@@ -88,11 +87,11 @@ const CategoryList = () => {
         setCategoryPosts(res.data.posts);
         setTotalPosts(res.data.totalPosts);
         setDataLength(res.data.posts.length);
-        setIsLoading(false);
+        setLoading(false);
       })
       .catch((err) => {
         console.log(err);
-        setIsLoading(false);
+        setLoading(false);
       });
   }, [location.search, searchTerm, selectedOrder, selectedFilter]);
 
@@ -184,7 +183,9 @@ const CategoryList = () => {
   if (selectedCategory !== null) {
     formattedCategoryName = formatCategoryName(selectedCategory);
   }
-
+  if (isLoading) {
+    return (<div>Loading...</div>)
+  }
   return (
     <div className="container mx-auto px-10 lg:px-0 max-w-3xl">
       <Helmet>
@@ -320,7 +321,7 @@ const CategoryList = () => {
         />
       </div>
 
-      {isLoading ? (
+      {loading ? (
         <div className="container gap-10 grid grid-cols-1">
             <LoadingPosts count={dataLength} />
         </div>

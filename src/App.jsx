@@ -16,10 +16,9 @@ const Footer = React.lazy(() => import("./common/Footer"));
 import ApproveTool from "./common/Approve";
 import { Turnstile } from "@marsidev/react-turnstile";
 import { BookmarkProvider } from "./services/BookmarkContext";
-import { CategoryContext } from "./services/CategoryContext";
+import { CategoryProvider } from "./hooks/useCategories";
 import { CaptchaContext } from "./services/CaptchaContext";
 import PrivateRoute from "./services/PrivateRoute";
-import useFetchCategories from "./hooks/useCategories";
 
 import AuthProvider from "./services/AuthContext";
 
@@ -71,9 +70,7 @@ const router = createBrowserRouter([
 export function App() {
   const { captchaCompleted, handleCaptchaCompletion } =
     useContext(CaptchaContext);
-  const categories = useFetchCategories();
-  const queryClient = new QueryClient();
-
+    const queryClient = new QueryClient();
 
   if (!captchaCompleted) {
     return (
@@ -91,7 +88,7 @@ export function App() {
       <QueryClientProvider client={queryClient}>
 
         <BookmarkProvider>
-          <CategoryContext.Provider value={categories}>
+          <CategoryProvider>
             <React.Suspense fallback={<CustomSpinner />}>
               <Navbar />
               <div className="min-h-screen">
@@ -99,8 +96,9 @@ export function App() {
               </div>
               <Footer />
             </React.Suspense>
-          </CategoryContext.Provider>
+          </CategoryProvider>
         </BookmarkProvider>
+
         </QueryClientProvider>
       </ThemeProvider>
     </AuthProvider>

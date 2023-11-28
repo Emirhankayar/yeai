@@ -1,22 +1,23 @@
-import { useState, useContext } from "react";
+import { useState } from "react";
 import MaterialComponent from "../common/Material";
 import axios from "axios";
-import { CategoryContext } from "../services/CategoryContext";
 import { useAuth } from "../services/AuthContext";
 import { SV_URL } from "../utils/utils";
 import PgTitle from "../common/Title";
 import { SmallSpinner } from "../common/Spinner";
+import { useCategories } from "../hooks/useCategories";
 
 function PromoteCp() {
   const { user } = useAuth();
-  console.log(user.id)
-  const categories = useContext(CategoryContext);
-  const [toolTitle, setToolTitle] = useState("");
-  const [toolLink, setToolLink] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedPrice, setSelectedPrice] = useState("");
-  const [toolDescription, setToolDescription] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const { categories, isLoading } = useCategories();
+  const [formValues, setFormValues] = useState({
+    toolTitle: "",
+    toolLink: "",
+    selectedCategory: "",
+    selectedPrice: "",
+    toolDescription: "",
+  });
+  const [loading, setLoading] = useState(false);
   const options = [
     { label: "Free" },
     { label: "Freemium" },
@@ -24,47 +25,45 @@ function PromoteCp() {
     { label: "Paid" },
   ];
 
-  const handleToolTitleChange = (event) => {
-    setToolTitle(event.target.value);
-  };
-
-  const handleToolLinkChange = (event) => {
-    setToolLink(event.target.value);
-  };
-
-  const handleToolCategoryChange = (category) => {
-    setSelectedCategory(category);
-  };
-
-  const handleToolPriceChange = (option) => {
-    setSelectedPrice(option);
-  };
-
-  const handleToolDescriptionChange = (event) => {
-    setToolDescription(event.target.value);
+  const handleInputChange = (event, name) => {
+    if (event.target) { // This is an Input component
+      setFormValues({
+        ...formValues,
+        [event.target.name]: event.target.value,
+      });
+    } else { // This is a Select component
+      setFormValues({
+        ...formValues,
+        [name]: event,
+      });
+    }
   };
 
   const handleSubmit = () => {
-    setIsLoading(true); // Set isLoading to true at the start
+    setLoading(true); // Set loading to true at the start
     axios
       .post(`${SV_URL}/send-email`, {
         user_id: user.id,
         email: user.email,
-        post_title: toolTitle,
-        post_link: toolLink,
-        post_category: selectedCategory,
-        post_price: selectedPrice,
-        post_description: toolDescription,
+        post_title: formValues.toolTitle,
+        post_link: formValues.toolLink,
+        post_category: formValues.selectedCategory,
+        post_price: formValues.selectedPrice,
+        post_description: formValues.toolDescription,
       })
       .then((response) => {
         console.log(response.data);
-        setIsLoading(false); // Set isLoading to false once the request is complete
+        setLoading(false); // Set loading to false once the request is complete
       })
       .catch((error) => {
         console.error(error);
-        setIsLoading(false); // Also set isLoading to false if there's an error
+        setLoading(false); // Also set loading to false if there's an error
       });
   };
+
+  if (isLoading) {
+    return(<div>Loading...</div>)
+  }
 
 
   return (
@@ -84,9 +83,9 @@ function PromoteCp() {
             id="toolTitle"
             color="white"
             name="toolTitle"
-            value={toolTitle}
+            value={formValues.toolTitle}
             containerProps={{ className: "min-w-[50px]" }}
-            onChange={handleToolTitleChange}
+            onChange={handleInputChange}
           />
           <MaterialComponent
             htmlFor="toolLink"
@@ -95,10 +94,10 @@ function PromoteCp() {
             type="text"
             id="toolLink"
             name="toolLink"
-            value={toolLink}
+            value={formValues.toolLink}
             color="white"
             containerProps={{ className: "min-w-[50px]" }}
-            onChange={handleToolLinkChange}
+            onChange={handleInputChange}
           />
           <MaterialComponent
             component="Select"
@@ -108,7 +107,7 @@ function PromoteCp() {
             size="md"
             containerProps={{ className: "min-w-[50px]" }}
             className="text-white"
-            onChange={handleToolCategoryChange}
+            onChange={(value) => handleInputChange(value, 'selectedCategory')}
           >
             {categories.map((category, index) => (
               <MaterialComponent
@@ -137,7 +136,7 @@ function PromoteCp() {
             className="text-white"
             size="md"
             containerProps={{ className: "min-w-[50px]" }}
-            onChange={handleToolPriceChange}
+            onChange={(value) => handleInputChange(value, 'selectedPrice')}
           >
             {options.map((option, index) => (
               <MaterialComponent
@@ -158,11 +157,11 @@ function PromoteCp() {
             id="toolDescription"
             variant="static"
             name="toolDescription"
-            value={toolDescription}
+            value={formValues.toolDescription}
             containerProps={{ className: "min-w-[50px] text-white" }}
             labelProps={{ className: "text-white" }}
             className="text-white"
-            onChange={handleToolDescriptionChange}
+            onChange={handleInputChange}
           />
 
 <MaterialComponent
@@ -172,9 +171,9 @@ function PromoteCp() {
   name="submit"
   onClick={handleSubmit} 
   fullWidth
-  disabled={isLoading}
+  disabled={loading}
 >
-  {isLoading ? <SmallSpinner /> : "Submit"}
+  {loading ? <SmallSpinner /> : "Submit"}
 </MaterialComponent>
         </div>
       </div>

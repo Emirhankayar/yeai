@@ -6,6 +6,8 @@ import { CaptchaProvider } from "./services/CaptchaContext";
 
 createRoot(document.getElementById("root")).render(
         <CaptchaProvider>
-    <App />
+
+        <App />
+        
         </CaptchaProvider>
 );
