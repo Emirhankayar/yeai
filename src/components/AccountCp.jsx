@@ -59,8 +59,8 @@ export default function AccountPg() {
       enabled: activeTab === "bookmarks",
       keepPreviousData: true, 
       refetchOnWindowFocus: false,
-      staleTime: 1000 * 60 * 5, 
-      cacheTime: 1000 * 60 * 30, 
+      //staleTime: 1000 * 60 * 5, 
+      //cacheTime: 1000 * 60 * 30, 
       onSuccess: (data) => {
         setBookmarkDataLength(data.posts.length);
       }
