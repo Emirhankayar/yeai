@@ -249,7 +249,7 @@ function PostCard({ post, handleRedirect, showButtons = true }) {
             <Link
               onClick={() => handleLinkClick(post.post_link)}
               aria-label={`Open ${post.post_title} in a new tab.`}
-              className="flex gap-2 items-center mb-2 hover:text-lg hover:text-emerald-900 h-5 duration-200"
+              className="flex gap-2 items-center mb-4 hover:text-lg hover:text-emerald-900 h-5 duration-200"
             >
               <LazyLoadImage
                 aria-label="Post icon"
@@ -265,8 +265,8 @@ function PostCard({ post, handleRedirect, showButtons = true }) {
             </Link>
           </MaterialComponent>
           <div>
-
           <Buttons />
+
           </div>
         </div>
 
@@ -274,7 +274,7 @@ function PostCard({ post, handleRedirect, showButtons = true }) {
   component="Typography"
   variant="small"
   as="div"
-  className={`relative text-gray-500 ${isExpanded ? '' : 'h-[6rem] lg:h-[4rem] md:h-[5rem] overflow-y-none'}`}
+  className={`relative text-gray-500 ${isExpanded ? '' : 'h-[auto] lg:h-[4rem] md:h-[5rem] overflow-y-none'}`}
   aria-label="post description"
 >
   <div>

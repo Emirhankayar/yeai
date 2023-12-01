@@ -11,7 +11,8 @@ export default function AccountPg() {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("bookmarks");
   const [currentPage, setCurrentPage] = useState(1);
-
+  const [addedDataLength, setAddedDataLength] = useState(0);
+  const [bookmarkDataLength, setBookmarkDataLength] = useState(0);
 
   const fetchPosts = useCallback(
     async ({ queryKey }) => {
@@ -38,19 +39,31 @@ export default function AccountPg() {
     [user, activeTab]
   );
 
-  const { data: addedPostsData, isLoading: addedPostsLoading } = useQuery(
+  const { data: addedPostsData, isLoading: addedPostsLoading, isFetching: addedPostsFetching } = useQuery(
     ["posts", "added", user, currentPage],
     fetchPosts,
     {
       enabled: activeTab === "added",
-      keepPreviousData: true, // keep old data until new data is fetched
+      keepPreviousData: true, 
+      refetchOnWindowFocus: false,
+      staleTime: 1000 * 60 * 5, 
+      cacheTime: 1000 * 60 * 30, 
+      onSuccess: (data) => {
+        setAddedDataLength(data.posts.length);
+      }
     }
   );
 
-  const { data: bookmarkedPostsData, isLoading: bookmarkedPostsLoading } =
+  const { data: bookmarkedPostsData, isLoading: bookmarkedPostsLoading, isFetching: bookmarkedPostsFetching } =
     useQuery(["posts", "bookmarks", user, currentPage], fetchPosts, {
       enabled: activeTab === "bookmarks",
-      keepPreviousData: true, // keep old data until new data is fetched
+      keepPreviousData: true, 
+      refetchOnWindowFocus: false,
+      staleTime: 1000 * 60 * 5, 
+      cacheTime: 1000 * 60 * 30, 
+      onSuccess: (data) => {
+        setBookmarkDataLength(data.posts.length);
+      }
     });
 
   return (
@@ -94,6 +107,8 @@ export default function AccountPg() {
               currentPage={currentPage}
               setPage={setCurrentPage}
               isLoading={bookmarkedPostsLoading}
+              dataLength={bookmarkDataLength}
+              isFetching={bookmarkedPostsFetching}
             />
           ) : (
             <MaterialComponent
@@ -124,6 +139,8 @@ export default function AccountPg() {
               currentPage={currentPage}
               setPage={setCurrentPage}
               isLoading={addedPostsLoading}
+              dataLength={addedDataLength}
+              isFetching={addedPostsFetching}
             />
           ) : (
             <MaterialComponent

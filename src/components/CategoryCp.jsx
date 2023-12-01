@@ -1,6 +1,7 @@
 import axios from "axios";
-import { useState, useEffect, useContext } from "react";
+import { useState, useContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useQuery } from "react-query";
 
 import { useAuth } from "../services/AuthContext";
 import { BookmarkContext } from "../services/BookmarkContext";
@@ -23,12 +24,11 @@ import { Helmet } from "react-helmet";
 import { SV_URL } from "../utils/utils";
 
 const CategoryList = () => {
-  const { categories, isLoading } = useCategories();
+  const { categories, isLoading: categoriesLoading } = useCategories();
   const navigate = useNavigate();
   const location = useLocation();
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [categoryPosts, setCategoryPosts] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [dataLength, setDataLength] = useState(0);
   const user = useAuth();
@@ -37,6 +37,7 @@ const CategoryList = () => {
   const [totalPosts, setTotalPosts] = useState(0);
   const [selectedFilter, setSelectedFilter] = useState("");
   const [selectedOrder, setSelectedOrder] = useState({ field: "", order: "" });
+
   const { bookmarks, setBookmarks, handleBookmarkClick } =
     useContext(BookmarkContext);
   const filterOptions = [
@@ -62,38 +63,55 @@ const CategoryList = () => {
     Oldest: { field: "post_added", order: "asc" },
   };
 
-  useEffect(() => {
+  const fetchPosts = async () => {
     const params = new URLSearchParams(location.search);
     let category = params.get("category");
     const page = params.get("page") || 1;
     if (!category) {
       category = "";
     }
+
     setSelectedCategory(category);
     setPage(parseInt(page));
 
-    setLoading(true);
-    axios
-      .get(
-        `${SV_URL}/postsByCategory?categoryName=${category}&offset=${
-          page - 1
-        }&limit=9&searchTerm=${searchTerm}&sortBy=${
-          selectedOrder.field
-        }&sortOrder=${
-          selectedOrder.order === "asc" ? "asc" : "desc"
-        }&filterBy=${selectedFilter}`
-      )
-      .then((res) => {
-        setCategoryPosts(res.data.posts);
-        setTotalPosts(res.data.totalPosts);
-        setDataLength(res.data.posts.length);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.log(err);
-        setLoading(false);
-      });
-  }, [location.search, searchTerm, selectedOrder, selectedFilter]);
+    const response = await axios.get(
+      `${SV_URL}/postsByCategory?categoryName=${category}&offset=${
+        page - 1
+      }&limit=9&searchTerm=${searchTerm}&sortBy=${
+        selectedOrder.field
+      }&sortOrder=${
+        selectedOrder.order === "asc" ? "asc" : "desc"
+      }&filterBy=${selectedFilter}`
+    );
+    return response.data;
+  };
+
+  const {
+    isLoading: postsLoading,
+    isFetching,
+    error,
+  } = useQuery(
+    [
+      "posts",
+      selectedCategory,
+      page,
+      searchTerm,
+      selectedOrder,
+      selectedFilter,
+    ],
+    fetchPosts,
+    {
+      keepPreviousData: true,
+      refetchOnWindowFocus: false,
+      staleTime: 1000 * 60 * 5, // data stays fresh for 5 minutes
+      cacheTime: 1000 * 60 * 30, // data stays in cache for 30 minutes
+      onSuccess: (data) => {
+        setDataLength(data.posts.length);
+        setCategoryPosts(data.posts);
+        setTotalPosts(data.totalPosts);
+      },
+    }
+  );
 
   const totalPages = Math.ceil(totalPosts / 12);
 
@@ -104,11 +122,11 @@ const CategoryList = () => {
     );
   };
 
+  if (error) return "An error has occurred: " + error.message;
+
   const handleCategoryClick = (category) => {
     setSelectedCategory(category);
     setPage(1);
-    //setSelectedOrder({ field: "", order: "" });
-    //setSelectedFilter("");
     navigate(`${location.pathname}?category=${category}`);
   };
 
@@ -121,6 +139,7 @@ const CategoryList = () => {
     }
   };
 
+  if (categoriesLoading) return <div></div>;
   const handleRefresh = () => {
     setSearchTerm("");
     setInputValue("");
@@ -132,7 +151,7 @@ const CategoryList = () => {
     if (filterOption) {
       setSelectedFilter(filterOption);
     } else {
-      setSelectedFilter(""); // Set the filter to null when the filter tag is removed
+      setSelectedFilter("");
     }
   };
 
@@ -183,9 +202,7 @@ const CategoryList = () => {
   if (selectedCategory !== null) {
     formattedCategoryName = formatCategoryName(selectedCategory);
   }
-  if (isLoading) {
-    return (<div></div>)
-  }
+
   return (
     <div className="container mx-auto px-10 lg:px-0 max-w-3xl">
       <Helmet>
@@ -321,61 +338,58 @@ const CategoryList = () => {
         />
       </div>
 
-      {loading ? (
+      {postsLoading || isFetching ? (
         <div className="container gap-10 grid grid-cols-1">
-            <LoadingPosts count={dataLength} />
+          <LoadingPosts count={9 || dataLength} />
         </div>
+      ) : categoryPosts.length > 0 ? (
+        <ul className="gap-10 grid grid-cols-1 overflow-x-hidden place-items-center">
+          {categoryPosts &&
+            categoryPosts.map((post) => (
+              <PostCard
+                key={post.id}
+                post={post}
+                handleBookmarkClick={() =>
+                  handleBookmarkClick({
+                    postId: post.id,
+                    bookmarks,
+                    setBookmarks,
+                    user,
+                  })
+                }
+                handleRedirect={handleRedirect}
+                favicon={post.icon} // Pass the favicon URL as a prop
+              />
+            ))}
+        </ul>
       ) : (
-        <>
-          {categoryPosts.length > 0 ? (
-            <ul className="gap-10 grid grid-cols-1 overflow-x-hidden place-items-center">
-              {categoryPosts.map((post) => (
-                <PostCard
-                  key={post.id}
-                  post={post}
-                  handleBookmarkClick={() =>
-                    handleBookmarkClick({
-                      postId: post.id,
-                      bookmarks,
-                      setBookmarks,
-                      user,
-                    })
-                  }
-                  handleRedirect={handleRedirect}
-                  favicon={post.icon} // Pass the favicon URL as a prop
-                />
-              ))}
-            </ul>
-          ) : (
+        <MaterialComponent
+          component="Typography"
+          variant="h4"
+          color="red"
+          textGradient
+          className="text-center min-h-screen flex-col gap-5 flex"
+        >
+          No Search results found. <span>Try something else.</span>
+          {searchTerm && (
             <MaterialComponent
-              component="Typography"
-              variant="h4"
-              color="red"
-              textGradient
-              className="text-center min-h-screen flex-col gap-5 flex"
+              component="Button"
+              className="w-1/6 place-self-center mt-5"
+              onClick={handleRefresh}
             >
-              No Search results found. <span>Try something else.</span>
-              {searchTerm && (
-                <MaterialComponent
-                  component="Button"
-                  className="w-1/6 place-self-center mt-5"
-                  onClick={handleRefresh}
-                >
-                  Refresh
-                </MaterialComponent>
-              )}
+              Refresh
             </MaterialComponent>
           )}
-        </>
+        </MaterialComponent>
       )}
-          <div className="mt-10 w-full flex items-center flex-col justify-center">
-            <SimplePagination
-              active={page}
-              next={() => handlePageChange(page + 1)}
-              prev={() => handlePageChange(page - 1)}
-              totalPages={totalPages}
-            />
-          </div>
+      <div className="mt-10 w-full flex items-center flex-col justify-center">
+        <SimplePagination
+          active={page}
+          next={() => handlePageChange(page + 1)}
+          prev={() => handlePageChange(page - 1)}
+          totalPages={totalPages}
+        />
+      </div>
     </div>
   );
 };

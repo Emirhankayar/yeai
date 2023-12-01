@@ -70,8 +70,15 @@ const router = createBrowserRouter([
 export function App() {
   const { captchaCompleted, handleCaptchaCompletion } =
     useContext(CaptchaContext);
-    const queryClient = new QueryClient();
+    const queryClient = new QueryClient({
+      defaultOptions: {
+        queries: {
+          cacheTime: 1000 * 60 * 60 * 24, // 24 hours
+        },
+      },
+    })
 
+    
   if (!captchaCompleted) {
     return (
       <div className="min-h-screen flex flex-col gap-10 items-center justify-center">
