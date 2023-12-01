@@ -26,6 +26,10 @@ import {
   MenuHandler,
   MenuList,
   MenuItem,
+  SpeedDial,
+  SpeedDialHandler,
+  SpeedDialContent,
+  SpeedDialAction,
 } from "@material-tailwind/react";
 
 const components = {
@@ -58,6 +62,11 @@ const components = {
   MenuHandler,
   MenuList,
   MenuItem,
+
+  SpeedDial,
+  SpeedDialHandler,
+  SpeedDialContent,
+  SpeedDialAction,
 };
 
 const MaterialComponent = ({ component, ...props }) => {

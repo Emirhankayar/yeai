@@ -40,7 +40,7 @@ const AuthProvider = ({ children }) => {
     setUser(null);
     setSession(null);
   };
-  console.log(session);
+  
   return (
     <AuthContext.Provider
       value={{ user, session, signOut, isLoading, id: user?.id }}

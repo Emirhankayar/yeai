@@ -18,7 +18,7 @@ module.exports = withMT({
         'full': '100%',
       },
       transitionProperty: {
-        'height': 'max-height',
+        'max-height': 'max-height',
         'opacity': 'opacity',
         'blur': 'backdrop-blur',
       },

@@ -12,6 +12,7 @@ export default function AccountPg() {
   const [activeTab, setActiveTab] = useState("bookmarks");
   const [currentPage, setCurrentPage] = useState(1);
 
+
   const fetchPosts = useCallback(
     async ({ queryKey }) => {
       const [, activeTab, user, page] = queryKey;
@@ -83,8 +84,7 @@ export default function AccountPg() {
           </Button>
         </ButtonGroup>
       </div>
-
-      <div className="grid place-content-center w-full mt-20">
+      <div className="grid  mt-20">
         {activeTab === "bookmarks" &&
           bookmarkedPostsData?.posts &&
           (bookmarkedPostsData.posts.length > 0 ? (
@@ -114,6 +114,7 @@ export default function AccountPg() {
               </a>
             </MaterialComponent>
           ))}
+
         {activeTab === "added" &&
           addedPostsData?.posts &&
           (addedPostsData.posts.length > 0 ? (

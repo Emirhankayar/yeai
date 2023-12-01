@@ -30,6 +30,7 @@ import {
   ArrowLeftCircleIcon,
   EllipsisHorizontalCircleIcon,
   XCircleIcon,
+  PlusIcon,
 } from "@heroicons/react/24/outline";
 
 const icons = {
@@ -53,6 +54,7 @@ const icons = {
   ArrowUpOnSquareIcon,
   Squares2X2Icon,
   HeartIcon,
+  PlusIcon,
 
   ArrowUturnLeftIcon,
   BanknotesIcon,

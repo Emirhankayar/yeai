@@ -184,7 +184,7 @@ const CategoryList = () => {
     formattedCategoryName = formatCategoryName(selectedCategory);
   }
   if (isLoading) {
-    return (<div>Loading...</div>)
+    return (<div></div>)
   }
   return (
     <div className="container mx-auto px-10 lg:px-0 max-w-3xl">
@@ -366,6 +366,8 @@ const CategoryList = () => {
               )}
             </MaterialComponent>
           )}
+        </>
+      )}
           <div className="mt-10 w-full flex items-center flex-col justify-center">
             <SimplePagination
               active={page}
@@ -374,8 +376,6 @@ const CategoryList = () => {
               totalPages={totalPages}
             />
           </div>
-        </>
-      )}
     </div>
   );
 };

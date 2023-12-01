@@ -32,28 +32,30 @@ export default function PostsSection({ posts, totalPages, currentPage, setPage, 
           />
         </div>
         {isLoading ? (
-          <div className="container gap-10 grid grid-cols-1">
-            <LoadingPosts count={5} />
-          </div>
-        ) : (
-          posts &&
-          posts.map((post) => (
-            <PostCard
-              key={post.id}
-              post={post}
-              handleBookmarkClick={() =>
-                handleBookmarkClick({
-                  postId: post.id,
-                  bookmarks,
-                  setBookmarks,
-                  user,
-                })
-              }
-              handleRedirect={handleRedirect}
-              favicon={post.icon}
-            />
-          ))
-        )}
+  <div className="container gap-10 grid grid-cols-1">
+    <LoadingPosts count={5} />
+  </div>
+) : (
+  posts &&
+  <ul className="gap-10 grid grid-cols-1 overflow-x-hidden place-items-center">
+    {posts.map((post) => (
+      <PostCard
+        key={post.id}
+        post={post}
+        handleBookmarkClick={() =>
+          handleBookmarkClick({
+            postId: post.id,
+            bookmarks,
+            setBookmarks,
+            user,
+          })
+        }
+        handleRedirect={handleRedirect}
+        favicon={post.icon}
+      />
+    ))}
+  </ul>
+)}
       </div>
     );
   }
