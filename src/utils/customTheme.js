@@ -381,6 +381,7 @@ const theme = {
             shadow: "shadow-md shadow-red-500/20",
             hover: "hover:shadow-lg hover:shadow-red-500/40",
             active: "active:opacity-[0.85]",
+            className: "capitalize"
           },
         },
         outlined: {

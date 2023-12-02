@@ -214,7 +214,7 @@ export default function NavbarWithMegaMenu() {
         <div className="hidden lg:block">
           <NavList user={user} />
         </div>
-        <div className="hidden gap-2 lg:flex-row lg:flex lg:justify-end lg:items-center  lg:w-1/5">
+        <div className="hidden gap-2 lg:flex-row lg:flex lg:justify-end lg:items-center  lg:w-1/5 ">
           {user ? (
             <Button color="red" aria-label="sign out" onClick={signOut}>
               Sign Out

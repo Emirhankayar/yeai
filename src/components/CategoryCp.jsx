@@ -8,7 +8,7 @@ import { BookmarkContext } from "../services/BookmarkContext";
 
 import { formatCategoryName } from "../utils/categoryUtils";
 import { handleRedirect } from "../utils/redirectUtils";
-
+import Breadcrumb from "../common/BreadCrumbs";
 import MaterialComponent from "../common/Material";
 import { PostCard } from "../common/Card";
 import DropdownComponent from "../common/Dropdown";
@@ -248,6 +248,9 @@ const CategoryList = () => {
               : "Trending Tools"
           }
         />
+      </div>
+      <div className="mb-10">
+        <Breadcrumb />
       </div>
       <div className="flex flex-col lg:flex-row md:flex-row gap-5 mb-10">
         <MaterialComponent component="Typography" color="white">

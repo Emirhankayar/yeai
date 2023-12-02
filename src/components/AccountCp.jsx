@@ -7,6 +7,8 @@ import PostsSection from "../common/PostsSection";
 import { ButtonGroup, Button } from "@material-tailwind/react";
 import PgTitle from "../common/Title";
 import MaterialComponent from "../common/Material";
+import Breadcrumb from "../common/BreadCrumbs";
+
 export default function AccountPg() {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("bookmarks");
@@ -70,6 +72,9 @@ export default function AccountPg() {
     <div className="container mx-auto px-10 lg:px-0 max-w-3xl">
       <div className="flex flex-row items-center justify-start mb-10">
         <PgTitle text="Account" />
+      </div>
+            <div className="mb-10">
+        <Breadcrumb />
       </div>
       <p>
         Total posts:{" "}

@@ -31,6 +31,7 @@ import {
   EllipsisHorizontalCircleIcon,
   XCircleIcon,
   PlusIcon,
+  ChevronRightIcon,
 } from "@heroicons/react/24/outline";
 
 const icons = {
@@ -71,6 +72,7 @@ const icons = {
   
   XCircleIcon,
   EllipsisHorizontalCircleIcon,
+  ChevronRightIcon,
 };
 
 const Icon = ({ icon, ...props }) => {

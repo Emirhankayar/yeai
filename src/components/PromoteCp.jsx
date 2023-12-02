@@ -6,6 +6,7 @@ import { SV_URL } from "../utils/utils";
 import PgTitle from "../common/Title";
 import { SmallSpinner } from "../common/Spinner";
 import { useCategories } from "../hooks/useCategories";
+import Breadcrumb from "../common/BreadCrumbs";
 
 function PromoteCp() {
   const { user } = useAuth();
@@ -62,7 +63,7 @@ function PromoteCp() {
   };
 
   if (isLoading) {
-    return(<div>Loading...</div>)
+    return(<div></div>)
   }
 
 
@@ -73,6 +74,9 @@ function PromoteCp() {
         <div className="grid place-items-start w-full mb-10">
         
           <PgTitle text={"Promote Your AI Tool"} />
+        <div className="mt-10 mb-4">
+          <Breadcrumb/>
+        </div>
         </div>
         <div className="space-y-10 w-full">
           <MaterialComponent
