@@ -3,13 +3,7 @@ const supabaseUrl = import.meta.env.VITE_DB_URL;
 const supabaseKey = import.meta.env.VITE_DB_KEY;
 
 import { createClient } from "@supabase/supabase-js";
-const supabase = createClient(supabaseUrl, supabaseKey ,{
-  auth: {
-    autoRefreshToken: true,
-    persistSession: true,
-    detectSessionInUrl: false
-  }
-})
+const supabase = createClient(supabaseUrl, supabaseKey)
 export const SV_URL = import.meta.env.VITE_SV_URL;
 //export const SV_URL = 'http://localhost:10000';
 

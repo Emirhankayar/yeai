@@ -12,12 +12,18 @@ const AuthProvider = ({ children }) => {
   const [isLoading, setLoading] = useState(true);
 
   useEffect(() => {
-    const session = supabase.auth.getSession;
+    const session = supabase.auth.getSession();
     setSession(session);
     setUser((user) => (session?.user?.id !== user?.id ? session?.user : user));
     setLoading(false);
 
+    console.log('Initial session:', session);
+    console.log('Initial user:', user);
+
     const authListener = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('Auth event:', event);
+      console.log('Auth session:', session);
+
       setUser((user) =>
         session?.user?.id !== user?.id ? session?.user : user
       );
@@ -40,7 +46,7 @@ const AuthProvider = ({ children }) => {
     setUser(null);
     setSession(null);
   };
-  
+
   return (
     <AuthContext.Provider
       value={{ user, session, signOut, isLoading, id: user?.id }}
