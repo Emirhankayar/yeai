@@ -239,6 +239,7 @@ const CategoryList = () => {
           property="og:url"
           content={`https://yeai.tech${location.pathname}`}
         />
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6235278469584977" crossOrigin="anonymous"></script>
       </Helmet>
       <div className="flex flex-row items-center justify-start mb-10">
         <PgTitle
@@ -255,9 +256,6 @@ const CategoryList = () => {
       <div className="flex flex-col lg:flex-row md:flex-row gap-5 mb-10">
         <MaterialComponent component="Typography" color="white">
           Total Results: {totalPosts}
-        </MaterialComponent>
-        <MaterialComponent component="Typography" color="white">
-          Total pages: {totalPages}
         </MaterialComponent>
         <div className="flex gap-2">
           {selectedFilter && (
