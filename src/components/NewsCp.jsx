@@ -201,10 +201,10 @@ const CategoryList = () => {
   return (
     <div className="container mx-auto px-10 lg:px-0 max-w-3xl">
       <Helmet>
-        <title>{`News - ${formattedCategoryName || "Trending"}`}</title>
+        <title>{`News - ${formattedCategoryName || "Latest"}`}</title>
         <meta
           name="description"
-          content={`Posts in category: ${formattedCategoryName || "Trending"}`}
+          content={`Posts in category: ${formattedCategoryName || "Latest"}`}
         />
         <meta name="robots" content="index, follow" />
         <meta name="googlebot" content="index, follow" />
@@ -214,7 +214,7 @@ const CategoryList = () => {
         <meta name="yandex" content="index, follow" />
         <meta
           name="keywords"
-          content={`News, ${formattedCategoryName}, posts`}
+          content={`News, ${formattedCategoryName}, AI news, AI, Artificial Intelligence, What's new, Latest news, news, Technology, Artificial Intelligence News, Artificial Intelligence tools, yeai, yeai tech`}
         />
         <link
           rel="canonical"
@@ -223,11 +223,11 @@ const CategoryList = () => {
 
         <meta
           property="og:title"
-          content={`News - ${formattedCategoryName || "Trending"}`}
+          content={`News - ${formattedCategoryName || "Latest"}`}
         />
         <meta
           property="og:description"
-          content={`Posts in category: ${selectedCategory || "Trending"}`}
+          content={`Posts in category: ${selectedCategory || "Latest"}`}
         />
         <meta property="og:type" content="website" />
         <meta
@@ -241,7 +241,7 @@ const CategoryList = () => {
           text={
             selectedCategory
               ? `Posts in ${formattedCategoryName}`
-              : "Trending News"
+              : "Latest News"
           }
         />
       </div>

@@ -8,6 +8,7 @@ import { ButtonGroup, Button } from "@material-tailwind/react";
 import PgTitle from "../common/Title";
 import MaterialComponent from "../common/Material";
 import Breadcrumb from "../common/BreadCrumbs";
+import { Helmet } from "react-helmet";
 
 export default function AccountPg() {
   const { user } = useAuth();
@@ -70,6 +71,41 @@ export default function AccountPg() {
 
   return (
     <div className="container mx-auto px-10 lg:px-0 max-w-3xl">
+      <Helmet>
+        <title>{`Profile`}</title>
+        <meta
+          name="description"
+          content={`Profile page for user`}
+        />
+        <meta name="robots" content="index, follow" />
+        <meta name="googlebot" content="index, follow" />
+        <meta name="bingbot" content="index, follow" />
+        <meta name="duckduckbot" content="index, follow" />
+        <meta name="baiduspider" content="index, follow" />
+        <meta name="yandex" content="index, follow" />
+        <meta
+          name="keywords"
+          content={`News, AI news, AI, Artificial Intelligence, What's new, Latest news, news, Technology, Artificial Intelligence News, Artificial Intelligence tools, yeai, yeai tech, profile, user`}
+        />
+        <link
+          rel="canonical"
+          href={`https://yeai.tech${location.pathname}`}
+        />
+
+        <meta
+          property="og:title"
+          content={`Posts in Profile`}
+        />
+        <meta
+          property="og:description"
+          content={`Posts in Profile`}
+        />
+        <meta property="og:type" content="website" />
+        <meta
+          property="og:url"
+          content={`https://yeai.tech${location.pathname}`}
+        />
+      </Helmet>
       <div className="flex flex-row items-center justify-start mb-10">
         <PgTitle text="Profile" />
       </div>

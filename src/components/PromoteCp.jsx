@@ -9,6 +9,7 @@ import { useCategories } from "../hooks/useCategories";
 import Breadcrumb from "../common/BreadCrumbs";
 import MyDropzone from "../common/Dropzone";
 import { Alert } from "@material-tailwind/react";
+import { Helmet } from "react-helmet";
 
 
 const initialState = {
@@ -138,6 +139,41 @@ function PromoteCp() {
 
   return (
     <div className="container grid place-items-center mx-auto max-w-lg px-10">
+            <Helmet>
+        <title>{`Promote`}</title>
+        <meta
+          name="description"
+          content={`Promote page for user`}
+        />
+        <meta name="robots" content="index, follow" />
+        <meta name="googlebot" content="index, follow" />
+        <meta name="bingbot" content="index, follow" />
+        <meta name="duckduckbot" content="index, follow" />
+        <meta name="baiduspider" content="index, follow" />
+        <meta name="yandex" content="index, follow" />
+        <meta
+          name="keywords"
+          content={`AI posts, AI highlight, AI promote ,Free ,Promote,Promote tool ,News, AI news, AI, Artificial Intelligence, What's new, Latest news, news, Technology, Artificial Intelligence News, Artificial Intelligence tools, yeai, yeai tech, Promote, user`}
+        />
+        <link
+          rel="canonical"
+          href={`https://yeai.tech${location.pathname}`}
+        />
+
+        <meta
+          property="og:title"
+          content={`Promote your post`}
+        />
+        <meta
+          property="og:description"
+          content={`Promote your post`}
+        />
+        <meta property="og:type" content="website" />
+        <meta
+          property="og:url"
+          content={`https://yeai.tech${location.pathname}`}
+        />
+      </Helmet>
             {state.errorMessage && (
         <Alert severity="error" color="red" className="fixed bottom-0 w-full rounded-none z-50">
           <MaterialComponent component="Typography">
