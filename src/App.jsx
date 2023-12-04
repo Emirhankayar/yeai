@@ -8,6 +8,7 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 const Navbar = React.lazy(() => import("./common/Navbar"));
 const MainPg = React.lazy(() => import("./pages/MainPg"));
 const CategoryPg = React.lazy(() => import("./pages/CategoryPg"));
+const NewsPg = React.lazy(() => import("./pages/NewsPg"));
 const SignInPg = React.lazy(() => import("./pages/SignInPg"));
 const AccountPg = React.lazy(() => import("./pages/AccountPg"));
 const PromotePg = React.lazy(() => import("./pages/PromotePg"));
@@ -38,11 +39,15 @@ const router = createBrowserRouter([
     element: <CategoryPg />,
   },
   {
+    path: "/news",
+    element: <NewsPg />,
+  },
+  {
     path: "/sign-in",
     element: <SignInPg />,
   },
   {
-    path: "/account",
+    path: "/profile",
     element: (
       <PrivateRoute>
         <AccountPg />

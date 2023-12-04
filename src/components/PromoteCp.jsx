@@ -39,7 +39,7 @@ function reducer(state, action) {
 
 function PromoteCp() {
   const { user } = useAuth();
-  const { categories, isLoading } = useCategories();
+  const { categories, isLoading } = useCategories('categories');
   const [state, dispatch] = useReducer(reducer, initialState);
   const options = [
     { label: "Free" },

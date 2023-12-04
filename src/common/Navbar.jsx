@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import Icon from "./Icons";
 import { useCategories } from "../hooks/useCategories";
 import SignInFormPage from "../components/SignInCp";
+import { SmallSpinner } from "./Spinner";
 
 import {
   Navbar,
@@ -21,18 +22,19 @@ import {
 } from "@material-tailwind/react";
 import MaterialComponent from "./Material";
 
-function NavListMenu() {
-  const { categories, isLoading } = useCategories();
+function NavListMenu({ context }) {
+  const { categories, isLoading } = useCategories(context);
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleCategoryClick = (category) => {
-    // Navigate to the category page and force a page refresh
-    window.location.href = `/tools?category=${category}`;
+    const page = context === 'newscategories' ? 'news' : 'tools';
+    window.location.href = `/${page}?category=${category}`;
   };
 
   NavListMenu.propTypes = {
+    context: PropTypes.string.isRequired,
     onCategoryClick: PropTypes.func.isRequired,
   };
   NavList.propTypes = {
@@ -41,22 +43,9 @@ function NavListMenu() {
 
   if (isLoading) {
     return (
-      <Typography
-        as="div"
-        variant="small"
-        color="gray"
-        className="font-normal flex flex-row items-center"
-      >
-        <Icon icon="Square3Stack3DIcon" className="h-[18px] w-[18px] mx-1" />
-        Tools
-        <Icon
-                icon="ChevronDownIcon"
-                strokeWidth={2.5}
-                className={`hidden h-3 w-3 transition-transform lg:block mx-1 ${
-                  isMenuOpen ? "rotate-180" : ""
-                }`}
-              />
-      </Typography>
+    <div className="px-5 mx-3 flex items-center">
+    <SmallSpinner/>
+    </div>
     );
   }
 
@@ -108,12 +97,16 @@ function NavListMenu() {
               onClick={() => setIsMobileMenuOpen((cur) => !cur)}
             >
               <a
-                href="/tools"
+                href={`/${context === 'newscategories' ? 'news' : 'tools'}`}
                 className="flex gap-1 items-center"
-                aria-label="yeai.tech/tools"
+                aria-label={`yeai.tech/${context === 'newsCategories' ? 'news' : 'tools'}`}
               >
-                <Icon icon="Square3Stack3DIcon" className="h-[18px] w-[18px] mr-1" />
-                Tools
+
+                {context === 'newscategories' ? 
+                  <Icon icon="NewspaperIcon" className="h-[18px] w-[18px] mr-1" /> : 
+                  <Icon icon="Square3Stack3DIcon" className="h-[18px] w-[18px] mr-1" />
+                }
+                {context === 'newscategories' ? 'News' : 'Tools'}
               </a>
               <Icon
                 icon="ChevronDownIcon"
@@ -158,29 +151,20 @@ function NavList() {
 
   return (
     <List className="mt-4 mb-6 p-0 lg:mt-0 lg:mb-0 lg:flex-row lg:items-center lg:justify-center">
+
+      <NavListMenu context='categories' onCategoryClick={handleCategoryClick} />
+      <NavListMenu context='newscategories' onCategoryClick={handleCategoryClick} />
+
       <Typography
         as="a"
-        href="/about"
-        variant="small"
-        color="blue-gray"
-        className="font-normal"
-      >
-        <ListItem className="flex items-center gap-2 py-2 pr-4 hidden">
-          <Icon icon="QuestionMarkCircleIcon" className="h-[18px] w-[18px]" />
-          About
-        </ListItem>
-      </Typography>
-      <NavListMenu onCategoryClick={handleCategoryClick} />
-      <Typography
-        as="a"
-        href="/account"
+        href="/profile"
         variant="small"
         color="blue-gray"
         className="font-normal"
       >
         <ListItem className="flex items-center gap-2 py-2 pr-4">
           <Icon icon="UserCircleIcon" className="h-[18px] w-[18px]" />
-          Account
+          Profile
         </ListItem>
       </Typography>
       <Typography

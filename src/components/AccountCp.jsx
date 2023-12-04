@@ -71,7 +71,7 @@ export default function AccountPg() {
   return (
     <div className="container mx-auto px-10 lg:px-0 max-w-3xl">
       <div className="flex flex-row items-center justify-start mb-10">
-        <PgTitle text="Account" />
+        <PgTitle text="Profile" />
       </div>
             <div className="mb-10">
         <Breadcrumb />

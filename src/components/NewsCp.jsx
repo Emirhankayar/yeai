@@ -10,7 +10,7 @@ import { formatCategoryName } from "../utils/categoryUtils";
 import { handleRedirect } from "../utils/redirectUtils";
 import Breadcrumb from "../common/BreadCrumbs";
 import MaterialComponent from "../common/Material";
-import { PostCard } from "../common/Card";
+import { PostCard } from "../common/NewsCard";
 import DropdownComponent from "../common/Dropdown";
 import { SimplePagination } from "../common/Pagination";
 import { CategoryCard } from "../common/CardCategory";
@@ -25,7 +25,7 @@ import AdSenseComponent from "./Adsense";
 import { SV_URL } from "../utils/utils";
 
 const CategoryList = () => {
-  const { categories, isLoading: categoriesLoading } = useCategories('categories');
+  const { categories, isLoading: categoriesLoading } = useCategories('newscategories');
   const navigate = useNavigate();
   const location = useLocation();
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -41,12 +41,6 @@ const CategoryList = () => {
 
   const { bookmarks, setBookmarks, handleBookmarkClick } =
     useContext(BookmarkContext);
-  const filterOptions = [
-    { label: "Free" },
-    { label: "Freemium" },
-    { label: "Free Trial" },
-    { label: "Paid" },
-  ];
   const orderOptions = [
     { label: "A-Z" },
     { label: "Z-A" },
@@ -76,7 +70,7 @@ const CategoryList = () => {
     setPage(parseInt(page));
 
     const response = await axios.get(
-      `${SV_URL}/postsByCategory?categoryName=${category}&offset=${
+      `${SV_URL}/newsByCategory?categoryName=${category}&offset=${
         page - 1
       }&limit=9&searchTerm=${searchTerm}&sortBy=${
         selectedOrder.field
@@ -207,7 +201,7 @@ const CategoryList = () => {
   return (
     <div className="container mx-auto px-10 lg:px-0 max-w-3xl">
       <Helmet>
-        <title>{`Tools - ${formattedCategoryName || "Trending"}`}</title>
+        <title>{`News - ${formattedCategoryName || "Trending"}`}</title>
         <meta
           name="description"
           content={`Posts in category: ${formattedCategoryName || "Trending"}`}
@@ -220,7 +214,7 @@ const CategoryList = () => {
         <meta name="yandex" content="index, follow" />
         <meta
           name="keywords"
-          content={`tools, ${formattedCategoryName}, posts`}
+          content={`News, ${formattedCategoryName}, posts`}
         />
         <link
           rel="canonical"
@@ -229,7 +223,7 @@ const CategoryList = () => {
 
         <meta
           property="og:title"
-          content={`Tools - ${formattedCategoryName || "Trending"}`}
+          content={`News - ${formattedCategoryName || "Trending"}`}
         />
         <meta
           property="og:description"
@@ -240,18 +234,14 @@ const CategoryList = () => {
           property="og:url"
           content={`https://yeai.tech${location.pathname}`}
         />
-        <script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6235278469584977"
-          crossOrigin="anonymous"
-        ></script>
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6235278469584977" crossOrigin="anonymous"></script>
       </Helmet>
       <div className="flex flex-row items-center justify-start mb-10">
         <PgTitle
           text={
             selectedCategory
               ? `Posts in ${formattedCategoryName}`
-              : "Trending Tools"
+              : "Trending News"
           }
         />
       </div>
@@ -296,6 +286,8 @@ const CategoryList = () => {
       </div>
 
       <div className="grid grid-cols-1 gap-10 w-full mb-20 place-items-center">
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 md:grid-cols-2 w-full place-content-center gap-10">
         <CategoryCard
           categories={categories}
           handleCategoryClick={handleCategoryClick}
@@ -303,17 +295,6 @@ const CategoryList = () => {
           selectedCategory={selectedCategory}
           formattedCategoryName={formattedCategoryName}
         />
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 md:grid-cols-2 w-full place-content-center gap-10">
-          <DropdownComponent
-            label="Filter By"
-            options={filterOptions}
-            selectedOption={selectedFilter}
-            onChange={handleFilterChange}
-            isOptionDisabled={(option) => selectedFilter === option.label}
-            value={selectedFilter}
-          />
-
           <DropdownComponent
             label="Sort By"
             options={orderOptions}
@@ -350,33 +331,27 @@ const CategoryList = () => {
         </div>
       ) : categoryPosts.length > 0 ? (
         <ul className="gap-10 grid grid-cols-1 overflow-x-hidden place-items-center">
-          {categoryPosts &&
-            categoryPosts.map((post, index) => (
-              <>
-                {index === 9 && (
-                  <AdSenseComponent
-                    adClient="client=ca-pub-6235278469584977"
-                    adSlot="f08c47fec0942fa0"
-                    adFormat="fluid"
-                    adLayoutKey="-gw-3+1f-3d+2z"
-                  />
-                )}
-                <PostCard
-                  key={post.id}
-                  post={post}
-                  handleBookmarkClick={() =>
-                    handleBookmarkClick({
-                      postId: post.id,
-                      bookmarks,
-                      setBookmarks,
-                      user,
-                    })
-                  }
-                  handleRedirect={handleRedirect}
-                  favicon={post.icon} // Pass the favicon URL as a prop
-                />
-              </>
-            ))}
+{categoryPosts &&
+  categoryPosts.map((post, index) => (
+    <>
+      {index === 9 && <AdSenseComponent adClient="client=ca-pub-6235278469584977" adSlot="f08c47fec0942fa0" 
+      adFormat="fluid"   adLayoutKey="-gw-3+1f-3d+2z" />}
+      <PostCard
+        key={post.id}
+        post={post}
+        handleBookmarkClick={() =>
+          handleBookmarkClick({
+            postId: post.id,
+            bookmarks,
+            setBookmarks,
+            user,
+          })
+        }
+        handleRedirect={handleRedirect}
+        favicon={post.icon} // Pass the favicon URL as a prop
+      />
+    </>
+  ))}
         </ul>
       ) : (
         <MaterialComponent

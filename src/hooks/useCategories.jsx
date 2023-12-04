@@ -1,15 +1,19 @@
-import { createContext, useContext } from 'react';
-import { useQuery } from 'react-query';
-import axios from 'axios';
-import PropTypes from 'prop-types';
-import { SV_URL } from '../utils/utils';
+import { createContext } from "react";
+import { useQuery } from "react-query";
+import axios from "axios";
+import PropTypes from "prop-types";
+import { SV_URL } from "../utils/utils";
 
-const fetchCategories = async () => {
-  const response = await axios.get(`${SV_URL}/allCategories`, {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+const fetchCategories = async (type) => {
+  const endpoint = 'allCategories';
+  const response = await axios.get(
+    `${SV_URL}/${endpoint}?type=${type}`,
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
   let categories = response.data;
   return modifyCategoryNames(categories);
 };
@@ -27,9 +31,7 @@ const modifyCategoryNames = (categories) => {
           } else if (word === "ai") {
             return word.toUpperCase();
           } else {
-            return (
-              word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
-            );
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
           }
         })
         .join(" ");
@@ -40,20 +42,25 @@ const modifyCategoryNames = (categories) => {
   });
 };
 
-const useFetchCategories = () => {
-  const { data: categories, isError, isLoading } = useQuery('categories', fetchCategories);
+const useFetchCategories = (type) => {
+  const {
+    data: categories,
+    isError,
+    isLoading,
+  } = useQuery([type], () => fetchCategories(type));
 
   return { categories, isError, isLoading };
 };
 
 const CategoryContext = createContext();
 
-export const useCategories = () => {
-  return useContext(CategoryContext);
+export const useCategories = (type) => {
+  const { categories, isError, isLoading } = useFetchCategories(type);
+  return { categories, isError, isLoading };
 };
 
-export const CategoryProvider = ({ children }) => {
-  const { categories, isError, isLoading } = useFetchCategories();
+export const CategoryProvider = ({ children, type }) => {
+  const { categories, isError, isLoading } = useFetchCategories(type);
 
   return (
     <CategoryContext.Provider value={{ categories, isError, isLoading }}>
@@ -61,9 +68,10 @@ export const CategoryProvider = ({ children }) => {
     </CategoryContext.Provider>
   );
 };
+
 CategoryProvider.propTypes = {
   children: PropTypes.node.isRequired,
+  type: PropTypes.string.isRequired,
 };
-
 
 export default useFetchCategories;
