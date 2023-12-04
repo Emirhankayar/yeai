@@ -349,7 +349,8 @@ const CategoryList = () => {
 {categoryPosts &&
   categoryPosts.map((post, index) => (
     <>
-      {index === 9 && <AdSenseComponent adClient="client=ca-pub-6235278469584977" adSlot="f08c47fec0942fa0" />}
+      {index === 9 && <AdSenseComponent adClient="client=ca-pub-6235278469584977" adSlot="f08c47fec0942fa0" 
+      adFormat="fluid"   adLayoutKey="-gw-3+1f-3d+2z" />}
       <PostCard
         key={post.id}
         post={post}
