@@ -1,4 +1,4 @@
-import React from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../services/AuthContext";
 import "../index.css";
 import PropTypes from "prop-types";
@@ -24,8 +24,8 @@ import MaterialComponent from "./Material";
 function NavListMenu() {
   const { categories, isLoading } = useCategories();
 
-  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleCategoryClick = (category) => {
     // Navigate to the category page and force a page refresh
@@ -38,9 +38,28 @@ function NavListMenu() {
   NavList.propTypes = {
     user: PropTypes.object,
   };
+
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <Typography
+        as="div"
+        variant="small"
+        color="gray"
+        className="font-normal flex flex-row items-center"
+      >
+        <Icon icon="Square3Stack3DIcon" className="h-[18px] w-[18px] mx-1" />
+        Tools
+        <Icon
+                icon="ChevronDownIcon"
+                strokeWidth={2.5}
+                className={`hidden h-3 w-3 transition-transform lg:block mx-1 ${
+                  isMenuOpen ? "rotate-180" : ""
+                }`}
+              />
+      </Typography>
+    );
   }
+
   const renderItems = categories.map((category, index) => {
     return (
       <MenuItem
@@ -93,7 +112,7 @@ function NavListMenu() {
                 className="flex gap-1 items-center"
                 aria-label="yeai.tech/tools"
               >
-                <Icon icon="Square3Stack3DIcon" className="h-[18px] w-[18px]" />
+                <Icon icon="Square3Stack3DIcon" className="h-[18px] w-[18px] mr-1" />
                 Tools
               </a>
               <Icon
@@ -181,12 +200,12 @@ function NavList() {
 }
 
 export default function NavbarWithMegaMenu() {
-  const [openNav, setOpenNav] = React.useState(false);
-  const [open, setOpen] = React.useState(false);
+  const [openNav, setOpenNav] = useState(false);
+  const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen((cur) => !cur);
   const { user, signOut } = useAuth();
 
-  React.useEffect(() => {
+  useEffect(() => {
     window.addEventListener(
       "resize",
       () => window.innerWidth >= 960 && setOpenNav(false)
