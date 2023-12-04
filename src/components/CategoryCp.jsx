@@ -20,6 +20,7 @@ import FilterTag from "../common/FilterTag";
 import LoadingPosts from "../common/LoadingPosts";
 import useCategories from "../hooks/useCategories";
 import { Helmet } from "react-helmet";
+import AdSenseComponent from "./Adsense";
 
 import { SV_URL } from "../utils/utils";
 
@@ -345,23 +346,26 @@ const CategoryList = () => {
         </div>
       ) : categoryPosts.length > 0 ? (
         <ul className="gap-10 grid grid-cols-1 overflow-x-hidden place-items-center">
-          {categoryPosts &&
-            categoryPosts.map((post) => (
-              <PostCard
-                key={post.id}
-                post={post}
-                handleBookmarkClick={() =>
-                  handleBookmarkClick({
-                    postId: post.id,
-                    bookmarks,
-                    setBookmarks,
-                    user,
-                  })
-                }
-                handleRedirect={handleRedirect}
-                favicon={post.icon} // Pass the favicon URL as a prop
-              />
-            ))}
+{categoryPosts &&
+  categoryPosts.map((post, index) => (
+    <>
+      {index === 9 && <AdSenseComponent adClient="client=ca-pub-6235278469584977" adSlot="f08c47fec0942fa0" />}
+      <PostCard
+        key={post.id}
+        post={post}
+        handleBookmarkClick={() =>
+          handleBookmarkClick({
+            postId: post.id,
+            bookmarks,
+            setBookmarks,
+            user,
+          })
+        }
+        handleRedirect={handleRedirect}
+        favicon={post.icon} // Pass the favicon URL as a prop
+      />
+    </>
+  ))}
         </ul>
       ) : (
         <MaterialComponent
