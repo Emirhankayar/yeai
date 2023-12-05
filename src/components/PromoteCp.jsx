@@ -173,6 +173,8 @@ function PromoteCp() {
           property="og:url"
           content={`https://yeai.tech${location.pathname}`}
         />
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6235278469584977"
+     crossOrigin="anonymous"></script>
       </Helmet>
             {state.errorMessage && (
         <Alert severity="error" color="red" className="fixed bottom-0 w-full rounded-none z-50">

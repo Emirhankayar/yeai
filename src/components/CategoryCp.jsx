@@ -240,11 +240,8 @@ const CategoryList = () => {
           property="og:url"
           content={`https://yeai.tech${location.pathname}`}
         />
-        <script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6235278469584977"
-          crossOrigin="anonymous"
-        ></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6235278469584977"
+     crossOrigin="anonymous"></script>
       </Helmet>
       <div className="flex flex-row items-center justify-start mb-10">
         <PgTitle
