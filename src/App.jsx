@@ -13,6 +13,8 @@ const AccountPg = React.lazy(() => import("./pages/AccountPg"));
 const PromotePg = React.lazy(() => import("./pages/PromotePg"));
 const Footer = React.lazy(() => import("./common/Footer"));
 const Unsubscribe = React.lazy(() => import("./components/UnsubscribeCp"));
+const ErrorPage = React.lazy(() => import("./common/404"));
+
 
 import ApproveTool from "./common/Approve";
 import { Turnstile } from "@marsidev/react-turnstile";
@@ -41,6 +43,10 @@ const router = createBrowserRouter([
   {
     path: "/news",
     element: <NewsPg />,
+  },
+  {
+    path: '*',
+    element: <ErrorPage />,
   },
   {
     path: "/sign-in",

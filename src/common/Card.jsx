@@ -41,11 +41,9 @@ function PostCard({ post, handleRedirect, showButtons = true }) {
     event.preventDefault();
     event.stopPropagation();
     try {
-      console.log("post:", post.post_title);
-      console.log("email:", user.email);
-      console.log("message:", message);
       await axios.post(`${SV_URL}/report-issue`, {
-        post: post.post_title,
+        post_id: post.id,
+        post_name: post.post_title,
         email: user.email,
         message,
       });

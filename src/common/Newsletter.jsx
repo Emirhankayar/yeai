@@ -6,10 +6,6 @@ import { SV_URL } from "../utils/utils";
 import { SmallSpinner } from "../common/Spinner";
 import { Alert } from "@material-tailwind/react";
 
-// todo - add form validation
-// todo - add error messages or success messages
-// todo - add server side code for emails
-
 const formReducer = (state, event) => {
   return {
     ...state,
@@ -20,6 +16,21 @@ const formReducer = (state, event) => {
 const initialFormData = {
   email: "",
 };
+
+const LOGO = () => (
+  <div>
+    <MaterialComponent
+      component="Typography"
+      variant="h5"
+      className="cursor-pointer inline-block font-oxanium text-gray-300 font-extrabold"
+    >
+      yeai
+      <span className="bg-gradient-to-r from-emerald-600 via-emerald-700 to-emerald-900 inline-block text-transparent bg-clip-text hover:animate-shift">
+        .tech
+      </span>
+    </MaterialComponent>
+  </div>
+);
 
 export default function Newsletter() {
   const [formData, setFormData] = useReducer(formReducer, initialFormData);
@@ -66,7 +77,7 @@ export default function Newsletter() {
   
       // Set the error message
       setError(error.response.data.error);
-      setTimeout(() => setError(null), 4000); // Clear the error after 4 seconds
+      setTimeout(() => setError(null), 4000); 
     }
   
     setIsLoading(false);
@@ -83,6 +94,7 @@ export default function Newsletter() {
           component="CardBody"
           className="flex flex-col items-center justify-center space-y-5"
         >
+          <LOGO />
           <MaterialComponent
             component="Typography"
             variant="h3"
@@ -90,7 +102,7 @@ export default function Newsletter() {
           >
             Sign up to our email Newsletter
           </MaterialComponent>
-          <MaterialComponent component="Typography" variant="small">
+          <MaterialComponent component="Typography" variant="small" className="text-gray-400">
             By signing up to our email newsletter you can stay up to date with
             the latest news and updates from us.
           </MaterialComponent>
