@@ -30,6 +30,7 @@ import {
   SpeedDialHandler,
   SpeedDialContent,
   SpeedDialAction,
+
 } from "@material-tailwind/react";
 
 const components = {
@@ -67,6 +68,7 @@ const components = {
   SpeedDialHandler,
   SpeedDialContent,
   SpeedDialAction,
+
 };
 
 const MaterialComponent = ({ component, ...props }) => {

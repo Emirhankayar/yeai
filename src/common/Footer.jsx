@@ -1,4 +1,5 @@
 import MaterialComponent from "./Material";
+import Newsletter from "./Newsletter";
 
 const LOGO = () => (
   <div>
@@ -62,7 +63,12 @@ const currentYear = new Date().getFullYear();
 
 export default function FooterWithSitemap() {
   return (
-    <footer className="relative w-full mt-40 border-t-2 border-gray-900">
+    <>
+    <div className="mt-40">
+
+    <Newsletter />
+    </div>
+    <footer className="relative w-full border-t-2 border-gray-900">
       <div className="mx-auto w-full max-w-7xl px-8">
         <div className="mx-auto grid w-full grid-cols-1 gap-8 py-12 md:grid-cols-2 lg:grid-cols-4">
           {SITEMAP.map(({ title, links }, key) => (
@@ -109,5 +115,6 @@ export default function FooterWithSitemap() {
         </div>
       </div>
     </footer>
+    </>
   );
 }

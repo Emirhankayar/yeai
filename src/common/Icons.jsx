@@ -33,6 +33,9 @@ import {
   PlusIcon,
   ChevronRightIcon,
   NewspaperIcon,
+  PaperAirplaneIcon,
+  GlobeEuropeAfricaIcon,
+  CheckIcon,
 } from "@heroicons/react/24/outline";
 
 const icons = {
@@ -75,6 +78,9 @@ const icons = {
   EllipsisHorizontalCircleIcon,
   ChevronRightIcon,
   NewspaperIcon,
+  PaperAirplaneIcon,
+  GlobeEuropeAfricaIcon,
+  CheckIcon,
 };
 
 const Icon = ({ icon, ...props }) => {

@@ -17,12 +17,8 @@ const AuthProvider = ({ children }) => {
     setUser((user) => (session?.user?.id !== user?.id ? session?.user : user));
     setLoading(false);
 
-    console.log('Initial session:', session);
-    console.log('Initial user:', user);
-
     const authListener = supabase.auth.onAuthStateChange((event, session) => {
-      console.log('Auth event:', event);
-      console.log('Auth session:', session);
+
 
       setUser((user) =>
         session?.user?.id !== user?.id ? session?.user : user

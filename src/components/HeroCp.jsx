@@ -25,7 +25,6 @@ export default function HeroCp() {
         >
           Discover the Best AI Tools
         </MaterialComponent>
-
         <MaterialComponent
           component="Typography"
           variant="h2"

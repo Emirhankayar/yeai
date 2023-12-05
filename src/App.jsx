@@ -4,7 +4,6 @@ import { theme } from "./utils/customTheme";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import CustomSpinner from "./common/Spinner";
 import { QueryClient, QueryClientProvider } from 'react-query';
-
 const Navbar = React.lazy(() => import("./common/Navbar"));
 const MainPg = React.lazy(() => import("./pages/MainPg"));
 const CategoryPg = React.lazy(() => import("./pages/CategoryPg"));
@@ -13,6 +12,7 @@ const SignInPg = React.lazy(() => import("./pages/SignInPg"));
 const AccountPg = React.lazy(() => import("./pages/AccountPg"));
 const PromotePg = React.lazy(() => import("./pages/PromotePg"));
 const Footer = React.lazy(() => import("./common/Footer"));
+const Unsubscribe = React.lazy(() => import("./components/UnsubscribeCp"));
 
 import ApproveTool from "./common/Approve";
 import { Turnstile } from "@marsidev/react-turnstile";
@@ -65,6 +65,10 @@ const router = createBrowserRouter([
   {
     path: "/contact",
     element: <MainPg />,
+  },
+  {
+    path: "/unsubscribe",
+    element: <Unsubscribe />,
   },
   {
     path: "/approve-tool",
